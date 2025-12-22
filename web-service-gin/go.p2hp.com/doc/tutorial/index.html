@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/tutorial/">
+<meta name="og:title" content="Golang 教程 - The Go Programming Language">
+<title>Golang 教程 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>Golang 教程</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+
+
+
+
+<p>如果您不熟悉 Go 的某个部分，请查看下面链接的教程.</p>
+
+<p>
+  如果您尚未安装 Go，请参阅 
+  <a href="../install.html">下载并安装</a>.
+</p>
+
+<table id="tutorials-list" class="DocTable">
+  <thead>
+    <tr class="DocTable-head">
+      <th class="DocTable-cell" width="20%">教程</th>
+      <th class="DocTable-cell">描述
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <a href="https://go.p2hp.com/doc/tutorial/getting-started.html">入门</a>
+      </td>
+      <td class="DocTable-cell">用 Go 向世界问好.</td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <a href="https://go.p2hp.com/doc/tutorial/create-module.html">创建模块</a>
+      </td>
+      <td class="DocTable-cell">
+        一个由多部分组成的教程，从 Go 的角度介绍常见的编程语言功能.
+      </td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <a href="workspaces.html">Getting started with multi-module workspaces</a>
+      </td>
+      <td class="DocTable-cell">
+        Introduces the basics of creating and using multi-module workspaces in Go.
+        Multi-module workspaces are useful for making changes across multiple modules.
+      </td>
+    </tr>
+    <tr class="DocTable-row">
+        <td class="DocTable-cell">
+          <a href="database-access.html">访问关系数据库</a>
+        </td>
+        <td class="DocTable-cell">介绍使用标准库访问数据库的基础知识.</td>
+      </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <a href="https://go.p2hp.com/doc/tutorial/web-service-gin">使用 Go 和 Gin 开发 RESTful API</a>
+      </td>
+      <td class="DocTable-cell">介绍使用 Go 和 Gin Web 框架编写 RESTful Web 服务 API 的基础知识.</td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <a href="https://go.p2hp.com/doc/tutorial/generics">泛型入门</a>
+      </td>
+      <td class="DocTable-cell">介绍 Go 中泛型的基础知识。使用泛型，您可以声明和使用编写为与调用代码提供的一组类型中的任何类型一起使用的函数或类型.</td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <a href="https://go.p2hp.com/doc/tutorial/fuzz">模糊测试入门</a>
+      </td>
+      <td class="DocTable-cell">介绍 Go 中模糊测试的基础知识。模糊测试可以生成输入到测试中，这些输入可以捕获您可能遗漏的边缘情况和安全问题.</td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <a href="https://go.p2hp.com/tour/">Go边学边练</a>
+      </td>
+      <td class="DocTable-cell">
+        Go 的交互式介绍：基本语法和数据结构；方法和接口；和 Go 的并发原语.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="index.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

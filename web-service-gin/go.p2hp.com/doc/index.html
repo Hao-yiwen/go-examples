@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../css/styles.css">
+
+  
+  
+  
+<script src="../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/">
+<meta name="og:title" content="Go中文文档 - The Go Programming Language">
+<title>Go中文文档 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>Go中文文档</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+
+
+
+
+
+<p>
+	Go 编程语言是一个开源项目，旨在提高程序员的工作效率.
+</p>
+
+<p>
+	Go 富有表现力、简洁、干净和高效。它的并发机制可以轻松编写程序，充分利用多核和联网机器，而其新颖的类型系统可以实现灵活和模块化的程序构建。Go 可以快速编译为机器代码，但具有垃圾收集的便利性和运行时反射的能力。它是一种快速、静态类型的编译语言，感觉就像是一种动态类型的解释型语言.
+</p>
+
+<div id="manual-nav"></div>
+
+<h2 id="getting-started">入门</h2>
+
+<h3 id="installing"><a href="install.html">安装 Go</a></h3>
+<p>
+介绍如何下载和安装 Go.
+</p>
+
+<h3 id="get-started-tutorial"><a href="https://go.p2hp.com/doc/tutorial/getting-started.html">教程:入门</a></h3>
+<p>
+	一个简短的 Hello, World 入门教程。了解一些关于 Go 代码、工具、包和模块的知识.
+</p>
+
+<h3 id="create-module-tutorial"><a href="https://go.p2hp.com/doc/tutorial/create-module.html">教程:创建模块</a></h3>
+<p>
+	介绍函数、错误处理、数组、映射、单元测试和编译的简短主题教程.
+</p>
+
+<h3 id="workspaces-tutorial"><a href="tutorial/workspaces.html">教程：多模块工作区入门</a></h3>
+<p>
+介绍在 Go 中创建和使用多模块工作区的基础知识.
+多模块工作区对于跨多个模块进行更改非常有用.
+</p>
+
+<h3 id="web-service-gin-tutorial"><a href="tutorial/web-service-gin.html">教程:使用 Go 和 Gin 开发 RESTful API</a></h3>
+<p>
+	介绍使用 Go 和 Gin Web 框架编写 RESTful Web 服务 API 的基础知识.
+</p>
+
+<h3 id="generics-tutorial"><a href="tutorial/generics.html">教程：泛型入门</a></h3>
+<p>
+使用泛型，可以声明和使用为使用调用代码提供的一组类型中的任何一组类型而编写的函数或类型.
+</p>
+
+<h3 id="fuzz-tutorial"><a href="tutorial/fuzz.html">教程：模糊测试入门 </a></h3>
+<p>
+模糊测试可以生成输入到测试中，这些输入可以捕获您可能遗漏的边缘情况和安全问题.
+</p>
+
+<h3 id="writing-web-applications"><a href="articles/wiki/index.html">编写Web应用程序</a></h3>
+
+<p>
+	构建一个简单的 Web 应用程序.
+</p>
+
+<h3 id="code"><a href="https://go.p2hp.com/doc/code.html">如何编写 Go 代码</a></h3>
+<p>
+本文档解释了如何在模块内开发一组简单的 Go 包，并展示如何使用<a href="https://go.p2hp.com/cmd/go/"><code>go</code>&nbsp;命令</a> 来构建和测试包.
+</p>
+
+<img class="gopher" src="../go.dev/doc/gopher/doc.png" alt=""/>
+
+<h3 id="go_tour"><a href="https://go.p2hp.com/tour/">学边学练</a></h3>
+<p>
+Go 的交互式介绍分为三个部分。第一部分涵盖基本语法和数据结构；第二部分讨论方法和接口；第三部分介绍了 Go 的并发原语。每个部分都以一些练习结束，这样您就可以练习所学。您可以<a href="https://go.p2hp.com/tour/">在线练习</a>或在本地安装：
+</p>
+<pre>
+$ go install golang.org/x/website/tour@latest
+</pre>
+<p>
+这将放置<code>tour</code>二进制文件在您的<a href="https://go.p2hp.com/cmd/go/#hdr-GOPATH_and_Modules">GOPATH</a>的<code>bin</code>目录中.
+</p>
+
+<h2 id="learning">使用和理解 Go</h2>
+
+<h3 id="effective_go"><a href="https://go.p2hp.com/doc/effective_go.html">Effective Go</a></h3>
+<p>
+一份文档，提供了编写清晰、惯用的 Go 代码的技巧。任何新的 Go 程序员都必须阅读。它扩充了学边学练和语言规范，两者都应该先阅读.
+</p>
+
+<h3 id="editors"><a href="editors.html">编辑器插件和 IDE</a></h3>
+<p>
+一个总结了常用编辑器插件和支持 Go 的 IDE 的文档.
+</p>
+
+<h3 id="diagnostics"><a href="diagnostics.html">诊断</a></h3>
+<p>
+	总结了在 Go 程序中诊断问题的工具和方法.
+</p>
+
+<h3 id="dependencies"><a href="modules/managing-dependencies.html">管理依赖</a></h3>
+<p>
+	当您的代码使用外部包时，这些包（作为模块分发）成为依赖项.
+</p>
+
+<h3 id="fuzzing"><a href="fuzz.html">模糊测试</a></h3>
+<p>
+	Go fuzzing 的主要文档页面.
+</p>
+
+<h3 id="data-access">访问数据库</h3>
+
+<h4 id="data-access-tutorial"><a href="tutorial/database-access.html">教程:访问关系数据库</a></h4>
+<p>
+介绍使用 Go 和<code>database/sql</code>标准库中的包访问关系数据库的基础知识.
+</p>
+
+<h4 id="accessing-databases"><a href="database/index.html">访问关系数据库</a></h4>
+<p>
+	Go 的数据访问功能概述.
+</p>
+
+<h4 id="open-handle"><a href="database/open-handle.html">打开数据库句柄</a></h4>
+<p>
+	您使用 Go 数据库句柄来执行数据库操作。打开带有数据库连接属性的句柄后，该句柄代表它代表您管理的连接池.
+</p>
+
+<h4 id="change-data"><a href="database/change-data.html">执行不返回数据的 SQL 语句</a></h4>
+<p>
+对于SQL操作可能更改数据库，包括SQL <code>INSERT</code>, <code>UPDATE</code>, 和 <code>DELETE</code>，请使用<code>Exec</code>的方法.
+</p>
+
+<h4 id="querying"><a href="database/querying.html">查询数据</a></h4>
+<p>
+对于<code>SELECT</code>从查询返回数据的语句，使用<code>Query</code> 或 <code>QueryRow</code>方法.
+</p>
+
+<h4 id="prepared-statements"><a href="database/prepared-statements.html">使用预处理语句</a></h4>
+<p>
+	定义预处理的语句以供重复使用可以避免每次代码执行数据库操作时重新创建语句的开销，从而帮助您的代码运行得更快一些.
+</p>
+
+<h4 id="execute-transactions"><a href="database/execute-transactions.html">执行事务</a></h4>
+<p>
+<code>sql.Tx</code>导出表示特定于事务的语义的方法，包括<code>Commit</code>和<code>Rollback</code>，以及用于执行常见数据库操作的方法.
+</p>
+
+<h4 id="cancel-operations"><a href="database/cancel-operations.html">取消正在进行的数据库操作</a></h4>
+<p>
+使用 <a href="https://pkg.go.dev/context#Context">context.Context</a>，您可以让应用程序的函数调用和服务提前停止工作，并在不再需要处理时返回错误.
+</p>
+
+<h4 id="manage-connections"><a href="database/manage-connections.html">管理连接</a></h4>
+<p>
+	对于某些高级程序，您可能需要调整连接池参数或明确处理连接.
+</p>
+
+<h4 id="sql-injection"><a href="database/sql-injection.html">避免SQL注入风险</a></h4>
+<p>
+您可以通过提供 SQL 参数值作为<code>sql</code>包函数参数 来避免 SQL 注入风险.
+</p>
+
+<h3 id="developing-modules">开发模块</h3>
+
+<h4 id="modules-develop-publish"><a href="modules/developing.html">开发和发布模块</a></h4>
+<p>
+	您可以将相关的包收集到模块中，然后发布模块供其他开发人员使用。本主题概述了开发和发布模块.
+</p>
+
+<h4 id="modules-release-workflow"><a href="modules/release-workflow.html">模块发布和版本控制工作流</a></h4>
+<p>
+	当您开发供其他开发人员使用的模块时，您可以遵循有助于确保为使用该模块的开发人员提供可靠、一致的体验的工作流程。本主题描述了该工作流中的高级步骤.
+</p>
+
+<h4 id="modules-managing-source"><a href="modules/managing-source.html">管理模块源</a></h4>
+<p>
+	当您开发模块以供其他人使用时，您可以通过遵循本主题中描述的存储库约定来帮助确保其他开发人员更容易使用您的模块.
+</p>
+
+<h4 id="modules-major-version"><a href="modules/major-version.html">开发主要版本更新</a></h4>
+<p>
+主要版本更新可能会对您模块的用户造成很大的破坏，因为它包括重大更改并代表一个新模块。在此主题中了解更多信息.
+</p>
+
+<h4 id="modules-publishing"><a href="modules/publishing.html">发布模块</a></h4>
+<p>
+如果要使模块可供其他开发人员使用，请发布该模块，以便对 Go 工具可见。发布模块后，导入其包的开发人员将能够通过运行诸如<code>go get</code>之类的命令来解决对模块的依赖性.
+</p>
+
+<h4 id="modules-version-numbers"><a href="modules/version-numbers.html">模块版本编号</a></h4>
+<p>
+	模块的开发人员使用模块版本号的每一部分来表示版本的稳定性和向后兼容性。对于每个新版本，模块的版本号特别反映了自上一个版本以来模块更改的性质.
+</p>
+
+<h3 id="faq"><a href="faq.html">常见问题 (FAQ)</a></h3>
+<p>
+	关于 Go 的常见问题的解答.
+</p>
+
+<h2 id="references">参考</h2>
+
+<h3 id="pkg"><a href="https://go.p2hp.com/pkg/">包文档</a></h3>
+<p>
+	Go 标准库的文档.
+</p>
+
+<h3 id="cmd"><a href="cmd.html">命令文档</a></h3>
+<p>
+	Go 工具的文档.
+</p>
+
+<h3 id="spec"><a href="https://go.p2hp.com/ref/spec">语言规范(Go语法手册)</a></h3>
+<p>
+	官方 Go 语言规范.
+</p>
+
+<h3 id="mod"><a href="https://go.p2hp.com/ref/mod">Go 模块参考</a></h3>
+<p>
+	Go 依赖管理系统的详细参考手册.
+</p>
+
+<h3><a href="modules/gomod-ref.html">go.mod文件参考</a></h3>
+<p>
+	go.mod 文件中包含的指令的参考.
+</p>
+
+<h3 id="go_mem"><a href="https://go.p2hp.com/ref/mem">Go内存模型</a></h3>
+<p>
+一个文档，它指定了在哪个条件下可以保证在一个 goroutine 中读取变量可以观察到在不同 goroutine 中写入相同变量所产生的值. 
+</p>
+
+<h3 id="contributing"><a href="https://go.p2hp.com/doc/contribute">贡献指南</a></h3>
+<p>为Go做贡献.</p>
+
+<h3 id="release"><a href="https://go.p2hp.com/doc/devel/release.html">发布历史</a></h3>
+<p>Go 版本之间更改的摘要.</p>
+
+<h2 id="codewalks">代码漫步</h2>
+<p>
+	Go 程序的导览.
+</p>
+<ul>
+<li><a href="codewalk/functions.html">Go 中的头等函数</a></li>
+<li><a href="codewalk/markov.html">生成任意文本：马尔可夫链算法</a></li>
+<li><a href="codewalk/sharemem.html">通过通信共享内存</a></li>
+</ul>
+
+<h2 id="blog">来自 Go 博客</h2>
+<p> <a href="https://go.p2hp.com/blog/">Go 项目的官方博客</a>，包含 Go 团队和嘉宾的新闻和深度文章</p> 
+
+<h4>语言</h4>
+<ul>
+<li><a href="https://go.p2hp.com/blog/json-rpc-tale-of-interfaces">JSON-RPC: 接口的故事</a></li>
+<li><a href="https://go.p2hp.com/blog/gos-declaration-syntax">Go的声明语法</a></li>
+<li><a href="https://go.p2hp.com/blog/defer-panic-and-recover">Defer, Panic, 和 Recover</a></li>
+<li><a href="https://go.p2hp.com/blog/go-concurrency-patterns-timing-out-and">Go并发模式：超时，继续</a></li>
+<li><a href="https://go.p2hp.com/blog/go-slices-usage-and-internals">Go Slices:用法和内部结构</a></li>
+<li><a href="https://go.p2hp.com/blog/gif-decoder-exercise-in-go-interfaces">GIF 解码器：Go 接口练习</a></li>
+<li><a href="https://go.p2hp.com/blog/error-handling-and-go">错误处理与Go</a></li>
+<li><a href="https://go.p2hp.com/blog/organizing-go-code">组织 Go 代码</a></li>
+</ul>
+
+<h4>包</h4>
+<ul>
+<li><a href="https://go.p2hp.com/blog/json-and-go">JSON 和 Go</a> - 使用 <a href="https://go.p2hp.com/pkg/encoding/json/">json</a> 包.</li>
+<li><a href="https://go.p2hp.com/blog/gobs-of-data">Gobs of data</a> -  <a href="https://go.p2hp.com/pkg/encoding/gob/">gob</a> 包的设计和使用.</li>
+<li><a href="https://go.p2hp.com/blog/laws-of-reflection">反射定律</a> - <a href="https://go.p2hp.com/pkg/reflect/">反射</a>包的基本原理</li>
+<li><a href="https://go.p2hp.com/blog/go-image-package">Go图像(image)包</a> -<a href="https://go.p2hp.com/pkg/image/">图像</a> 包的基本原理..</li>
+<li><a href="https://go.p2hp.com/blog/go-imagedraw-package">Go image/draw 包</a> -  <a href="https://go.p2hp.com/pkg/image/draw/">image/draw</a> 包基本原理.</li>
+</ul>
+
+<h4>模块</h4>
+<ul>
+<li><a href="https://go.p2hp.com/blog/using-go-modules">使用 Go 模块</a> - 在一个简单的项目中使用模块的介绍.</li>
+<li><a href="https://go.p2hp.com/blog/migrating-to-go-modules">迁移到 Go 模块</a> - 将现有项目转换为使用模块.</li>
+<li><a href="https://go.p2hp.com/blog/publishing-go-modules">发布 Go 模块</a> - 如何向其他人提供新版本的模块.</li>
+<li><a href="https://go.p2hp.com/blog/v2-go-modules">Go 模块：v2 及更高版本</a> - 创建和发布主要版本 2 及更高版本.</li>
+<li><a href="https://go.p2hp.com/blog/module-compatibility">保持您的模块兼容</a> - 如何使您的模块与之前的次要/补丁版本兼容.</li>
+</ul>
+
+<h4>工具</h4>
+<ul>
+<li><a href="articles/go_command.html">关于 Go 命令-</a> - 我们为什么编写它，它是什么，它不是什么，以及如何使用它.</li>
+<li><a href="comment.html">Go 文档注释</a> - 编写良好的程序文档</li>
+<li><a href="gdb.html">使用 GDB 调试 Go 代码</a></li>
+<li><a href="articles/race_detector.html">数据竞争检测器</a> - 数据竞争检测器手册.</li>
+<li><a href="asm.html">Go 汇编程序快速指南</a> -  Go 使用的汇编器的介绍.</li>
+<li><a href="https://go.p2hp.com/blog/c-go-cgo">C? Go? Cgo!</a> -  使用<a href="https://go.p2hp.com/cmd/cgo/">cgo</a>链接 C 代码.</li>
+<li><a href="https://go.p2hp.com/blog/profiling-go-programs">分析 Go 程序</a></li>
+<li><a href="https://go.p2hp.com/blog/race-detector">介绍 Go Race Detector</a> - 数据竞争检测器.</li>
+</ul>
+
+<h2 id="wiki">Wiki</h2>
+<p>
+<a href="https://go.p2hp.com/wiki">Go Wiki</a>，由Go社区维护，包括有关Go语言，工具和其他资源的文章.
+</p>
+
+<p id="learn_more">
+有关 更多 Go 学习资源，请参阅<a href="https://go.p2hp.com/wiki">Wiki</a> 上的<a href="https://go.p2hp.com/wiki/Learn">学习 </a>页面。
+</p>
+
+<h2 id="talks">演讲</h2>
+
+<img class="gopher" src="../go.dev/doc/gopher/talks.png" alt=""/>
+
+<h3 id="video_tour_of_go"><a href="https://go.p2hp.com/gotour">一个Go视频指南</a></h3>
+<p>
+	使 Go 变得快速、有趣和高效的三件事：接口、反射和并发。构建一个玩具网络爬虫来演示这些.
+</p>
+
+<h3 id="go_code_that_grows"><a href="https://www.bilibili.com/video/BV1uU4y1K78b/">优雅成长的代码</a></h3>
+<p>
+	Go 的主要设计目标之一是代码适应性；应该很容易采用简单的设计并以干净自然的方式构建它。在本次演讲中，Andrew Gerrand 描述了一个简单的“聊天轮盘”服务器，它匹配传入的 TCP 连接对，然后使用 Go 的并发机制、接口和标准库来扩展它的 Web 界面和其他功能。虽然程序的功能发生了巨大的变化，但 Go 的灵活性随着它的增长而保留了原始设计.
+</p>
+
+<h3 id="go_concurrency_patterns"><a href="https://www.bilibili.com/video/BV1SQ4y1a7RX/">Go 并发模式</a></h3>
+<p>
+	并发是设计高性能网络服务的关键。Go 的并发原语（goroutine 和通道）提供了一种简单有效的方式来表达并发执行。在本次演讲中，我们将看到如何使用简单的 Go 代码优雅地解决棘手的并发问题.
+</p>
+
+<h3 id="advanced_go_concurrency_patterns"><a href="https://www.bilibili.com/video/BV1tM4y1A7N6/">高级 Go 并发模式</a></h3>
+<p>
+	本演讲扩展了Go 并发模式演讲，以深入了解 Go 的并发原语.
+</p>
+
+<h4 id="talks_more">更多</h4>
+<p>
+请参阅<a href="https://go.p2hp.com/talks">Go Talks site</a> 站点和<a href="https://go.p2hp.com/wiki/GoTalks">wiki 页面</a>以获取更多 Go 讲座.
+</p>
+
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="index.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../go.dev/js/jquery.js"></script>
+  <script src="../go.dev/js/carousels.js"></script>
+  <script src="../go.dev/js/searchBox.js"></script>
+  <script src="../go.dev/js/misc.js"></script>
+  <script src="../go.dev/js/hats.js"></script>
+  <script src="../go.dev/js/playground.js"></script>
+  <script src="../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

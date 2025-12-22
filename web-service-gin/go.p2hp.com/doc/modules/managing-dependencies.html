@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/modules/managing-dependencies">
+<meta name="og:title" content="管理依赖项 - The Go Programming Language">
+<title>管理依赖项 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>管理依赖项</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+<p>当您的代码使用外部包时，这些包（作为模块分发）成为依赖项。随着时间的推移，您可能需要升级或更换它们。Go 提供了依赖管理工具，可帮助您在合并外部依赖项时确保 Go 应用程序的安全.</p>
+<p>本主题介绍如何执行任务以管理您在代码中采用的依赖项。您可以使用 Go 工具执行其中的大部分操作。本主题还介绍了如何执行其他一些您可能会觉得有用的依赖相关任务.</p>
+<p><strong>另请参见</strong></p>
+<ul>
+<li>如果您不熟悉将依赖项作为模块使用，请查看 <a href="../tutorial/getting-started.html">入门教程</a> 以获得简要介绍。</li>
+<li>使用<code>go</code>命令管理依赖项有助于确保您的需求保持一致，并且您的 go.mod 文件的内容是有效的。有关命令的参考，请参阅<a href="https://go.p2hp.com/cmd/go/">Command go</a>。您还可以通过键入<code>go help</code>
+<em>command-name</em> 从命令行获取帮助，如<code>go help mod tidy</code>.</li>
+<li>用于更改依赖项的 Go 命令会编辑 go.mod 文件。有关文件内容的详细信息，请参阅 <a href="gomod-ref.html">go.mod文件参考</a>.</li>
+<li>让您的编辑器或 IDE 了解 Go 模块可以使管理它们的工作更轻松。有关支持 Go 的编辑器的更多信息，请参阅<a href="../editors.html">编辑器插件和 IDE</a>。</li>
+<li>本主题不介绍如何开发、发布模块和版本化模块供其他人使用。有关此内容的详细信息，请参阅 <a href="developing.html">开发和发布模块</a>。</li>
+</ul>
+<h2 id="workflow">使用和管理依赖项的工作流程</h2>
+<p>您可以通过 Go 工具获取和使用有用的包。在 <a href="https://pkg.go.dev" rel="noreferrer" target="_blank">pkg.go.dev</a> 上，您可以搜索您可能觉得有用的包，然后使用<code>go</code> 命令将这些包导入您自己的代码中以调用它们的函数。</p>
+<p>下面列出了最常见的依赖项管理步骤。有关每个选项的详细信息，请参阅本主题中的部分。</p>
+<ol>
+<li>在<a href="https://pkg.go.dev" rel="noreferrer" target="_blank">pkg.go.dev</a>上<a href="managing-dependencies.html#locating_packages">找到有用的包</a> .</li>
+<li>在你的代码中 <a href="managing-dependencies.html#locating_packages">导入所需的包</a>.</li>
+<li>将您的代码添加到模块以进行依赖跟踪（如果它尚未在模块中）。请参阅<a href="managing-dependencies.html#enable_tracking">启用依赖项跟踪</a></li>
+<li><a href="managing-dependencies.html#adding_dependency">添加外部包作为依赖项</a>，以便您可以管理它们。</li>
+<li>随着时间的推移，根据需要<a href="managing-dependencies.html#upgrading">升级或降级依赖版本</a>。</li>
+</ol>
+<h2 id="modules">将依赖项作为模块管理</h2>
+<p>在 Go 中，将依赖项作为包含导入的包的模块进行管理。此过程由以下支持:</p>
+<ul>
+<li>用于发布模块和检索其代码的 <strong>分散式系统</strong> 。开发人员使他们的模块可供其他开发人员从他们自己的存储库中使用并使用版本号发布.</li>
+<li>一个<strong>包搜索引擎</strong>和文档浏览器 (pkg.go.dev)，您可以在其中找到模块。请参阅<a href="managing-dependencies.html#locating_packages">查找和导入有用的包</a>.</li>
+<li>一个模块<strong>版本编号约定</strong>，可帮助您了解模块的稳定性和向后兼容性保证。请参阅<a href="version-numbers.html">模块版本编号</a>.</li>
+<li><strong>Go 工具</strong>可以让您更轻松地管理依赖项，包括获取模块的源代码、升级等。有关更多信息，请参阅本主题的部分.</li>
+</ul>
+<h2 id="locating_packages">定位和导入有用的包</h2>
+<p>您可以搜索 <a href="https://pkg.go.dev" rel="noreferrer" target="_blank">pkg.go.dev</a>，以查找具有您可能认为有用的函数的包.</p>
+<p>找到要在代码中使用的包后，在页面顶部找到包路径，然后单击复制路径按钮将路径复制到剪贴板。在您自己的代码中，将路径粘贴到导入语句中，如下例所示:</p>
+<pre><code>import &quot;rsc.io/quote&quot;
+</code></pre>
+<p>在您的代码导入包后，启用依赖项跟踪并获取包的代码进行编译。有关更多信息，请参阅 <a href="managing-dependencies.html#enable_tracking">在代码中启用依赖项跟踪</a> 和 <a href="managing-dependencies.html#adding_dependency">添加依赖项</a>.</p>
+<h2 id="enable_tracking">在代码中启用依赖项跟踪</h2>
+<p>要跟踪和管理您添加的依赖项，您首先要将代码放入其自己的模块中。这会在源代码树的根目录创建一个 go.mod 文件。您添加的依赖项将列在该文件中。</p>
+<p>要将您的代码添加到它自己的模块中，请使用 <a href="https://go.p2hp.com/ref/mod#go-mod-init"><code>go mod init</code> 命令</a>。例如，从命令行切换到代码的根目录，然后按照以下示例运行命令：</p>
+<pre><code>$ go mod init example/mymodule
+</code></pre>
+<p>该<code>go mod init</code>命令的参数是您的模块的模块路径。如果可能，模块路径应该是源代码的存储库位置</p>
+<p>如果一开始您不知道模块的最终存储库位置，请使用安全的替代品。这可能是您拥有的域的名称或您控制的另一个名称（例如您的公司名称），以及来自模块名称或源目录的路径。有关更多信息，请参阅 <a href="managing-dependencies.html#naming_module">命名模块</a>。</p>
+<p>当您使用 Go 工具管理依赖项时，这些工具会更新 go.mod 文件，以便它维护您的依赖项的当前列表。</p>
+<p>添加依赖项时，Go 工具还会创建一个 go.sum 文件，其中包含您所依赖的模块的校验和。Go 使用它来验证下载的模块文件的完整性，特别是对于在您的项目上工作的其他开发人员。</p>
+<p>在存储库中包含 go.mod 和 go.sum 文件和你的代码。</p>
+<p>有关更多信息，请参阅 <a href="gomod-ref.html">go.mod 参考</a>.</p>
+<h2 id="naming_module">命名模块</h2>
+<p>当您运行<code>go mod init</code>创建用于跟踪依赖项的模块时，您指定一个模块路径作为模块的名称。模块路径成为模块中包的导入路径前缀。一定要指定一个不会与其他模块的模块路径冲突的模块路径。</p>
+<p>至少，一个模块路径只需要表明它的来源，例如公司或作者或所有者名称。但是路径也可能更能描述模块是什么或做什么。</p>
+<p>模块路径通常采用以下形式:</p>
+<pre><code>&lt;prefix&gt;/&lt;descriptive-text&gt;
+</code></pre>
+<ul>
+<li>
+<p><em>前缀</em> 通常是部分描述模块的字符串，例如描述其来源的字符串。这可能是：</p>
+<ul>
+<li>
+<p>Go 工具可以在其中找到模块源代码的存储库的位置（如果您要发布模块，则需要）.</p>
+<p>例如，它可能是 <code>github.com/&lt;project-name&gt;/</code>.</p>
+<p>如果您认为您可能会发布模块供其他人使用，请使用此最佳实践。有关发布的更多信息，请参阅 <a href="developing.html">开发和发布模块</a>.</p>
+</li>
+<li>
+<p>一个你控制的名字.</p>
+<p>如果您不使用存储库名称，请务必选择一个您确信不会被其他人使用的前缀。一个不错的选择是您公司的名称。避免常用字词，如<code>widgets</code>, <code>utilities</code>, 或
+<code>app</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>对于 <em>描述性文本</em> ，一个不错的选择是项目名称。请记住，包名称承担了描述功能的大部分权重。模块路径为这些包名称创建一个命名空间.</p>
+</li>
+</ul>
+<p><strong>保留的模块路径前缀</strong></p>
+<p>Go 保证以下字符串不会在包名称中使用.</p>
+<ul>
+<li>
+<p><code>test</code> &ndash; 您可以将 <code>test</code> 用作模块的模块路径前缀，该模块的代码设计为在另一个模块中的本地测试函数.</p>
+<p>对作为测试的一部分创建的模块使用<code>test</code>路径前缀。例如，您的测试本身可能会运行 <code>go mod init test</code> ，然后以某种特定方式设置该模块，以便使用 Go 源代码分析工具进行测试.</p>
+</li>
+<li>
+<p><code>example</code> &ndash; 在某些 Go 文档中用作模块路径前缀，例如在创建模块以跟踪依赖关系的教程中.</p>
+<p>请注意，Go 文档还使用 <code>example.com</code> 来说明示例可能是已发布的模块.</p>
+</li>
+</ul>
+<h2 id="adding_dependency">添加依赖项</h2>
+<p>从已发布的模块中导入包后，您可以使用<a href="https://go.p2hp.com/cmd/go/#hdr-Add_dependencies_to_current_module_and_install_them"><code>go get</code>
+命令</a> 将该模块添加为依赖项进行管理.</p>
+<p>该命令执行以下操作:</p>
+<ul>
+<li>
+<p>如果需要，它会将 <code>require</code> 指令添加到 go.mod 文件中，用于构建命令行上指定的包所需的模块。<code>require</code> 指令跟踪你的模块所依赖的模块的最低版本。有关详细信息，请参阅 <a href="gomod-ref.html">go.mod 参考</a>.</p>
+</li>
+<li>
+<p>如果需要，它会下载模块源代码，以便您可以编译依赖它们的包。它可以从像 proxy.golang.org 这样的模块代理或直接从版本控制存储库下载模块。源码缓存在本地。</p>
+<p>您可以设置 Go 工具下载模块的位置。有关更多信息，请参阅 <a href="managing-dependencies.html#proxy_server">指定模块代理服务器</a>。</p>
+</li>
+</ul>
+<p>下面介绍几个例子.</p>
+<ul>
+<li>
+<p>要为模块中的包添加所有依赖项，请运行如下命令（“.”指当前目录中的包）:</p>
+<pre><code>$ go get .
+</code></pre>
+</li>
+<li>
+<p>要添加特定依赖项，请将其模块路径指定为命令的参数.</p>
+<pre><code>$ go get example.com/theirmodule
+</code></pre>
+</li>
+</ul>
+<p>该命令还验证它下载的每个模块。这确保了它从模块发布时起没有变化。如果模块在发布后发生了更改——例如，开发人员更改了提交的内容——Go 工具将出现安全错误。此身份验证检查可保护您免受可能已被篡改的模块的侵害.</p>
+<h2 id="getting_version">获取特定的依赖版本</h2>
+<p>您可以通过在<code>go get</code>命令中指定依赖模块的版本来获取特定版本的依赖模块。该命令会更新go.mod 文件中的 <code>require</code>指令（尽管您也可以手动更新）.</p>
+<p>如果出现以下情况，您可能想要这样做:</p>
+<ul>
+<li>您想获得一个特定的预发布版本的模块来试用.</li>
+<li>您发现当前需要的版本不适合您，因此您想获得一个您知道可以依赖的版本.</li>
+<li>您想要升级或降级您已经需要的模块.</li>
+</ul>
+<p>以下是使用<a href="https://go.p2hp.com/ref/mod#go-get"><code>go get</code>
+命令</a>的示例:</p>
+<ul>
+<li>
+<p>要获得特定编号的版本，请在模块路径后面加上 @ 符号，后跟所需的版本:</p>
+<pre><code>$ go get example.com/theirmodule@v1.3.4
+</code></pre>
+</li>
+<li>
+<p>要获取最新版本，请在模块路径后面附加<code>@latest</code>:</p>
+<pre><code>$ go get example.com/theirmodule@latest
+</code></pre>
+</li>
+</ul>
+<p>以下 go.mod 文件 <code>require</code> 指令示例（参见 <a href="gomod-ref.html">go.mod
+参考</a>了解更多)说明了如何要求特定的版本号:</p>
+<pre><code>require example.com/theirmodule v1.3.4
+</code></pre>
+<h2 id="discovering_updates">发现可用更新</h2>
+<p>您可以检查当前模块中的依赖项是否有了新版本。使用<code>go list</code> 命令显示模块的依赖项列表，以及该模块可用的最新版本。一旦你发现了可用的更新，你可以用你的代码尝试它们，来决定是否升级到新版本.</p>
+<p>有关<code>go list</code> 命令的更多信息，请参阅<a href="https://go.p2hp.com/ref/mod#go-list-m"><code>go list -m</code></a>.</p>
+<p>这里有几个例子.</p>
+<ul>
+<li>
+<p>列出作为当前模块依赖项的所有模块，以及每个模块可用的最新版本:</p>
+<pre><code>$ go list -m -u all
+</code></pre>
+</li>
+<li>
+<p>显示可用于特定模块的最新版本:</p>
+<pre><code>$ go list -m -u example.com/theirmodule
+</code></pre>
+</li>
+</ul>
+<h2 id="upgrading">升级或降级依赖项</h2>
+<p>您可以使用 Go 工具发现可用版本，然后添加其他版本作为依赖项，从而升级或降级依赖项模块.</p>
+<ol>
+<li>
+<p>要发现新版本，请使用 <code>go list</code> 命令，如<a href="managing-dependencies.html#discovering_updates">发现可用更新</a>中所述.</p>
+</li>
+<li>
+<p>若要将特定版本添加为依赖项，请使用  <code>go get</code>  命令，如<a href="managing-dependencies.html#getting_version">获取特定依赖项版本</a>中所述。</p>
+</li>
+</ol>
+<h2 id="synchronizing">同步代码的依赖项</h2>
+<p>您可以确保管理所有代码导入包的依赖项，同时删除不再导入的包的依赖项.</p>
+<p>当您对代码和依赖项进行更改时，这可能很有用，可能会创建一个已管理依赖项和下载模块的集合，这些依赖项和下载的模块不再与代码中导入的包特别需要的集合匹配.</p>
+<p>要保持已管理的依赖集整洁，请使用 <code>go mod tidy</code> 命令。使用您的代码中导入的一组包，此命令编辑您的 go.mod 文件以添加必要但缺少的模块。它还删除了未提供任何相关包的未使用模块。</p>
+<p>该命令没有参数，除了一个标志 -v，它打印有关已删除模块的信息。</p>
+<pre><code>$ go mod tidy
+</code></pre>
+<h2 id="unpublished">针对未发布的模块代码进行开发和测试</h2>
+<p>您可以指定您的代码应使用可能未发布的依赖模块。这些模块的代码可能在它们各自的存储库中，在这些存储库的一个分支（fork）中，或者在具有使用它们的当前模块的驱动器上。</p>
+<p>您可能希望在以下情况下执行此操作:</p>
+<ul>
+<li>您想对外部模块的代码进行自己的更改，例如在forking和/或克隆它之后。例如，您可能想要准备对模块进行修复，然后将其作为拉取请求发送给模块的开发人员。</li>
+<li>您正在构建一个新模块并且尚未发布它，因此它在<code>go get</code>命令可以访问它的存储库上不可用.</li>
+</ul>
+<h3 id="local_directory">在本地目录中Requiring模块代码</h3>
+<p>您可以指定所需模块的代码与需要它的代码位于同一本地驱动器上。在以下情况下，您可能会发现这很有用:</p>
+<ul>
+<li>开发自己的单独模块并希望从当前模块进行测试.</li>
+<li>修复外部模块中的问题或向外部模块添加功能，并希望从当前模块进行测试。（请注意，您也可以从其存储库的自己的fork中require外部模块。有关详细信息，请参阅<a href="managing-dependencies.html#external_fork">从您自己的存储库fork中Requiring外部模块代码</a>。）</li>
+</ul>
+<p>若要告诉 Go 命令使用模块代码的本地副本,请使用 go.mod 文件中的 <code>replace</code> 指令替换 <code>require</code> 指令中给定的模块路径.有关指令的更多信息，请参阅 <a href="gomod-ref.html">go.mod 参考</a>.</p>
+<p>在以下 go.mod 文件示例中，当前模块需要外部模块 <code>example.com/theirmodule</code>，并使用不存在的版本号（<code>v0.0.0-unpublished</code>）来确保替换正常工作。然后，<code>replace</code> 指令将原始模块路径替换为<code>../theirmodule</code>，与当前模块的目录处于同一级别的目录.</p>
+<pre><code>module example.com/mymodule
+
+go 1.16
+
+require example.com/theirmodule v0.0.0-unpublished
+
+replace example.com/theirmodule v0.0.0-unpublished =&gt; ../theirmodule
+</code></pre>
+<p>设置 <code>require</code>/<code>replace</code> 对时，请使用<a href="https://go.p2hp.com/ref/mod#go-mod-edit"><code>go mod edit</code></a> 和 <a href="https://go.p2hp.com/ref/mod#go-get"><code>go get</code></a>命令，以确保文件描述的要求保持一致:</p>
+<pre><code>$ go mod edit -replace=example.com/theirmodule@v0.0.0-unpublished=../theirmodule
+$ go get -d example.com/theirmodule@v0.0.0-unpublished
+</code></pre>
+<p><strong>注意:</strong> 使用 replace 指令时，Go 工具不会对外部模块进行身份验证，如<a href="managing-dependencies.html#adding_dependency">添加依赖项</a>中所述.</p>
+<p>有关版本号的更多信息，请参阅<a href="version-numbers.html">模块版本编号</a>.</p>
+<h3 id="external_fork">Requiring来自您自己的存储库fork的外部模块代码</h3>
+<p>当您对外部模块的存储库进行了 fork （例如修复模块代码中的问题或添加功能）时，您可以让 Go 工具将您的 fork 用于模块的源代码。这对于测试您自己的代码中的更改非常有用。（请注意，您还可以要求将模块代码与需要它的模块一起放在本地驱动器上的目录中。有关详细信息，请参阅<a href="managing-dependencies.html#local_directory">在本地目录中Requiring模块代码</a>。）</p>
+<p>为此，请在 go.mod 文件中使用 <code>replace</code> 指令将外部模块的原始模块路径替换为你存储库中fork的路径。这会指示 Go 工具在编译时使用替换路径（fork的位置），例如，同时允许您保留<code>import</code>原始模块路径中的语句不变。</p>
+<p>有关 <code>replace</code> 指令的详细信息，请参阅 <a href="gomod-ref.html">go.mod 文件参考</a>。</p>
+<p>在下面的 go.mod 文件示例中，当前模块需要外部模块 <code>example.com/theirmodule</code>。然后，<code>replace</code> 指令将原始模块路径替换为 <code>example.com/myfork/theirmodule</code>，这是模块自己的存储库的fork。</p>
+<pre><code>module example.com/mymodule
+
+go 1.16
+
+require example.com/theirmodule v1.2.3
+
+replace example.com/theirmodule v1.2.3 =&gt; example.com/myfork/theirmodule v1.2.3-fixed
+</code></pre>
+<p>设置<code>require</code>/<code>replace</code>对时，使用 Go 工具命令确保文件描述的需求保持一致。使用 <a href="https://go.p2hp.com/ref/mod#go-list-m"><code>go list</code></a> 命令获取当前模块正在使用的版本。然后使用<a href="https://go.p2hp.com/ref/mod#go-mod-edit"><code>go mod edit</code></a>命令将需要的模块替换为fork：</p>
+<pre><code>$ go list -m example.com/theirmodule
+example.com/theirmodule v1.2.3
+$ go mod edit -replace=example.com/theirmodule@v1.2.3=example.com/myfork/theirmodule@v1.2.3-fixed
+</code></pre>
+<p><strong>注意:</strong> 使用 <code>replace</code> 指令时，Go 工具不会对外部模块进行身份验证，如<a href="managing-dependencies.html#adding_dependency">添加依赖项</a>中所述。</p>
+<p>有关版本号的更多信息，请参阅<a href="version-numbers.html">模块版本编号 </a>.</p>
+<h2 id="repo_identifier">使用存储库标识符获取特定提交</h2>
+<p>您可以使用 <code>go get</code> 命令从模块存储库中的特定提交添加模块的未发布代码。</p>
+<p>为此，请使用 <code>go get</code> 命令，使用 <code>@</code> 符号指定所需的代码。使用  <code>go get</code> 时，该命令将向 go.mod 文件添加一个 <code>require</code> 指令，该指令需要外部模块，使用基于提交详细信息的伪版本号。</p>
+<p>以下示例提供了一些说明。它们基于一个模块，其源代码位于 git 存储库中。</p>
+<ul>
+<li>
+<p>要在特定提交处获取模块，请附加 @<em>commithash</em>:</p>
+<pre><code>$ go get example.com/theirmodule@4cf76c2
+</code></pre>
+</li>
+<li>
+<p>要在特定分支获取模块，请附加 @<em>branchname</em>:</p>
+<pre><code>$ go get example.com/theirmodule@bugfixes
+</code></pre>
+</li>
+</ul>
+<h2 id="removing_dependency">删除依赖项</h2>
+<p>当您的代码不再使用模块中的任何包时，您可以停止将该模块作为依赖项进行跟踪。</p>
+<p>要停止跟踪所有未使用的模块，请运行<a href="https://go.p2hp.com/ref/mod#go-mod-tidy"><code>go mod tidy</code>
+命令</a> 。此命令还可能添加在模块中构建包所需的缺失依赖项。</p>
+<pre><code>$ go mod tidy
+</code></pre>
+<p>要删除特定依赖项，请使用<a href="https://go.p2hp.com/ref/mod#go-get"><code>go get</code>
+命令</a>，指定模块的模块路径并附加 <code>@none</code>，如下例所示：</p>
+<pre><code>$ go get example.com/theirmodule@none
+</code></pre>
+<p><code>go get</code> 命令还将降级或删除依赖于已删除模块的其他依赖项。</p>
+<h2 id="proxy_server">指定模块代理服务器</h2>
+<p>当您使用 Go 工具处理模块时，这些工具默认从 proxy.golang.org（一个公共的 Google 运行的模块镜像）或直接从模块的存储库下载模块。您可以指定 Go 工具可以使用另一个代理服务器来下载和验证模块。</p>
+<p>您可能想要这样做如果您（或您的团队）已经设置或选择了您想要使用不同的模块代理服务器。例如，有些人设置了模块代理服务器，以便更好地控制依赖项的使用方式。</p>
+<p>要为 Go 工具指定另一个模块代理服务器，请将 <code>GOPROXY</code> 环境变量设置为一个或多个服务器的 URL。Go 工具将按照您指定的顺序尝试每个 URL。默认情况下，首先 <code>GOPROXY</code>指定一个公共的 Google 运行模块代理，然后从模块的存储库直接下载（在其模块路径中指定）：</p>
+<pre><code>GOPROXY=&quot;https://proxy.golang.org,direct&quot;
+</code></pre>
+<p>有关<code>GOPROXY</code>环境变量的更多信息，包括支持其他行为的值，请参阅<a href="https://go.p2hp.com/cmd/go/#hdr-Module_downloading_and_verification"><code>go</code> 命令参考</a>。</p>
+<p>您可以将变量设置为其他模块代理服务器的 URL，用逗号或管道分隔 URL。</p>
+<ul>
+<li>
+<p>使用逗号时，Go 工具仅在当前 URL 返回 HTTP 404 或 410 时才会尝试列表中的下一个 URL。</p>
+<pre><code>GOPROXY=&quot;https://proxy.example.com,https://proxy2.example.com&quot;
+</code></pre>
+</li>
+<li>
+<p>当您使用管道时，Go 工具将尝试列表中的下一个 URL，而不管 HTTP 错误代码如何。</p>
+<pre><code>GOPROXY=&quot;https://proxy.example.com|https://proxy2.example.com&quot;
+</code></pre>
+</li>
+</ul>
+<p>Go 模块经常在不是公网上的版本控制服务器和模块代理上开发和分发。您可以设置 <code>GOPRIVATE</code>环境变量。您可以设置<code>GOPRIVATE</code>环境变量来配置<code>go</code> 命令以从私有源下载和构建模块。然后 go 命令可以从私有源下载和构建模块。</p>
+<p><code>GOPRIVATE</code> 或 <code>GONOPROXY</code> 环境变量可以设置为与模块前缀匹配的 glob 模式列表，这些模块前缀是私有的，不应从任何代理请求。例如：</p>
+<pre><code>GOPRIVATE=*.corp.example.com,*.research.example.com
+</code></pre>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="managing-dependencies.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

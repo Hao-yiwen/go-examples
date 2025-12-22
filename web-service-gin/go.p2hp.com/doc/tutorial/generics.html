@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/tutorial/generics">
+<meta name="og:title" content="教程：泛型入门 - The Go Programming Language">
+<title>教程：泛型入门 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>教程：泛型入门</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+<p>本教程介绍 Go 中泛型的基础知识。使用泛型，可以声明和使用为与调用代码提供的一组类型中的任何一组类型一起使用而编写的函数或类型.</p>
+<p>在本教程中，您将声明两个简单的非泛型函数，然后在单个泛型函数中捕获相同的逻辑.</p>
+<p>您将逐步完成以下部分:</p>
+<ol>
+<li>为您的代码创建一个文件夹.</li>
+<li>添加非泛型函数.</li>
+<li>添加一个通用函数来处理多种类型.</li>
+<li>调用泛型函数时删除类型参数.</li>
+<li>声明类型约束.</li>
+</ol>
+<p><strong>注意:</strong> 有关其他教程，请参阅 <a href="index.html">教程</a>.</p>
+<p><strong>注意:</strong> 如果您愿意，可以使用
+<a href="https://go.p2hp.com/play/?v=gotip">“Go dev 分支”模式下的 Go Playground</a>
+来编辑和运行您的程序.</p>
+<h2 id="heading">先决条件</h2>
+<ul>
+<li><strong>Go 1.18 或更高版本的安装.</strong> 有关安装说明，请参阅
+<a href="../install.html">安装 Go</a>.</li>
+<li><strong>用于编辑代码的工具.</strong> 您拥有的任何文本编辑器都可以正常工作.</li>
+<li><strong>一个命令终端.</strong> Go 在 Linux 和 Mac 上的任何终端以及 Windows 中的 PowerShell 或 cmd 上都能很好地工作.</li>
+</ul>
+<h2 id="create_folder">为您的代码创建一个文件夹</h2>
+<p>首先，为您要编写的代码创建一个文件夹.</p>
+<ol>
+<li>
+<p>打开命令提示符并切换到您的主目录.</p>
+<p>在 Linux 或 Mac 上:</p>
+<pre><code>$ cd
+</code></pre>
+<p>在 Windows 上:</p>
+<pre><code>C:\&gt; cd %HOMEPATH%
+</code></pre>
+<p>本教程的其余部分将显示一个 $ 作为提示。您使用的命令也可以在 Windows 上运行.</p>
+</li>
+<li>
+<p>在命令提示符下，为您的代码创建一个名为 generics 的目录.</p>
+<pre><code>$ mkdir generics
+$ cd generics
+</code></pre>
+</li>
+<li>
+<p>创建一个模块来保存您的代码.</p>
+<p>运行 <code>go mod init</code> 命令，为其提供新代码的模块路径.</p>
+<pre><code>$ go mod init example/generics
+go: creating new go.mod: module example/generics
+</code></pre>
+<p><strong>注意:</strong> 对于生产代码，您需要指定一个更符合您自己需求的模块路径. 有关更多信息，请务必查看
+<a href="../modules/managing-dependencies.html">管理依赖项</a>.</p>
+</li>
+</ol>
+<p>接下来，您将添加一些简单的代码来处理map.</p>
+<h2 id="non_generic_functions">添加非泛型函数</h2>
+<p>在此步骤中，您将添加两个函数，每个函数将map的值相加并返回总数.</p>
+<p>您要声明两个函数而不是一个，因为您正在使用两种不同类型的映射：一种用于存储<code>int64</code> 值，另一种用于存储 <code>float64</code>值。</p>
+<h4 id="heading-1">编写代码</h4>
+<ol>
+<li>
+<p>使用您的文本编辑器，在 generics 目录中创建一个名为 main.go 的文件。您将在此文件中编写您的 Go 代码.</p>
+</li>
+<li>
+<p>进入 main.go，在文件顶部，粘贴以下包声明.</p>
+<pre><code>package main
+</code></pre>
+<p>独立程序（与库相反）始终位于包 <code>main</code>中。</p>
+</li>
+<li>
+<p>在包声明下方，粘贴以下两个函数声明.</p>
+<pre><code>// SumInts adds together the values of m.
+func SumInts(m map[string]int64) int64 {
+    var s int64
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+
+// SumFloats adds together the values of m.
+func SumFloats(m map[string]float64) float64 {
+    var s float64
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>声明两个函数以将map的值相加并返回总和.
+<ul>
+<li><code>SumFloats</code> 将<code>string</code>映射为 <code>float64</code> 值.</li>
+<li><code>SumInts</code> 将 <code>string</code> 映射为 <code>int64</code> 值.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>在 main.go 顶部的包声明下方，粘贴以下<code>main</code>函数以初始化两个映射，并在调用您在上一步中声明的函数时将它们用作参数.</p>
+<pre><code>func main() {
+    // Initialize a map for the integer values
+    ints := map[string]int64{
+        &quot;first&quot;:  34,
+        &quot;second&quot;: 12,
+    }
+
+    // Initialize a map for the float values
+    floats := map[string]float64{
+        &quot;first&quot;:  35.98,
+        &quot;second&quot;: 26.99,
+    }
+
+    fmt.Printf(&quot;Non-Generic Sums: %v and %v\n&quot;,
+        SumInts(ints),
+        SumFloats(floats))
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>初始化  <code>float64</code> 值的映射和 <code>int64</code>  值的映射，每个值有两个条目.</li>
+<li>调用您之前声明的两个函数来查找每个映射值的总和.</li>
+<li>打印结果.</li>
+</ul>
+</li>
+<li>
+<p>在 main.go 的顶部附近，在包声明的正下方，导入您需要支持刚编写的代码的包.</p>
+<p>第一行代码应如下所示:</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+</code></pre>
+</li>
+<li>
+<p>保存 main.go.</p>
+</li>
+</ol>
+<h4 id="heading-2">运行代码</h4>
+<p>从包含 main.go 的目录中的命令行，运行代码.</p>
+<pre><code>$ go run .
+Non-Generic Sums: 46 and 62.97
+</code></pre>
+<p>使用泛型，您可以在此处编写一个函数，而不是两个。接下来，您将为包含整数或浮点值的映射添加单个泛型函数.</p>
+<h2 id="add_generic_function">添加一个泛型函数来处理多种类型</h2>
+<p>在本节中，您将添加一个可以接收包含整数或浮点值的映射的泛型函数，从而有效地将刚刚编写的两个函数替换为单个函数.</p>
+<p>若要支持任一类型的值，该单个函数将需要一种方法来声明它支持的类型。另一方面，调用代码需要一种方法来指定它是使用整数映射还是浮点映射进行调用.</p>
+<p>为了支持这一点，您将编写一个函数，该函数除了声明其普通函数参数外，还声明 <em>类型参数</em> 。这些类型参数使函数成为泛型函数，使其能够与不同类型的参数一起使用。您将使用 <em>类型参数</em> 和普通函数参数调用该函数。</p>
+<p>每个类型参数都有一个 <em>类型约束</em> ，该约束充当类型参数的一种元类型。每个类型约束指定允许的类型参数，调用代码可以将其用于相应的类型参数.</p>
+<p>虽然类型参数的约束通常表示一组类型，但在编译时，类型参数代表单个类型 - 由调用代码作为类型参数提供的类型。如果类型参数的约束不允许类型参数的类型，则代码将不会编译.</p>
+<p>请记住，类型参数必须支持泛型代码对其执行的所有操作。例如，如果函数的代码尝试对其约束包含数值类型的类型参数执行<code>string</code>操作（如索引），则代码将无法编译.</p>
+<p>在您即将编写的代码中，您将使用允许整数或浮点类型的约束.</p>
+<h4 id="heading-3">编写代码</h4>
+<ol>
+<li>
+<p>在之前添加的两个函数下，粘贴以下泛型函数.</p>
+<pre><code>// SumIntsOrFloats sums the values of map m. It supports both int64 and float64
+// as types for map values.
+func SumIntsOrFloats[K comparable, V int64 | float64](m map[K]V) V {
+    var s V
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>声明一个  <code>SumIntsOrFloats</code> 函数，其中包含两个类型参数（方括号内）， <code>K</code> 和 <code>V</code>，以及一个使用 <code>map[K]V</code> 类型的类型参数 <code>m</code> 。该函数返回类型为  <code>V</code> 的值.</li>
+<li>为 <code>K</code> 类型参数指定 <code>comparable</code>的类型约束。专门针对此类情况， <code>comparable</code>的约束在 Go 中预先声明。它允许其值可用作比较运算符<code>==</code> 和<code>!=</code> 的操作数的任何类型。Go 要求映射键具有可比性。因此，将 <code>K</code> 声明为<code>comparable</code>是必要的，以便您可以使用  <code>K</code> 作为映射变量中的键。它还确保调用代码对映射键使用允许的类型.</li>
+<li>为  <code>V</code> 类型参数指定一个约束，该约束是两种类型的并集： <code>int64</code> 和 <code>float64</code>。使用<code>|</code>指定两种类型的并集，这意味着此约束允许任一类型。编译器将允许任一类型作为调用代码中的参数.</li>
+<li>指定 <code>m</code>  参数的类型为 <code>map[K]V</code> 类型，其中  <code>K</code> 和  <code>V</code> 是已为类型参数指定的类型。请注意，我们知道 <code>map[K]V</code> 是有效的映射类型，因为 <code>K</code> 是可比较的类型。如果我们没有声明 <code>K</code> 具有可比性，编译器将拒绝对 <code>map[K]V</code> 的引用。</li>
+</ul>
+</li>
+<li>
+<p>在 main.go 中，在您已有的代码下方，粘贴以下代码.</p>
+<pre><code>fmt.Printf(&quot;Generic Sums: %v and %v\n&quot;,
+    SumIntsOrFloats[string, int64](ints),
+    SumIntsOrFloats[string, float64](floats))
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>
+<p>调用您刚刚声明的泛型函数，传递您创建的每个映射.</p>
+</li>
+<li>
+<p>指定类型参数（方括号中的类型名称），以明确应替换所调用函数中的类型参数的类型。</p>
+<p>正如您将在下一节中看到的那样，您通常可以省略函数调用中的类型参数。Go通常可以从您的代码中推断出它们。</p>
+</li>
+<li>
+<p>打印函数返回的总和.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="heading-4">运行代码</h4>
+<p>从包含 main.go 的目录中的命令行，运行代码.</p>
+<pre><code>$ go run .
+Non-Generic Sums: 46 and 62.97
+Generic Sums: 46 and 62.97
+</code></pre>
+<p>为了运行您的代码，在每次调用中，编译器将类型参数替换为该调用中指定的具体类型.</p>
+<p>在调用您编写的泛型函数时，您指定了类型参数，告诉编译器使用什么类型代替函数的类型参数。正如您将在下一节中看到的，在许多情况下您可以省略这些类型参数，因为编译器可以推断它们.</p>
+<h2 id="remove_type_arguments">调用泛型函数时删除类型参数</h2>
+<p>在本节中，您将添加泛型函数调用的修改版本，进行小的更改以简化调用代码。您将删除在这种情况下不需要的类型参数.</p>
+<p>当 Go 编译器可以推断您要使用的类型时，您可以在调用代码中省略类型参数。编译器从函数参数的类型推断类型参数.</p>
+<p>请注意，这并不总是可能的。例如，如果您需要调用没有参数的泛型函数，则需要在函数调用中包含类型参数.</p>
+<h4 id="heading-5">编写代码</h4>
+<ul>
+<li>
+<p>在 main.go 中，在您已有的代码下方，粘贴以下代码.</p>
+<pre><code>fmt.Printf(&quot;Generic Sums, type parameters inferred: %v and %v\n&quot;,
+    SumIntsOrFloats(ints),
+    SumIntsOrFloats(floats))
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>调用泛型函数，省略类型参数.</li>
+</ul>
+</li>
+</ul>
+<h4 id="heading-6">运行代码</h4>
+<p>从包含 main.go 的目录中的命令行，运行代码.</p>
+<pre><code>$ go run .
+Non-Generic Sums: 46 and 62.97
+Generic Sums: 46 and 62.97
+Generic Sums, type parameters inferred: 46 and 62.97
+</code></pre>
+<p>接下来，您将通过将整数和浮点数的并集捕获到您可以重用的类型约束（例如从其他代码中）来进一步简化函数.</p>
+<h2 id="declare_type_constraint">声明类型约束</h2>
+<p>在最后一部分中，您将把之前定义的约束移到它自己的接口中，以便您可以在多个地方重用它。以这种方式声明约束有助于简化代码，例如当约束更复杂时。</p>
+<p>您将 <em>类型约束</em> 声明为接口。约束允许任何类型实现接口。例如，如果您声明了具有三个方法的类型约束接口，然后在泛型函数中将其与类型参数一起使用，则用于调用该函数的类型参数必须具有所有这些方法。</p>
+<p>正如您将在本节中看到的，约束接口也可以引用特定类型.</p>
+<h4 id="heading-7">编写代码</h4>
+<ol>
+<li>
+<p>在 <code>main</code> 的正上方，紧跟在 import 语句之后，粘贴以下代码以声明类型约束.</p>
+<pre><code>type Number interface {
+    int64 | float64
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>
+<p>声明要用作类型约束的  <code>Number</code>  接口类型.</p>
+</li>
+<li>
+<p>在接口内声明  <code>int64</code> 和 <code>float64</code>  的联合.</p>
+<p>实质上，您将union从函数声明移动到新的类型约束中。这样，当您想要将类型参数约束为  <code>int64</code> 或 <code>float64</code> 时，可以使用此 <code>Number</code>类型约束，而不是写出  <code>int64 | float64</code>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>在已有函数下方，粘贴以下泛型 <code>SumNumbers</code> 函数。</p>
+<pre><code>// SumNumbers sums the values of map m. It supports both integers
+// and floats as map values.
+func SumNumbers[K comparable, V Number](m map[K]V) V {
+    var s V
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>声明一个与您之前声明的泛型函数具有相同逻辑的泛型函数，但使用新的接口类型而不是union作为类型约束。和以前一样，您使用类型参数作为参数和返回类型。</li>
+</ul>
+</li>
+<li>
+<p>在 main.go 中，在您已有的代码下方，粘贴以下代码.</p>
+<pre><code>fmt.Printf(&quot;Generic Sums with Constraint: %v and %v\n&quot;,
+    SumNumbers(ints),
+    SumNumbers(floats))
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>
+<p>对每个map调用<code>SumNumbers</code>，从每个map的值中打印总和。</p>
+<p>与上一节一样，在调用泛型函数时省略了类型参数（方括号中的类型名称）。Go 编译器可以从其他参数推断类型参数.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="heading-8">运行代码</h4>
+<p>从包含 main.go 的目录中的命令行，运行代码.</p>
+<pre><code>$ go run .
+Non-Generic Sums: 46 and 62.97
+Generic Sums: 46 and 62.97
+Generic Sums, type parameters inferred: 46 and 62.97
+Generic Sums with Constraint: 46 and 62.97
+</code></pre>
+<h2 id="conclusion">结论</h2>
+<p>做得很好！您刚刚向自己介绍了 Go 中的泛型.</p>
+<p>建议的下一个主题:</p>
+<ul>
+<li><a href="https://go.p2hp.com/tour.golang.org/welcome/1" rel="noreferrer" target="_blank">Go Tour</a> 是对Go 基础知识的逐步介绍.</li>
+<li>您将在
+<a href="../effective_go.html">Effective Go</a> 和
+<a href="../code.html"> 如何编写 Go 代码</a> 中找到有用的 Go 最佳实践.</li>
+</ul>
+<h2 id="completed_code">完整代码</h2>
+<p>你可以在
+<a href="https://go.p2hp.com/play/p/apNmfVwogK0?v=gotip">Go playground</a> 上运行这个程序. 在
+playground上只需单击 <strong>Run</strong> 按钮.</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+type Number interface {
+    int64 | float64
+}
+
+func main() {
+    // Initialize a map for the integer values
+    ints := map[string]int64{
+        &quot;first&quot;: 34,
+        &quot;second&quot;: 12,
+    }
+
+    // Initialize a map for the float values
+    floats := map[string]float64{
+        &quot;first&quot;: 35.98,
+        &quot;second&quot;: 26.99,
+    }
+
+    fmt.Printf(&quot;Non-Generic Sums: %v and %v\n&quot;,
+        SumInts(ints),
+        SumFloats(floats))
+
+    fmt.Printf(&quot;Generic Sums: %v and %v\n&quot;,
+        SumIntsOrFloats[string, int64](ints),
+        SumIntsOrFloats[string, float64](floats))
+
+    fmt.Printf(&quot;Generic Sums, type parameters inferred: %v and %v\n&quot;,
+        SumIntsOrFloats(ints),
+        SumIntsOrFloats(floats))
+
+    fmt.Printf(&quot;Generic Sums with Constraint: %v and %v\n&quot;,
+        SumNumbers(ints),
+        SumNumbers(floats))
+}
+
+// SumInts adds together the values of m.
+func SumInts(m map[string]int64) int64 {
+    var s int64
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+
+// SumFloats adds together the values of m.
+func SumFloats(m map[string]float64) float64 {
+    var s float64
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+
+// SumIntsOrFloats sums the values of map m. It supports both floats and integers
+// as map values.
+func SumIntsOrFloats[K comparable, V int64 | float64](m map[K]V) V {
+    var s V
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+
+// SumNumbers sums the values of map m. Its supports both integers
+// and floats as map values.
+func SumNumbers[K comparable, V Number](m map[K]V) V {
+    var s V
+    for _, v := range m {
+        s += v
+    }
+    return s
+}
+</code></pre>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="generics.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

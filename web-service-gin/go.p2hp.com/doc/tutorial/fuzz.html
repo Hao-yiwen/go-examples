@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/tutorial/fuzz">
+<meta name="og:title" content="教程：开始使用模糊测试 - The Go Programming Language">
+<title>教程：开始使用模糊测试 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>教程：开始使用模糊测试</h1>
+
+
+
+
+
+
+
+<p>本教程介绍了 Go 中模糊测试的基础知识。通过模糊测试，随机数据会针对您的测试运行，以尝试找出漏洞或导致崩溃的输入。可以通过模糊测试发现的一些漏洞示例包括 SQL 注入、缓冲区溢出、拒绝服务和跨站点脚本攻击.</p>
+<p>在本教程中，您将为一个简单的函数编写一个模糊测试，运行 go 命令，并调试和修复代码中的问题.</p>
+<p>有关本教程中术语的帮助，请参阅 <a href="https://go.p2hp.com/doc/fuzz/#glossary">Go Fuzzing 词汇表</a>.</p>
+<p>您将逐步完成以下部分:</p>
+<ol>
+<li><a href="fuzz.html#create_folder">为您的代码创建一个文件夹.</a></li>
+<li><a href="fuzz.html#code_to_test">添加代码进行测试.</a></li>
+<li><a href="fuzz.html#unit_test">添加单元测试.</a></li>
+<li><a href="fuzz.html#fuzz_test">添加模糊测试.</a></li>
+<li><a href="fuzz.html#fix_invalid_string_error">修复两个错误.</a></li>
+<li><a href="fuzz.html#conclusion">探索其他资源.</a></li>
+</ol>
+<p><strong>注意:</strong> 有关其他教程，请参阅 <a href="index.html">教程</a>.</p>
+<p><strong>注意:</strong> Go 模糊测试目前支持 <a href="https://go.p2hp.com/doc/fuzz/#requirements">Go 模糊测试文档</a>, 中列出的内置类型的子集，并支持将来要添加更多内置类型.</p>
+<h2 id="heading">先决条件</h2>
+<ul>
+<li><strong>Go 1.18 或更高版本的安装.</strong> 有关安装说明，请参阅
+<a href="../install.html">安装 Go</a>.</li>
+<li><strong>用于编辑代码的工具.</strong> 您拥有的任何文本编辑器都可以正常工作.</li>
+<li><strong>一个命令终端.</strong> Go 在 Linux 和 Mac 上的任何终端以及 Windows 中的 PowerShell 或 cmd 上都能很好地工作.</li>
+<li><strong>支持模糊测试的环境.</strong> 目前仅在 AMD64 和 ARM64 架构上使用覆盖检测进行模糊测试.</li>
+</ul>
+<h2 id="create_folder">为您的代码创建一个文件夹</h2>
+<p>首先，为您要编写的代码创建一个文件夹.</p>
+<ol>
+<li>
+<p>打开命令提示符并切换到您的主目录.</p>
+<p>在 Linux 或 Mac 上:</p>
+<pre><code>$ cd
+</code></pre>
+<p>在 Windows 上:</p>
+<pre><code>C:\&gt; cd %HOMEPATH%
+</code></pre>
+<p>本教程的其余部分将显示一个 $ 作为提示。您使用的命令也可以在 Windows 上运行.</p>
+</li>
+<li>
+<p>在命令提示符下，为您的代码创建一个名为 fuzz 的目录.</p>
+<pre><code>$ mkdir fuzz
+$ cd fuzz
+</code></pre>
+</li>
+<li>
+<p>创建一个模块来保存您的代码.</p>
+<p>运行 <code>go mod init</code> 命令，为其提供新代码的模块路径.</p>
+<pre><code>$ go mod init example/fuzz
+go: creating new go.mod: module example/fuzz
+</code></pre>
+<p><strong>注意:</strong> 对于生产代码，您需要指定一个更符合您自己需求的模块路径。有关更多信息，请务必查看 <a href="../modules/managing-dependencies.html">管理依赖项</a>.</p>
+</li>
+</ol>
+<p>接下来，您将添加一些简单的代码来反转字符串，稍后我们将对其进行模糊测试.</p>
+<h2 id="code_to_test">添加代码进行测试</h2>
+<p>在此步骤中，您将添加一个函数来反转字符串.</p>
+<h3 id="heading-1">编写代码</h3>
+<ol>
+<li>
+<p>使用您的文本编辑器，在 fuzz 目录中创建一个名为 main.go 的文件.</p>
+</li>
+<li>
+<p>进入 main.go，在文件顶部，粘贴以下包声明.</p>
+<pre><code>package main
+</code></pre>
+<p>独立程序（与库相反）始终位于<code>main</code> package 中。</p>
+</li>
+<li>
+<p>在包声明下，粘贴以下函数声明.</p>
+<pre><code>func Reverse(s string) string {
+    b := []byte(s)
+    for i, j := 0, len(b)-1; i &lt; len(b)/2; i, j = i+1, j-1 {
+        b[i], b[j] = b[j], b[i]
+    }
+    return string(b)
+}
+</code></pre>
+<p>此函数将接受一个<code>string</code>，一次循环一个<code>byte</code>，并在末尾返回反转的字符串。</p>
+<p><em>注意:</em> 此代码基于golang.org/x/example中的 <code>stringutil.Reverse</code> 函数.</p>
+</li>
+<li>
+<p>在 main.go 顶部的包声明下方，粘贴以下<code>main</code>函数来初始化一个字符串，反转它，打印输出，然后重复.</p>
+<pre><code>func main() {
+    input := &quot;The quick brown fox jumped over the lazy dog&quot;
+    rev := Reverse(input)
+    doubleRev := Reverse(rev)
+    fmt.Printf(&quot;original: %q\n&quot;, input)
+    fmt.Printf(&quot;reversed: %q\n&quot;, rev)
+    fmt.Printf(&quot;reversed again: %q\n&quot;, doubleRev)
+}
+</code></pre>
+<p>此函数将运行一些 <code>Reverse</code>操作，然后将输出打印到命令行。这有助于查看运行中的代码，并可能有助于调试.</p>
+</li>
+<li>
+<p><code>main</code> 函数使用 fmt 包，因此您需要将其导入.</p>
+<p>第一行代码应如下所示:</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+</code></pre>
+</li>
+</ol>
+<h3 id="heading-2">运行代码</h3>
+<p>从包含 main.go 的目录中的命令行，运行代码.</p>
+<pre><code>$ go run .
+original: &quot;The quick brown fox jumped over the lazy dog&quot;
+reversed: &quot;god yzal eht revo depmuj xof nworb kciuq ehT&quot;
+reversed again: &quot;The quick brown fox jumped over the lazy dog&quot;
+</code></pre>
+<p>可以看到原来的字符串，反转它的结果，然后再反转它的结果，就相当于原来的了.</p>
+<p>现在代码正在运行，是时候测试它了.</p>
+<h2 id="unit_test">添加单元测试</h2>
+<p>在这一步中，您将为<code>Reverse</code> 函数编写一个基本的单元测试.</p>
+<h3 id="heading-3">编写代码</h3>
+<ol>
+<li>
+<p>使用您的文本编辑器，在 fuzz 目录中创建一个名为 reverse_test.go 的文件.</p>
+</li>
+<li>
+<p>将以下代码粘贴到 reverse_test.go 中.</p>
+<pre><code>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func TestReverse(t *testing.T) {
+    testcases := []struct {
+        in, want string
+    }{
+        {&quot;Hello, world&quot;, &quot;dlrow ,olleH&quot;},
+        {&quot; &quot;, &quot; &quot;},
+        {&quot;!12345&quot;, &quot;54321!&quot;},
+    }
+    for _, tc := range testcases {
+        rev := Reverse(tc.in)
+        if rev != tc.want {
+                t.Errorf(&quot;Reverse: %q, want %q&quot;, rev, tc.want)
+        }
+    }
+}
+</code></pre>
+<p>这个简单的测试将断言列出的输入字符串将被正确反转.</p>
+</li>
+</ol>
+<h3 id="heading-4">运行代码</h3>
+<p>使用 <code>go test</code>运行单元测试</p>
+<pre><code>$ go test
+PASS
+ok      example/fuzz  0.013s
+</code></pre>
+<p>接下来，您将单元测试更改为模糊测试.</p>
+<h2 id="fuzz_test">添加模糊测试</h2>
+<p>单元测试有局限性，即每个输入都必须由开发人员添加到测试中。模糊测试的一个好处是它可以为您的代码提供输入，并且可以识别您提出的测试用例没有达到的边缘用例.</p>
+<p>在本节中，您将单元测试转换为模糊测试，这样您就可以用更少的工作生成更多的输入!</p>
+<p>请注意，您可以将单元测试、基准测试和模糊测试保存在同一个 *_test.go 文件中，但对于本示例，您将单元测试转换为模糊测试.</p>
+<h3 id="heading-5">编写代码</h3>
+<p>在您的文本编辑器中，将 reverse_test.go 中的单元测试替换为以下模糊测试.</p>
+<pre><code>func FuzzReverse(f *testing.F) {
+    testcases := []string{&quot;Hello, world&quot;, &quot; &quot;, &quot;!12345&quot;}
+    for _, tc := range testcases {
+        f.Add(tc)  // Use f.Add to provide a seed corpus
+    }
+    f.Fuzz(func(t *testing.T, orig string) {
+        rev := Reverse(orig)
+        doubleRev := Reverse(rev)
+        if orig != doubleRev {
+            t.Errorf(&quot;Before: %q, after: %q&quot;, orig, doubleRev)
+        }
+        if utf8.ValidString(orig) &amp;&amp; !utf8.ValidString(rev) {
+            t.Errorf(&quot;Reverse produced invalid UTF-8 string %q&quot;, rev)
+        }
+    })
+}
+</code></pre>
+<p>模糊测试也有一些限制。在单元测试中，可以预测 <code>Reverse</code> 函数的预期输出，并验证实际输出是否满足这些预期.</p>
+<p>例如，在测试用例  <code>Reverse(&quot;Hello, world&quot;)</code> 中，单元测试将返回值指定为<code>&quot;dlrow ,olleH&quot;</code>.</p>
+<p>模糊测试时，您无法预测预期输出，因为您无法控制输入.</p>
+<p>但是，您可以在模糊测试中验证 <code>Reverse</code> 函数的一些属性。在此模糊测试中检查的两个属性是:</p>
+<ol>
+<li>将字符串反转两次保留原始值</li>
+<li>反转的字符串将其状态保留为有效的 UTF-8.</li>
+</ol>
+<p>注意单元测试和模糊测试之间的语法差异:</p>
+<ul>
+<li>该函数以 FuzzXxx 而不是 TestXxx 开头，取<code>*testing.F</code> 而不是<code>*testing.T</code></li>
+<li>在你期望看到<code>t.Run</code>  执行的地方，你看到的是<code>f.Fuzz</code>，它采用一个 fuzz 目标函数，其参数是 <code>*testing.T</code>和要模糊处理的类型。单元测试中的输入使用<code>f.Add</code> 作为种子语料库输入提供.</li>
+</ul>
+<p>确保新包 <code>unicode/utf8</code>已导入.</p>
+<pre><code>package main
+
+import (
+    &quot;testing&quot;
+    &quot;unicode/utf8&quot;
+)
+</code></pre>
+<p>随着单元测试转换为模糊测试，是时候再次运行测试了.</p>
+<h3 id="heading-6">运行代码</h3>
+<ol>
+<li>
+<p>在不进行模糊测试的情况下运行模糊测试，以确保种子输入通过.</p>
+<pre><code>$ go test
+PASS
+ok      example/fuzz  0.013s
+</code></pre>
+<p>如果该文件中有其他测试，并且只希望运行模糊测试，也可以运行<code>go test -run=FuzzReverse</code>.</p>
+</li>
+<li>
+<p>使用模糊测试运行 <code>FuzzReverse</code>，以查看是否有任何随机生成的字符串输入会导致失败。这是使用带有新标志 <code>-fuzz</code> 的  <code>go test</code> 执行的.</p>
+<pre><code>$ go test -fuzz=Fuzz
+fuzz: elapsed: 0s, gathering baseline coverage: 0/3 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 3/3 completed, now fuzzing with 8 workers
+fuzz: minimizing 38-byte failing input file...
+--- FAIL: FuzzReverse (0.01s)
+    --- FAIL: FuzzReverse (0.00s)
+        reverse_test.go:20: Reverse produced invalid UTF-8 string &quot;\x9c\xdd&quot;
+
+    Failing input written to testdata/fuzz/FuzzReverse/af69258a12129d6cbba438df5d5f25ba0ec050461c116f777e77ea7c9a0d217a
+    To re-run:
+    go test -run=FuzzReverse/af69258a12129d6cbba438df5d5f25ba0ec050461c116f777e77ea7c9a0d217a
+FAIL
+exit status 1
+FAIL    example/fuzz  0.030s
+</code></pre>
+<p>模糊测试时发生失败，导致问题的输入被写入种子语料库文件，该文件将在下次调用  <code>go test</code>时运行，即使没有<code>-fuzz</code>标志也是如此。要查看导致失败的输入，请在文本编辑器中打开写入 testdata/fuzz/FuzzReverse 目录的语料库文件。您的种子语料库文件可能包含不同的字符串，但格式将相同.</p>
+<pre><code>go test fuzz v1
+string(&quot;泃&quot;)
+</code></pre>
+<p>语料库文件的第一行指示编码版本。以下每一行表示组成语料库条目的每个类型的值。由于模糊目标仅接受 1 个输入，因此版本后只有 1 个值.</p>
+</li>
+<li>
+<p>再次运行 <code>go test</code>，不带<code> -fuzz</code>标志;将使用新的失败种子语料库条目:</p>
+<pre><code>$ go test
+--- FAIL: FuzzReverse (0.00s)
+    --- FAIL: FuzzReverse/af69258a12129d6cbba438df5d5f25ba0ec050461c116f777e77ea7c9a0d217a (0.00s)
+        reverse_test.go:20: Reverse produced invalid string
+FAIL
+exit status 1
+FAIL    example/fuzz  0.016s
+</code></pre>
+<p>由于我们的测试失败，是时候调试了.</p>
+</li>
+</ol>
+<h2 id="fix_invalid_string_error">修复无效字符串错误</h2>
+<p>在本节中，您将调试故障并修复错误.</p>
+<p>在继续之前，请随意花一些时间思考这个问题并尝试自己解决问题.</p>
+<h3 id="heading-7">诊断错误</h3>
+<p>有几种不同的方法可以调试此错误。如果您使用 VS Code 作为文本编辑器，则可以 <a href="https://github.com/golang/vscode-go/blob/master/docs/debugging.md" rel="noreferrer" target="_blank">设置调试器</a> 进行观察.</p>
+<p>在本教程中，我们会将有用的调试信息记录到您的终端.</p>
+<p>首先，考虑
+<a href="https://pkg.go.dev/unicode/utf8" rel="noreferrer" target="_blank"><code>utf8.ValidString</code></a>的文档.</p>
+<pre><code>ValidString 报告 s 是否完全由有效的 UTF-8 编码符文组成.
+</code></pre>
+<p>当前<code>Reverse</code>函数逐字节反转字符串，这就是我们的问题。为了保留原始字符串的 UTF-8 编码符文，我们必须逐个符文反转字符串。</p>
+<p>要检查输入（在本例中为中文字符 <code>泃</code>）导致<code>Reverse</code>在反转时产生无效字符串的原因，您可以检查反转字符串中的符文数。</p>
+<h4 id="heading-8">编写代码</h4>
+<p>在文本编辑器中，将 <code>FuzzReverse</code> 中的模糊目标替换为以下内容.</p>
+<pre><code>f.Fuzz(func(t *testing.T, orig string) {
+    rev := Reverse(orig)
+    doubleRev := Reverse(rev)
+    t.Logf(&quot;Number of runes: orig=%d, rev=%d, doubleRev=%d&quot;, utf8.RuneCountInString(orig), utf8.RuneCountInString(rev), utf8.RuneCountInString(doubleRev))
+    if orig != doubleRev {
+        t.Errorf(&quot;Before: %q, after: %q&quot;, orig, doubleRev)
+    }
+    if utf8.ValidString(orig) &amp;&amp; !utf8.ValidString(rev) {
+        t.Errorf(&quot;Reverse produced invalid UTF-8 string %q&quot;, rev)
+    }
+})
+</code></pre>
+<p>如果发生错误，或者使用  <code>-v</code> 执行测试，此<code>t.Logf</code> 行将打印到命令行，这可以帮助您调试此特定问题.</p>
+<h4 id="heading-9">运行代码</h4>
+<p>使用 go test 运行测试</p>
+<pre><code>$ go test
+--- FAIL: FuzzReverse (0.00s)
+    --- FAIL: FuzzReverse/28f36ef487f23e6c7a81ebdaa9feffe2f2b02b4cddaa6252e87f69863046a5e0 (0.00s)
+        reverse_test.go:16: Number of runes: orig=1, rev=3, doubleRev=1
+        reverse_test.go:21: Reverse produced invalid UTF-8 string &quot;\x83\xb3\xe6&quot;
+FAIL
+exit status 1
+FAIL    example/fuzz    0.598s
+</code></pre>
+<p>整个种子语料库使用字符串，其中每个字符都是一个字节。但是，泃等字符可能需要几个字节。因此，逐字节反转字符串将使多字节字符无效.</p>
+<p><strong>注意:</strong> 如果您对 Go 如何处理字符串感到好奇，请阅读博客文章
+<a href="https://go.p2hp.com/blog/strings">Go 中的字符串、字节、符文和字符</a> 以更深入地了解.</p>
+<p>随着对 bug 的更好理解，更正 <code>Reverse</code> 函数中的错误.</p>
+<h3 id="heading-10">修复错误</h3>
+<p>为了更正这个 <code>Reverse</code> 函数，让我们用符文而不是字节来遍历字符串.</p>
+<h4 id="heading-11">编写代码</h4>
+<p>在您的文本编辑器中，将现有的 Reverse() 函数替换为以下内容.</p>
+<pre><code>func Reverse(s string) string {
+    r := []rune(s)
+    for i, j := 0, len(r)-1; i &lt; len(r)/2; i, j = i+1, j-1 {
+        r[i], r[j] = r[j], r[i]
+    }
+    return string(r)
+}
+</code></pre>
+<p>关键区别在于，<code>Reverse</code>现在正在迭代字符串中的每个 <code>rune</code>，而不是每个 <code>byte</code>。</p>
+<h4 id="heading-12">运行代码</h4>
+<ol>
+<li>
+<p>使用<code>go test</code>运行测试</p>
+<pre><code>$ go test
+PASS
+ok      example/fuzz  0.016s
+</code></pre>
+<p>现在测试通过了!</p>
+</li>
+<li>
+<p>用 <code>go test -fuzz</code>再次模糊它，看看是否有任何新的错误.</p>
+<pre><code>$ go test -fuzz=Fuzz
+fuzz: elapsed: 0s, gathering baseline coverage: 0/37 completed
+fuzz: minimizing 506-byte failing input file...
+fuzz: elapsed: 0s, gathering baseline coverage: 5/37 completed
+--- FAIL: FuzzReverse (0.02s)
+    --- FAIL: FuzzReverse (0.00s)
+        reverse_test.go:33: Before: &quot;\x91&quot;, after: &quot;�&quot;
+
+    Failing input written to testdata/fuzz/FuzzReverse/1ffc28f7538e29d79fce69fef20ce5ea72648529a9ca10bea392bcff28cd015c
+    To re-run:
+    go test -run=FuzzReverse/1ffc28f7538e29d79fce69fef20ce5ea72648529a9ca10bea392bcff28cd015c
+FAIL
+exit status 1
+FAIL    example/fuzz  0.032s
+</code></pre>
+<p>我们可以看到，经过两次反转后，字符串与原始字符串不同。这次输入本身是无效的 unicode。如果我们使用字符串进行模糊测试，这怎么可能?</p>
+<p>让我们再次调试.</p>
+</li>
+</ol>
+<h2 id="fix_double_reverse_error">修复两次反转错误</h2>
+<p>在本节中，您将调试两次反转故障并修复错误.</p>
+<p>在继续之前，请随意花一些时间思考这个问题并尝试自己解决问题.</p>
+<h3 id="heading-13">诊断错误</h3>
+<p>和以前一样，有几种方法可以调试此故障。在这种情况下，使用
+<a href="https://github.com/golang/vscode-go/blob/master/docs/debugging.md" rel="noreferrer" target="_blank">调试器</a>
+将是一个很好的方法。</p>
+<p>在本教程中，我们将在 <code>Reverse</code>函数中记录有用的调试信息.</p>
+<p>仔细查看反转的字符串以发现错误。在 Go 中，<a href="https://go.p2hp.com/blog/strings">字符串是字节的只读切片</a>，并且可以包含无效的 UTF-8 字节。原始字符串是一个带有一个字节的字节切片，<code>'\x91'</code>. 当输入字符串设置为<code>[]rune</code> 时，Go 将字节切片编码为 UTF-8，并将字节替换为 UTF-8 字符 �。当我们将替换的 UTF-8 字符与输入字节切片进行比较时，它们显然不相等。</p>
+<h4 id="heading-14">编写代码</h4>
+<ol>
+<li>
+<p>在您的文本编辑器中，将 <code>Reverse</code>函数替换为以下内容.</p>
+<pre><code>func Reverse(s string) string {
+    fmt.Printf(&quot;input: %q\n&quot;, s)
+    r := []rune(s)
+    fmt.Printf(&quot;runes: %q\n&quot;, r)
+    for i, j := 0, len(r)-1; i &lt; len(r)/2; i, j = i+1, j-1 {
+        r[i], r[j] = r[j], r[i]
+    }
+    return string(r)
+}
+</code></pre>
+<p>这将帮助我们了解将字符串转换为符文切片时出了什么问题.</p>
+</li>
+</ol>
+<h4 id="heading-15">运行代码</h4>
+<p>这一次，我们只想运行失败的测试来检查日志。为此，我们将使用 <code>go test -run</code>.</p>
+<pre><code>$ go test -run=FuzzReverse/28f36ef487f23e6c7a81ebdaa9feffe2f2b02b4cddaa6252e87f69863046a5e0
+input: &quot;\x91&quot;
+runes: ['�']
+input: &quot;�&quot;
+runes: ['�']
+--- FAIL: FuzzReverse (0.00s)
+    --- FAIL: FuzzReverse/28f36ef487f23e6c7a81ebdaa9feffe2f2b02b4cddaa6252e87f69863046a5e0 (0.00s)
+        reverse_test.go:16: Number of runes: orig=1, rev=1, doubleRev=1
+        reverse_test.go:18: Before: &quot;\x91&quot;, after: &quot;�&quot;
+FAIL
+exit status 1
+FAIL    example/fuzz    0.145s
+</code></pre>
+<p>要在 FuzzXxx/testdata 中运行特定语料库条目，您可以将 {FuzzTestName}/{filename} 提供给<code>-run</code>. 这在调试时很有帮助。</p>
+<p>知道输入是无效的 unicode，让我们修复 <code>Reverse</code> 函数中的错误。</p>
+<h3 id="heading-16">修复错误</h3>
+<p>要解决此问题，如果 <code>Reverse</code>输入的 UTF-8 无效，让我们返回错误。</p>
+<h4 id="heading-17">编写代码</h4>
+<ol>
+<li>
+<p>在您的文本编辑器中，将现有<code>Reverse</code>函数替换为以下内容。</p>
+<pre><code>func Reverse(s string) (string, error) {
+    if !utf8.ValidString(s) {
+        return s, errors.New(&quot;input is not valid UTF-8&quot;)
+    }
+    r := []rune(s)
+    for i, j := 0, len(r)-1; i &lt; len(r)/2; i, j = i+1, j-1 {
+        r[i], r[j] = r[j], r[i]
+    }
+    return string(r), nil
+}
+</code></pre>
+<p>如果输入字符串包含无效的 UTF-8 字符，此更改将返回错误.</p>
+</li>
+<li>
+<p>由于 Reverse 函数现在返回错误，因此修改 <code>main</code>函数以丢弃额外的错误值。将现有 <code>main</code>函数替换为以下内容。</p>
+<pre><code>func main() {
+    input := &quot;The quick brown fox jumped over the lazy dog&quot;
+    rev, revErr := Reverse(input)
+    doubleRev, doubleRevErr := Reverse(rev)
+    fmt.Printf(&quot;original: %q\n&quot;, input)
+    fmt.Printf(&quot;reversed: %q, err: %v\n&quot;, rev, revErr)
+    fmt.Printf(&quot;reversed again: %q, err: %v\n&quot;, doubleRev, doubleRevErr)
+}
+</code></pre>
+<p>这些调用 <code>Reverse</code> 应该返回一个 nil 错误，因为输入字符串是有效的 UTF-8。</p>
+</li>
+<li>
+<p>您将需要导入errors和 unicode/utf8 包。main.go 中的 import 语句应如下所示。</p>
+<pre><code>import (
+    &quot;errors&quot;
+    &quot;fmt&quot;
+    &quot;unicode/utf8&quot;
+)
+</code></pre>
+</li>
+<li>
+<p>修改reverse_test.go文件检查是否有错误，如果返回产生错误则跳过测试。</p>
+<pre><code>func FuzzReverse(f *testing.F) {
+    testcases := []string {&quot;Hello, world&quot;, &quot; &quot;, &quot;!12345&quot;}
+    for _, tc := range testcases {
+        f.Add(tc)  // Use f.Add to provide a seed corpus
+    }
+    f.Fuzz(func(t *testing.T, orig string) {
+        rev, err1 := Reverse(orig)
+        if err1 != nil {
+            return
+        }
+        doubleRev, err2 := Reverse(rev)
+        if err2 != nil {
+             return
+        }
+        if orig != doubleRev {
+            t.Errorf(&quot;Before: %q, after: %q&quot;, orig, doubleRev)
+        }
+        if utf8.ValidString(orig) &amp;&amp; !utf8.ValidString(rev) {
+            t.Errorf(&quot;Reverse produced invalid UTF-8 string %q&quot;, rev)
+        }
+    })
+}
+</code></pre>
+<p>除了返回之外，您还可以调用 <code>t.Skip()</code>以停止执行该模糊输入。</p>
+</li>
+</ol>
+<h4 id="heading-18">运行代码</h4>
+<ol>
+<li>
+<p>使用 go test 运行测试</p>
+<pre><code>$ go test
+PASS
+ok      example/fuzz  0.019s
+</code></pre>
+</li>
+<li>
+<p>用 <code>go test -fuzz=Fuzz</code> 对其进行模糊处理，然后在几秒钟后，使用  <code>ctrl-C</code>停止模糊处理。</p>
+<pre><code>$ go test -fuzz=Fuzz
+fuzz: elapsed: 0s, gathering baseline coverage: 0/38 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 38/38 completed, now fuzzing with 4 workers
+fuzz: elapsed: 3s, execs: 86342 (28778/sec), new interesting: 2 (total: 35)
+fuzz: elapsed: 6s, execs: 193490 (35714/sec), new interesting: 4 (total: 37)
+fuzz: elapsed: 9s, execs: 304390 (36961/sec), new interesting: 4 (total: 37)
+...
+fuzz: elapsed: 3m45s, execs: 7246222 (32357/sec), new interesting: 8 (total: 41)
+^Cfuzz: elapsed: 3m48s, execs: 7335316 (31648/sec), new interesting: 8 (total: 41)
+PASS
+ok      example/fuzz  228.000s
+</code></pre>
+<p>模糊测试将一直运行，直到遇到失败的输入，除非您通过  <code>-fuzztime</code> 标志。默认是，如果未发生故障，则永久运行，并且可以使用 <code>ctrl-C</code> 中断该过程。</p>
+</li>
+<li>
+<p>用 <code>go test -fuzz=Fuzz -fuzztime 30s</code>  对其进行模糊处理，如果没有发现故障，它将在退出前模糊 30 秒。</p>
+<pre><code>$ go test -fuzz=Fuzz -fuzztime 30s
+fuzz: elapsed: 0s, gathering baseline coverage: 0/5 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 5/5 completed, now fuzzing with 4 workers
+fuzz: elapsed: 3s, execs: 80290 (26763/sec), new interesting: 12 (total: 12)
+fuzz: elapsed: 6s, execs: 210803 (43501/sec), new interesting: 14 (total: 14)
+fuzz: elapsed: 9s, execs: 292882 (27360/sec), new interesting: 14 (total: 14)
+fuzz: elapsed: 12s, execs: 371872 (26329/sec), new interesting: 14 (total: 14)
+fuzz: elapsed: 15s, execs: 517169 (48433/sec), new interesting: 15 (total: 15)
+fuzz: elapsed: 18s, execs: 663276 (48699/sec), new interesting: 15 (total: 15)
+fuzz: elapsed: 21s, execs: 771698 (36143/sec), new interesting: 15 (total: 15)
+fuzz: elapsed: 24s, execs: 924768 (50990/sec), new interesting: 16 (total: 16)
+fuzz: elapsed: 27s, execs: 1082025 (52427/sec), new interesting: 17 (total: 17)
+fuzz: elapsed: 30s, execs: 1172817 (30281/sec), new interesting: 17 (total: 17)
+fuzz: elapsed: 31s, execs: 1172817 (0/sec), new interesting: 17 (total: 17)
+PASS
+ok      example/fuzz  31.025s
+</code></pre>
+<p>模糊通过!</p>
+<p>除了 <code>-fuzz</code> 标志之外，还添加了几个新标志到<code>go test</code>，可以在<a href="https://go.p2hp.com/doc/fuzz/#custom-settings">文档</a>中查看.</p>
+</li>
+</ol>
+<h2 id="conclusion">结论</h2>
+<p>干得漂亮！您刚刚介绍了自己在 Go 中的模糊测试.</p>
+<p>下一步是在代码中选择一个你想模糊的函数，然后尝试一下！如果模糊测试在代码中发现错误，请考虑将其添加到<a href="https://github.com/golang/go/wiki/Fuzzing-trophy-case" rel="noreferrer" target="_blank">trophy case</a>中。</p>
+<p>如果您遇到任何问题或对某个功能有想法，<a href="https://github.com/golang/go/issues/new/?&amp;labels=fuzz" rel="noreferrer" target="_blank">请提交问题</a>。</p>
+<p>有关该功能的讨论和一般反馈，您还可以参与Gophers Slack中的<a href="https://gophers.slack.com/archives/CH5KV1AKE" rel="noreferrer" target="_blank">#fuzzing 频道</a>。</p>
+<p>请查看<a href="https://go.p2hp.com/doc/fuzz/#requirements">go.dev/doc/fuzz</a> 的文档以进一步阅读。</p>
+<h2 id="heading-19">完整代码</h2>
+<p>&mdash; main.go &mdash;</p>
+<pre><code>package main
+
+import (
+    &quot;errors&quot;
+    &quot;fmt&quot;
+    &quot;unicode/utf8&quot;
+)
+
+func main() {
+    input := &quot;The quick brown fox jumped over the lazy dog&quot;
+    rev, revErr := Reverse(input)
+    doubleRev, doubleRevErr := Reverse(rev)
+    fmt.Printf(&quot;original: %q\n&quot;, input)
+    fmt.Printf(&quot;reversed: %q, err: %v\n&quot;, rev, revErr)
+    fmt.Printf(&quot;reversed again: %q, err: %v\n&quot;, doubleRev, doubleRevErr)
+}
+
+func Reverse(s string) (string, error) {
+    if !utf8.ValidString(s) {
+        return s, errors.New(&quot;input is not valid UTF-8&quot;)
+    }
+    r := []rune(s)
+    for i, j := 0, len(r)-1; i &lt; len(r)/2; i, j = i+1, j-1 {
+        r[i], r[j] = r[j], r[i]
+    }
+    return string(r), nil
+}
+</code></pre>
+<p>&mdash; reverse_test.go &mdash;</p>
+<pre><code>package main
+
+import (
+    &quot;testing&quot;
+    &quot;unicode/utf8&quot;
+)
+
+func FuzzReverse(f *testing.F) {
+    testcases := []string{&quot;Hello, world&quot;, &quot; &quot;, &quot;!12345&quot;}
+    for _, tc := range testcases {
+        f.Add(tc) // Use f.Add to provide a seed corpus
+    }
+    f.Fuzz(func(t *testing.T, orig string) {
+        rev, err1 := Reverse(orig)
+        if err1 != nil {
+            return
+        }
+        doubleRev, err2 := Reverse(rev)
+        if err2 != nil {
+            return
+        }
+        if orig != doubleRev {
+            t.Errorf(&quot;Before: %q, after: %q&quot;, orig, doubleRev)
+        }
+        if utf8.ValidString(orig) &amp;&amp; !utf8.ValidString(rev) {
+            t.Errorf(&quot;Reverse produced invalid UTF-8 string %q&quot;, rev)
+        }
+    })
+}
+</code></pre>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="fuzz.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../../css/styles.css">
+
+  
+  
+  
+<script src="../../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/articles/wiki/">
+<meta name="og:title" content="编写 Web 应用程序 - The Go Programming Language">
+<title>编写 Web 应用程序 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>编写 Web 应用程序</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+
+
+
+
+
+<h2>介绍</h2>
+
+<p>
+	本教程涵盖:
+</p>
+<ul>
+<li>使用load和save方法创建数据结构</li>
+<li>使用<code>net/http</code>包构建 Web 应用程序
+<li>使用<code>html/template</code>包处理 HTML 模板</li>
+<li>使用<code>regexp</code>包来验证用户输入</li>
+<li>使用闭包</li>
+</ul>
+
+<p>
+	假设知识:
+</p>
+<ul>
+<li>编程经验</li>
+<li>了解基本的web技术 (HTTP, HTML)</li>
+<li>一些UNIX/DOS命令行知识</li>
+</ul>
+
+<h2>入门</h2>
+
+<p>
+目前，你需要有 FreeBSD、Linux、macOS 或 Windows 机器来运行 Go。我们将使用<code>$</code>来表示命令提示符.
+</p>
+
+<p>
+安装 Go (请参阅 <a href="../../install.html">安装说明</a>).
+</p>
+
+<p>
+在<code>GOPATH</code>中为本教程创建一个新目录，然后cd到它:
+</p>
+
+<pre>
+$ mkdir gowiki
+$ cd gowiki
+</pre>
+
+<p>
+创建一个名为  <code>wiki.go</code>的文件，在您喜欢的编辑器中打开它，然后添加以下几行:
+</p>
+
+<pre>
+package main
+
+import (
+    "fmt"
+    "os"
+)
+</pre>
+
+<p>
+我们从 Go 标准库中导入<code>fmt</code> 和 <code>os</code> 包。稍后，随着我们实现附加功能，我们将向此<code>import</code>声明添加更多包.
+</p>
+
+<h2>数据结构</h2>
+
+<p>
+让我们从定义数据结构开始。wiki 由一系列相互关联的页面组成，每个页面都有一个标题和一个正文（页面内容）。在这里，我们定义<code>Page</code>为一个结构体，其中有两个字段代表标题和正文。
+</p>
+
+<div class="code">
+
+<pre>type Page struct {
+    Title string
+    Body  []byte
+}
+</pre>
+</div>
+
+
+
+<p>
+类型 <code>[]byte</code>表示"一个<code>byte</code>切片"。（有关切片的详细信息，请参阅<a href="../slices_usage_and_internals.html">切片：用法和内部结构</a>。<code>Body</code>元素是一个 <code>[]byte</code>而不是<code>string</code>，因为这是我们将使用的  <code>io</code> 库所期望的类型，如下所示.
+</p>
+
+<p>
+<code>Page</code> 结构描述如何将页面数据存储在内存中。但是持久性存储呢？我们可以通过在 <code>Page</code> 上创建一个<code>save</code>方法来解决这个问题:
+</p>
+
+<div class="code">
+
+<pre>func (p *Page) save() error {
+    filename := p.Title + &#34;.txt&#34;
+    return os.WriteFile(filename, p.Body, 0600)
+}
+</pre>
+</div>
+
+
+
+<p>
+ 此方法的签名内容为："这是一个名为 <code>save</code> 的方法，它接受一个 指向 <code>Page</code> 的指针<code>p</code>。它不带任何参数，并返回 一个<code>error</code> 类型的值."
+</p>
+
+<p>
+此方法会将<code>Page</code>的<code>Body</code>保存到文本文件中。为简单起见，我们将使用<code>Title</code>作为文件名。
+</p>
+
+<p>
+<code>save</code> 方法返回一个<code>error</code>值，因为这是 <code>WriteFile</code>（将字节切片写入文件的标准库函数）的返回类型。<code>save</code> 方法返回错误值，以便在写入文件时出现任何问题时让应用程序处理它。如果一切顺利，<code>Page.save()</code> 将返回 <code>nil</code>（零值指针、接口和其他一些类型）。
+</p>
+
+<p>
+作为第三个参数传递给 <code>WriteFile</code> 的八进制整数文本 <code>0600</code> 指示应仅使用当前用户的读写权限创建该文件。（有关详细信息，请参见 Unix 手册页 <code>open(2)</code> ）。
+</p>
+
+<p>
+	除了保存页面，我们还需要加载页面:
+</p>
+
+<div class="code">
+
+<pre>func loadPage(title string) *Page {
+    filename := title + &#34;.txt&#34;
+    body, _ := os.ReadFile(filename)
+    return &amp;Page{Title: title, Body: body}
+}
+</pre>
+</div>
+
+
+
+<p>
+函数 <code>loadPage</code> 从 title 参数构造文件名，将文件的内容读入新的变量<code>body</code>，并返回指向使用正确的标题和正文值构造的 <code>Page</code> 文本的指针.
+</p>
+
+<p>
+函数可以返回多个值。标准库函数<code>os.ReadFile</code> 返回 <code>[]byte</code> 和 <code>error</code>。在<code>loadPage</code>中，错误尚未处理;由下划线  (<code>_</code>)  符号表示的"空白标识符"用于丢弃错误返回值（实质上，将值赋给nothing）。
+</p>
+
+<p>
+但是，如果<code>ReadFile</code>遇到错误，会发生什么情况？例如，该文件可能不存在。我们不应该忽视这些错误。让我们修改该函数以返回 <code>*Page</code> 和 <code>error</code>。
+</p>
+
+<div class="code">
+
+<pre>func loadPage(title string) (*Page, error) {
+    filename := title + &#34;.txt&#34;
+    body, err := os.ReadFile(filename)
+    if err != nil {
+        return nil, err
+    }
+    return &amp;Page{Title: title, Body: body}, nil
+}
+</pre>
+</div>
+
+
+
+<p>
+此函数的调用方现在可以检查第二个参数;如果为 <code>nil</code>，则表示它已成功加载页面。如果不是，则这将是一个可以由调用方处理的<code>error</code>（有关详细信息，请参阅<a href="https://go.p2hp.com/ref/spec#Errors">语言规范</a>）。
+</p>
+
+<p>
+此时，我们有一个简单的数据结构，并且能够保存到文件并从中加载。让我们编写一个 <code>main</code> 函数来测试我们编写的内容:
+</p>
+
+<div class="code">
+
+<pre>func main() {
+    p1 := &amp;Page{Title: &#34;TestPage&#34;, Body: []byte(&#34;This is a sample Page.&#34;)}
+    p1.save()
+    p2, _ := loadPage(&#34;TestPage&#34;)
+    fmt.Println(string(p2.Body))
+}
+</pre>
+</div>
+
+
+
+<p>
+编译并执行此代码后，将创建一个名为<code>TestPage.txt</code>的文件，其中包含<code>p1</code>的内容。然后，该文件将被读入结构 <code>p2</code> 中，并将其 <code>Body</code> 元素打印到屏幕上.
+</p>
+
+<p>
+	您可以像这样编译和运行程序:
+</p>
+
+<pre>
+$ go build wiki.go
+$ ./wiki
+This is a sample Page.
+</pre>
+
+<p>
+(如果您使用的是Windows，则必须键入"<code>wiki</code>"而不用输入"<code>./</code>"才能运行该程序.)
+</p>
+
+<p>
+<a href="part1.go.html">单击此处查看我们迄今为止编写的代码.</a>
+</p>
+
+<h2>介绍 <code>net/http</code> 包 (插曲)</h2>
+
+<p>
+	这是一个简单的 Web 服务器的完整工作示例:
+</p>
+
+<div class="code">
+
+<pre><span class="comment">//go:build ignore</span>
+
+package main
+
+import (
+    &#34;fmt&#34;
+    &#34;log&#34;
+    &#34;net/http&#34;
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &#34;Hi there, I love %s!&#34;, r.URL.Path[1:])
+}
+
+func main() {
+    http.HandleFunc(&#34;/&#34;, handler)
+    log.Fatal(http.ListenAndServe(&#34;:8080&#34;, nil))
+}
+</pre>
+</div>
+
+
+
+<p>
+<code>main</code> 函数以对 <code>http.HandleFunc</code> 的调用开头。它告诉 <code>http</code> 包使用<code>handler</code>处理对 Web 根目录  (<code>"/"</code>) 的所有请求。
+</p>
+
+<p>
+然后调用 <code>http.ListenAndServe</code>，指定它应侦听任何接口上的端口 8080 (<code>":8080"</code>)。（现在不要担心它的第二个参数 <code>nil</code>。）此函数将阻塞，直到程序终止。
+</p>
+
+<p>
+<code>ListenAndServe</code> 始终返回错误，因为它仅在发生意外错误时返回。为了记录该错误，我们使用 <code>log.Fatal</code>包装函数调用。
+</p>
+
+<p>
+函数<code>handler</code>的类型为<code>http.HandlerFunc</code>。它需要一个<code>http.ResponseWriter</code> 和一个<code>http.Request</code>作为其参数。
+</p>
+
+<p>
+一个 <code>http.ResponseWriter</code> 值组装 HTTP 服务器的响应;通过写入它，我们将数据发送到HTTP客户端.
+</p>
+
+<p>
+一个 <code>http.Request</code>是表示客户端 HTTP 请求的数据结构。<code>r.URL.Path</code>是请求 URL 的路径组件。尾随<code>[1:]</code>表示"创建从第 1 个字符到结尾的 <code>Path</code> 子切片"。这将从路径名中删除前导"/".
+</p>
+
+<p>
+	如果您运行此程序并访问 URL:
+</p>
+<pre>http://localhost:8080/monkeys</pre>
+<p>
+	该程序将显示一个页面，其中包含:
+</p>
+<pre>Hi there, I love monkeys!</pre>
+
+<h2>使用 <code>net/http</code> 为 wiki 页面提供服务</h2>
+
+<p>
+要使用<code>net/http</code>包，必须导入它:
+</p>
+
+<pre>
+import (
+    "fmt"
+    "os"
+    "log"
+    <b>"net/http"</b>
+)
+</pre>
+
+<p>
+让我们创建一个处理程序，<code>viewHandler</code>，它将允许用户查看wiki页面。它将处理前缀为"/view/"的 URL.
+</p>
+
+<div class="code">
+
+<pre>func viewHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/view/&#34;):]
+    p, _ := loadPage(title)
+    fmt.Fprintf(w, &#34;&lt;h1&gt;%s&lt;/h1&gt;&lt;div&gt;%s&lt;/div&gt;&#34;, p.Title, p.Body)
+}
+</pre>
+</div>
+
+
+
+<p>
+同样，请注意使用 <code>_</code> 来忽略 <code>loadPage</code> 中的<code>error</code>返回值。为了简单起见，这里这样做通常被认为是不好的做法。我们稍后将对此进行讨论.
+</p>
+
+<p>
+首先，此函数从 <code>r.URL.Path</code>请求 URL 的路径组件中提取页面标题,。使用 <code>[len("/view/"):]</code> 重新切片 <code>Path</code>，以删除请求路径的前导<code>"/view/"</code>组件。这是因为路径总是以<code>"/view/"</code>开头，这不是页面标题的一部分.
+</p>
+
+<p>
+然后，该函数加载页面数据，使用简单 HTML 字符串设置页面格式，并将其写入 <code>w</code>，即 <code>http.ResponseWriter</code>.
+</p>
+
+<p>
+为了使用此处理程序，我们重写了 <code>main</code> 函数，以使用  <code>viewHandler</code> 初始化 <code>http</code> ，以处理路径<code>/view/</code>下的任何请求.
+</p>
+
+<div class="code">
+
+<pre>func main() {
+    http.HandleFunc(&#34;/view/&#34;, viewHandler)
+    log.Fatal(http.ListenAndServe(&#34;:8080&#34;, nil))
+}
+</pre>
+</div>
+
+
+
+<p>
+<a href="part2.go.html">单击此处查看我们迄今为止编写的代码.</a>
+</p>
+
+<p>
+让我们创建一些页面数据（作为<code>test.txt</code>），编译我们的代码，并尝试提供一个 wiki 页面.
+</p>
+
+<p>
+在编辑器中打开 <code>test.txt</code>文件，并在其中保存字符串"Hello world"（不带引号）.
+</p>
+
+<pre>
+$ go build wiki.go
+$ ./wiki
+</pre>
+
+<p>
+(如果您使用的是Windows，则必须键入"<code>wiki</code>"而不用输入"<code>./</code>"才能运行该程序.)
+</p>
+
+<p>
+运行此Web服务器后，访问 <code><a
+	href="http://localhost:8080/view/test">http://localhost:8080/view/test</a></code> 应显示标题为"test"的页面，其中包含"Hello world"字样。
+</p>
+
+<h2>编辑页面</h2>
+
+<p>
+维基不是没有编辑页面能力的维基。让我们创建两个新的处理程序：一个命名<code>editHandler</code> 为显示“编辑页面”表单，另一个命名 <code>saveHandler</code> 为保存通过表单输入的数据。
+</p>
+
+<p>
+	首先，我们将它们添加到<code>main()</code>:
+</p>
+
+<div class="code">
+
+<pre>func main() {
+    http.HandleFunc(&#34;/view/&#34;, viewHandler)
+    http.HandleFunc(&#34;/edit/&#34;, editHandler)
+    http.HandleFunc(&#34;/save/&#34;, saveHandler)
+    log.Fatal(http.ListenAndServe(&#34;:8080&#34;, nil))
+}
+</pre>
+</div>
+
+
+
+<p>
+函数<code>editHandler</code>加载页面（或者，如果它不存在，则创建一个空<code>Page</code>结构），并显示一个 HTML 表单
+</p>
+
+<div class="code">
+
+<pre>func editHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/edit/&#34;):]
+    p, err := loadPage(title)
+    if err != nil {
+        p = &amp;Page{Title: title}
+    }
+    fmt.Fprintf(w, &#34;&lt;h1&gt;Editing %s&lt;/h1&gt;&#34;+
+        &#34;&lt;form action=\&#34;/save/%s\&#34; method=\&#34;POST\&#34;&gt;&#34;+
+        &#34;&lt;textarea name=\&#34;body\&#34;&gt;%s&lt;/textarea&gt;&lt;br&gt;&#34;+
+        &#34;&lt;input type=\&#34;submit\&#34; value=\&#34;Save\&#34;&gt;&#34;+
+        &#34;&lt;/form&gt;&#34;,
+        p.Title, p.Title, p.Body)
+}
+</pre>
+</div>
+
+
+
+<p>
+这个函数可以正常工作，但所有硬编码的 HTML 都很丑陋。当然，还有更好的方法。
+</p>
+
+<h2>The <code>html/template</code> 包</h2>
+
+<p>
+<code>html/template</code>包是 Go 标准库的一部分。我们可以使用<code>html/template</code>将 HTML 保存在单独的文件中，允许我们更改编辑页面的布局而无需修改底层 Go 代码
+</p>
+
+<p>
+首先，我们必须添加<code>html/template</code>到导入列表中。我们也不会再使用<code>fmt</code>了，所以我们必须删除它。
+</p>
+
+<pre>
+import (
+    <b>"html/template"</b>
+    "os"
+    "net/http"
+)
+</pre>
+
+<p>
+让我们创建一个包含 HTML 表单的模板文件。打开一个名为 <code>edit.html</code> 的新文件，然后添加以下行：
+</p>
+
+<div class="code">
+
+<pre>&lt;h1&gt;Editing {{.Title}}&lt;/h1&gt;
+
+&lt;form action=&#34;/save/{{.Title}}&#34; method=&#34;POST&#34;&gt;
+&lt;div&gt;&lt;textarea name=&#34;body&#34; rows=&#34;20&#34; cols=&#34;80&#34;&gt;{{printf &#34;%s&#34; .Body}}&lt;/textarea&gt;&lt;/div&gt;
+&lt;div&gt;&lt;input type=&#34;submit&#34; value=&#34;Save&#34;&gt;&lt;/div&gt;
+&lt;/form&gt;
+</pre>
+</div>
+
+
+
+<p>
+修改<code>editHandler</code>为使用模板，而不是硬编码的 HTML:
+</p>
+
+<div class="code">
+
+<pre>func editHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/edit/&#34;):]
+    p, err := loadPage(title)
+    if err != nil {
+        p = &amp;Page{Title: title}
+    }
+    t, _ := template.ParseFiles(&#34;edit.html&#34;)
+    t.Execute(w, p)
+}
+</pre>
+</div>
+
+
+
+<p>
+函数<code>template.ParseFiles</code> 将读取 <code>edit.html</code>的内容并返回 <code>*template.Template</code>.
+</p>
+
+<p>
+方法<code>t.Execute</code> 执行模板，将生成的 HTML 写入 <code>http.ResponseWriter</code>。<code>.Title</code> 和 <code>.Body</code>加点标识符是指 <code>p.Title</code> 和 <code>p.Body</code>。
+</p>
+
+<p>
+模板指令括在双大括号中。<code>printf "%s" .Body</code>指令是一个函数调用，输出<code>.Body</code>为字符串而不是字节流，与调用<code>fmt.Printf</code>相同。<code>html/template</code>包有助于保证模板操作仅生成安全且外观正确的 HTML。例如，它会自动转义任何大于符号 (<code>&gt;</code>)，将其替换为<code>&amp;gt;</code>，以确保用户数据不会损坏表单HTML。
+</p>
+
+<p>
+由于我们现在正在使用模板，因此让我们为<code>viewHandler</code>创建一个名为 <code>view.html</code> 的模板：
+</p>
+
+<div class="code">
+
+<pre>&lt;h1&gt;{{.Title}}&lt;/h1&gt;
+
+&lt;p&gt;[&lt;a href=&#34;/edit/{{.Title}}&#34;&gt;edit&lt;/a&gt;]&lt;/p&gt;
+
+&lt;div&gt;{{printf &#34;%s&#34; .Body}}&lt;/div&gt;
+</pre>
+</div>
+
+
+
+<p>
+相应修改 <code>viewHandler</code> :
+</p>
+
+<div class="code">
+
+<pre>func viewHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/view/&#34;):]
+    p, _ := loadPage(title)
+    t, _ := template.ParseFiles(&#34;view.html&#34;)
+    t.Execute(w, p)
+}
+</pre>
+</div>
+
+
+
+<p>
+请注意，我们在两个处理程序中使用了几乎完全相同的模板代码。让我们通过将模板代码移动到它自己的函数来消除这种重复:
+</p>
+
+<div class="code">
+
+<pre>func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+    t, _ := template.ParseFiles(tmpl + &#34;.html&#34;)
+    t.Execute(w, p)
+}
+</pre>
+</div>
+
+
+
+<p>
+并修改处理程序以使用该函数:
+</p>
+
+<div class="code">
+
+<pre>func viewHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/view/&#34;):]
+    p, _ := loadPage(title)
+    renderTemplate(w, &#34;view&#34;, p)
+}
+</pre>
+</div>
+
+
+<div class="code">
+
+<pre>func editHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/edit/&#34;):]
+    p, err := loadPage(title)
+    if err != nil {
+        p = &amp;Page{Title: title}
+    }
+    renderTemplate(w, &#34;edit&#34;, p)
+}
+</pre>
+</div>
+
+
+
+<p>
+如果我们在<code>main</code> 中注释掉我们未实现的保存处理程序的注册，我们可以再次构建和测试我们的程序.
+<a href="part3.go.html">单击此处查看我们迄今为止编写的代码.</a>
+</p>
+
+<h2>处理不存在的页面</h2>
+
+<p>
+如果您访问 <a href="http://localhost:8080/view/APageThatDoesntExist">
+	<code>/view/APageThatDoesntExist</code></a>，该怎么办？您将看到一个包含 HTML 的页面。这是因为它忽略了 <code>loadPage</code> 中的错误返回值，并继续尝试填充没有数据的模板。相反，如果请求的页面不存在，则应将客户端重定向到编辑页面，以便创建内容:
+</p>
+
+<div class="code">
+
+<pre>func viewHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/view/&#34;):]
+    p, err := loadPage(title)
+    if err != nil {
+        http.Redirect(w, r, &#34;/edit/&#34;+title, http.StatusFound)
+        return
+    }
+    renderTemplate(w, &#34;view&#34;, p)
+}
+</pre>
+</div>
+
+
+
+<p>
+<code>http.Redirect</code>函数 向 HTTP 响应添加一个 HTTP 状态代码 <code>http.StatusFound</code> (302) 和一个<code>Location</code>标头。
+</p>
+
+<h2>保存页面</h2>
+
+<p>
+<code>saveHandler</code>函数将处理位于编辑页面上的表单的提交。在 <code>main</code> 中取消注释相关行后，让我们实现处理程序：
+</p>
+
+<div class="code">
+
+<pre>func saveHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/save/&#34;):]
+    body := r.FormValue(&#34;body&#34;)
+    p := &amp;Page{Title: title, Body: []byte(body)}
+    p.save()
+    http.Redirect(w, r, &#34;/view/&#34;+title, http.StatusFound)
+}
+</pre>
+</div>
+
+
+
+<p>
+页面标题（在 URL 中提供）和表单的唯一字段<code>Body</code>存储在新<code>Page</code>中。然后调用 <code>save()</code> 方法将数据写入文件，并将客户端重定向到 <code>/view/</code>页面。
+</p>
+
+<p>
+<code>FormValue</code> 返回的值的类型为<code>string</code>。我们必须将该值转换为 <code>[]byte</code>，然后才能适合 <code>Page</code> 结构。我们使用<code>[]byte(body)</code> 来执行转换。
+</p>
+
+<h2>错误处理</h2>
+
+<p>
+在我们的程序中有几个地方忽略了错误。这是不好的做法，尤其是因为当发生错误时，程序会出现意外行为。更好的解决方案是处理错误并向用户返回错误消息。这样，如果出现问题，服务器将按照我们想要的方式运行，并且可以通知用户。
+</p>
+
+<p>
+首先，让我们在 <code>renderTemplate</code>中处理错误:
+</p>
+
+<div class="code">
+
+<pre>func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+    t, err := template.ParseFiles(tmpl + &#34;.html&#34;)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    err = t.Execute(w, p)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
+}
+</pre>
+</div>
+
+
+
+<p>
+<code>http.Error</code>函数发送指定的 HTTP 响应码（在本例中为"内部服务器错误"）和错误消息。将它放在一个单独的函数中的决定已经得到了回报。
+</p>
+
+<p>
+	现在让我们修复 <code>saveHandler</code>:
+</p>
+
+<div class="code">
+
+<pre>func saveHandler(w http.ResponseWriter, r *http.Request) {
+    title := r.URL.Path[len(&#34;/save/&#34;):]
+    body := r.FormValue(&#34;body&#34;)
+    p := &amp;Page{Title: title, Body: []byte(body)}
+    err := p.save()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    http.Redirect(w, r, &#34;/view/&#34;+title, http.StatusFound)
+}
+</pre>
+</div>
+
+
+
+<p>
+在 <code>p.save()</code>期间发生的任何错误都将报告给用户。
+</p>
+
+<h2>模板缓存</h2>
+
+<p>
+此代码中存在效率低下的问题：每次呈现页面时，<code>renderTemplate</code> 都会调用<code>ParseFiles</code>。更好的方法是在程序初始化时调用 <code>ParseFiles</code> 一次，将所有模板解析为单个 <code>*Template</code>。然后，我们可以使用 <a href="https://go.p2hp.com/pkg/html/template/#Template.ExecuteTemplate"><code>ExecuteTemplate</code></a> 方法呈现特定模板。
+</p>
+
+<p>
+首先，我们创建一个名为<code>templates</code>的全局变量，并使用 <code>ParseFiles</code> 对其进行初始化。
+</p>
+
+<div class="code">
+
+<pre>var templates = template.Must(template.ParseFiles(&#34;edit.html&#34;, &#34;view.html&#34;))
+</pre>
+</div>
+
+
+
+<p>
+函数<code>template.Must</code>是一个方便的包装器，当传递非 nil <code>error</code>值时，它会恐慌，否则将返回<code>*Template</code> 不变。恐慌在这里是恰当的;如果无法加载模板，唯一明智的做法是退出程序。
+</p>
+
+<p>
+<code>ParseFiles</code> 函数采用任意数量的字符串参数来标识我们的模板文件，并将这些文件解析为以基本文件名命名的模板。如果我们要向程序中添加更多模板，我们会将它们的名称添加到 <code>ParseFiles</code> 调用的参数中。
+</p>
+
+<p>
+然后，我们修改 <code>renderTemplate</code> 函数以调用具有相应模板名称的 <code>templates.ExecuteTemplate</code> 方法：
+</p>
+
+<div class="code">
+
+<pre>func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+    err := templates.ExecuteTemplate(w, tmpl+&#34;.html&#34;, p)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
+}
+</pre>
+</div>
+
+
+
+<p>
+请注意，模板名称是模板文件名，因此我们必须将 <code>".html"</code>附加到 <code>tmpl</code> 参数。
+</p>
+
+<h2>验证</h2>
+
+<p>
+正如您可能已经观察到的，这个程序有一个严重的安全缺陷：用户可以提供任意路径在服务器上读/写。为了缓解这种情况，我们可以编写一个函数来使用正则表达式验证标题。
+</p>
+
+<p>
+首先，将<code>"regexp"</code>添加到<code>import</code>列表中。然后，我们可以创建一个全局变量来存储我们的验证表达式：
+</p>
+
+<div class="code">
+
+<pre>var validPath = regexp.MustCompile(&#34;^/(edit|save|view)/([a-zA-Z0-9]+)$&#34;)
+</pre>
+</div>
+
+
+
+<p>
+函数<code>regexp.MustCompile</code>将解析和编译正则表达式，并返回一个<code>regexp.Regexp</code><code>MustCompile</code> 与 <code>Compile</code> 的不同之处在于，如果表达式编译失败，它将恐慌，而 <code>Compile</code> 则作为第二个参数返回<code>error</code>。
+</p>
+
+<p>
+现在，让我们编写一个函数，该函数使用 <code>validPath</code> 表达式来验证路径并提取页面标题：
+</p>
+
+<div class="code">
+
+<pre>func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
+    m := validPath.FindStringSubmatch(r.URL.Path)
+    if m == nil {
+        http.NotFound(w, r)
+        return &#34;&#34;, errors.New(&#34;invalid Page Title&#34;)
+    }
+    return m[2], nil <span class="comment">// The title is the second subexpression.</span>
+}
+</pre>
+</div>
+
+
+
+<p>
+如果标题有效，则将返回该标题以及 <code>nil</code> 错误值。如果标题无效，该函数将向 HTTP 连接写入"404 Not Found"错误，并向处理程序返回错误。要创建新错误，我们必须导入<code>errors</code>包。
+</p>
+
+<p>
+让我们在每个处理程序中放置一个 <code>getTitle</code>  的调用：
+</p>
+
+<div class="code">
+
+<pre>func viewHandler(w http.ResponseWriter, r *http.Request) {
+    title, err := getTitle(w, r)
+    if err != nil {
+        return
+    }
+    p, err := loadPage(title)
+    if err != nil {
+        http.Redirect(w, r, &#34;/edit/&#34;+title, http.StatusFound)
+        return
+    }
+    renderTemplate(w, &#34;view&#34;, p)
+}
+</pre>
+</div>
+
+
+<div class="code">
+
+<pre>func editHandler(w http.ResponseWriter, r *http.Request) {
+    title, err := getTitle(w, r)
+    if err != nil {
+        return
+    }
+    p, err := loadPage(title)
+    if err != nil {
+        p = &amp;Page{Title: title}
+    }
+    renderTemplate(w, &#34;edit&#34;, p)
+}
+</pre>
+</div>
+
+
+<div class="code">
+
+<pre>func saveHandler(w http.ResponseWriter, r *http.Request) {
+    title, err := getTitle(w, r)
+    if err != nil {
+        return
+    }
+    body := r.FormValue(&#34;body&#34;)
+    p := &amp;Page{Title: title, Body: []byte(body)}
+    err = p.save()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    http.Redirect(w, r, &#34;/view/&#34;+title, http.StatusFound)
+}
+</pre>
+</div>
+
+
+
+<h2>介绍函数字面量和闭包</h2>
+
+<p>
+在每个处理程序中捕获错误条件会引入大量重复代码。如果我们可以将每个处理程序包装在一个执行此验证和错误检查的函数中会怎样？Go 的<a href="https://go.p2hp.com/ref/spec#Function_literals"> 函数字面量</a> 提供了一种强大的抽象功能的方法，可以在这里帮助我们。
+</p>
+
+<p>
+首先，我们重写每个处理程序的函数定义以接受标题字符串：
+</p>
+
+<pre>
+func viewHandler(w http.ResponseWriter, r *http.Request, title string)
+func editHandler(w http.ResponseWriter, r *http.Request, title string)
+func saveHandler(w http.ResponseWriter, r *http.Request, title string)
+</pre>
+
+<p>
+现在让我们定义一个包装函数，它<i>接受上述类型的函数</i>，并返回一个<code>http.HandlerFunc</code>类型的函数（适合传递给函数<code>http.HandlerFunc</code>）：
+</p>
+
+<pre>
+func makeHandler(fn func (http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// 在这里，我们将从请求中提取页面标题,
+		// 并调用提供的处理程序'fn'
+	}
+}
+</pre>
+
+<p>
+返回的函数称为闭包，因为它包含在其外部定义的值。在这种情况下，变量<code>fn</code>（<code>makeHandler</code> 的单个参数）由闭包括起来。变量 <code>fn</code> 将是我们的保存、编辑或视图处理程序之一.
+</p>
+
+<p>
+现在，我们可以从<code>getTitle</code>中获取代码并在此处使用它（经过一些小的修改）:
+</p>
+
+<div class="code">
+
+<pre>func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        m := validPath.FindStringSubmatch(r.URL.Path)
+        if m == nil {
+            http.NotFound(w, r)
+            return
+        }
+        fn(w, r, m[2])
+    }
+}
+</pre>
+</div>
+
+
+
+<p>
+<code>makeHandler</code> 返回的闭包是一个接受 一个<code>http.ResponseWriter</code> 和 <code>http.Request</code>的函数（换句话说，一个<code>http.HandlerFunc</code>）。闭包从请求路径中提取<code>title</code>，并使用 <code>validPath</code> 正则表达式对其进行验证。如果<code>title</code>无效，则将使用 <code>http.NotFound</code>函数 将错误写入<code>ResponseWriter</code>。如果<code>title</code>有效，则将调用随附的处理程序函数 <code>fn</code>，并将 <code>ResponseWriter</code>、<code>Request</code>, 和 <code>title</code> 作为参数.
+</p>
+
+<p>
+现在，我们可以在将处理函数注册到 <code>http</code> 包之前，在 <code>main</code> 中使用 <code>makeHandler</code> 包装它们：
+</p>
+
+<div class="code">
+
+<pre>func main() {
+    http.HandleFunc(&#34;/view/&#34;, makeHandler(viewHandler))
+    http.HandleFunc(&#34;/edit/&#34;, makeHandler(editHandler))
+    http.HandleFunc(&#34;/save/&#34;, makeHandler(saveHandler))
+
+    log.Fatal(http.ListenAndServe(&#34;:8080&#34;, nil))
+}
+</pre>
+</div>
+
+
+
+<p>
+最后，我们从处理程序函数中删除对 <code>getTitle</code> 的调用，使它们更简单：
+</p>
+
+<div class="code">
+
+<pre>func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
+    p, err := loadPage(title)
+    if err != nil {
+        http.Redirect(w, r, &#34;/edit/&#34;+title, http.StatusFound)
+        return
+    }
+    renderTemplate(w, &#34;view&#34;, p)
+}
+</pre>
+</div>
+
+
+<div class="code">
+
+<pre>func editHandler(w http.ResponseWriter, r *http.Request, title string) {
+    p, err := loadPage(title)
+    if err != nil {
+        p = &amp;Page{Title: title}
+    }
+    renderTemplate(w, &#34;edit&#34;, p)
+}
+</pre>
+</div>
+
+
+<div class="code">
+
+<pre>func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
+    body := r.FormValue(&#34;body&#34;)
+    p := &amp;Page{Title: title, Body: []byte(body)}
+    err := p.save()
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    http.Redirect(w, r, &#34;/view/&#34;+title, http.StatusFound)
+}
+</pre>
+</div>
+
+
+
+<h2>试试看!</h2>
+
+<p>
+<a href="final.go.html">单击此处查看最终代码清单.</a>
+</p>
+
+<p>
+	重新编译代码，然后运行应用程序:
+</p>
+
+<pre>
+$ go build wiki.go
+$ ./wiki
+</pre>
+
+<p>
+访问<a href="http://localhost:8080/view/ANewPage">http://localhost:8080/view/ANewPage</a>应该会显示页面编辑表单。然后您应该能够输入一些文本，单击“保存”，然后重定向到新创建的页面.
+</p>
+
+<h2>其他任务</h2>
+
+<p>
+	以下是您可能想要自己解决的一些简单任务:
+</p>
+
+<ul>
+<li>将模板存储在 <code>tmpl/</code>中，将页面数据存储在<code>data/</code> 中.
+<li>添加处理程序以使 Web 根目录重定向到 <code>/view/FrontPage</code>.</li>
+<li>通过使页面模板成为有效的 HTML 并添加一些 CSS 规则来修饰页面模板.</li>
+<li>通过将 <code>[PageName]</code> 的实例转换为<br>
+	<code>&lt;a href="/view/PageName"&gt;PageName&lt;/a&gt;</code>来实现页面间链接.（提示：你可以使用<code>regexp.ReplaceAllFunc</code>来做这个）
+	</li>
+</ul>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="index.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../../go.dev/js/jquery.js"></script>
+  <script src="../../../go.dev/js/carousels.js"></script>
+  <script src="../../../go.dev/js/searchBox.js"></script>
+  <script src="../../../go.dev/js/misc.js"></script>
+  <script src="../../../go.dev/js/hats.js"></script>
+  <script src="../../../go.dev/js/playground.js"></script>
+  <script src="../../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

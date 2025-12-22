@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/database/querying">
+<meta name="og:title" content="查询数据 - The Go Programming Language">
+<title>查询数据 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>查询数据</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+<p>执行返回数据的 SQL 语句时，请使用<code>database/sql</code>包中提供的<code>Query</code>方法之一。其中每个都返回一个<code>Row</code>
+或 <code>Rows</code> ，您可以使用 <code>Scan</code> 方法将其数据复制到变量。例如，您可以使用这些方法来执行 <code>SELECT</code> 语句。</p>
+<p>执行不返回数据的语句时，可以使用 <code>Exec</code> 或
+<code>ExecContext</code>方法。有关更多信息，请参阅 <a href="change-data.html">执行不返回数据的语句</a>。</p>
+<p><code>database/sql</code>包提供了两种执行结果查询的方法。</p>
+<ul>
+<li><strong>查询单行</strong> – <code>QueryRow</code>  最多从数据库中返回一行。有关详细信息，请参阅<a href="querying.html#single_row">查询单行</a>。</li>
+<li><strong>查询多行</strong> – <code>Query</code> 将所有匹配的行作为代码可以循环的行结构返回。有关详细信息，请参阅<a href="querying.html#multiple_rows">查询多行</a>。</li>
+</ul>
+<p>如果您的代码将重复执行相同的 SQL 语句，请考虑使用预准备语句。有关详细信息，请参阅<a href="prepared-statements.html">使用预准备语句</a>。</p>
+<p><strong>警告:</strong> 不要使用字符串格式化函数，例如<code>fmt.Sprintf</code>组装 SQL 语句！您可能会引入 SQL 注入风险。有关更多信息，请参阅<a href="sql-injection.html">避免 SQL 注入风险</a>。</p>
+<h3 id="single_row">查询单行</h3>
+<p><code>QueryRow</code> 最多检索单个数据库行，例如当您要通过唯一 ID 查找数据时。如果查询返回多行，则 <code>Scan</code> 方法将丢弃除第一行之外的所有行。</p>
+<p><code>QueryRowContext</code> 的工作方式类似于<code>QueryRow</code>，但有一个 <code>context.Context</code> 参数。有关详细信息，请参阅<a href="cancel-operations.html">取消正在进行的操作</a>。</p>
+<p>下面的示例使用查询来查明是否有足够的库存来支持购买。如果有足够的，则 SQL 语句返回 <code>true</code>;如果没有足够的，则返回<code>false</code>。<a href="https://pkg.go.dev/database/sql#Row.Scan" rel="noreferrer" target="_blank"><code>Row.Scan</code></a> 通过指针将布尔返回值复制到<code>enough</code>变量中。</p>
+<pre><code>func canPurchase(id int, quantity int) (bool, error) {
+    var enough bool
+    // 基于单行查询值.
+    if err := db.QueryRow(&quot;SELECT (quantity &gt;= ?) from album where id = ?&quot;,
+        quantity, id).Scan(&amp;enough); err != nil {
+        if err == sql.ErrNoRows {
+            return false, fmt.Errorf(&quot;canPurchase %d: unknown album&quot;, id)
+        }
+        return false, fmt.Errorf(&quot;canPurchase %d: %v&quot;, id)
+    }
+    return enough, nil
+}
+</code></pre>
+<p><strong>注意:</strong> 预准备语句中的参数占位符因您使用的 DBMS 和驱动程序而异。例如，Postgres 的 <a href="https://pkg.go.dev/github.com/lib/pq" rel="noreferrer" target="_blank">pq 驱动</a>需要一个占位符，例如是<code>$1</code>而不是 <code>?</code>。</p>
+<h4 id="single_row_errors">处理错误</h4>
+<p><code>QueryRow</code>本身不返回任何错误。相反，<code>Scan</code> 会报告组合查找和扫描中的任何错误。当查询没有找到任何行时，它会返回 <a href="https://pkg.go.dev/database/sql#ErrNoRows" rel="noreferrer" target="_blank"><code>sql.ErrNoRows</code></a> 。</p>
+<h4 id="single_row_functions">返回单行的函数</h4>
+<table id="single-row-functions-list" class="DocTable">
+  <thead>
+    <tr class="DocTable-head">
+      <th class="DocTable-cell" width="20%">函数</th>
+      <th class="DocTable-cell">描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <code><a href="https://pkg.go.dev/database/sql#DB.QueryRow">DB.QueryRow</a></code><br />
+        <code><a href="https://pkg.go.dev/database/sql#DB.QueryRowContext">DB.QueryRowContext</a></code>
+      </td>
+      <td class="DocTable-cell">单独运行单行查询.</td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <code><a href="https://pkg.go.dev/database/sql#Tx.QueryRow">Tx.QueryRow</a></code><br />
+        <code><a href="https://pkg.go.dev/database/sql#Tx.QueryRowContext">Tx.QueryRowContext</a></code>
+      </td>
+      <td class="DocTable-cell">在更大的事务中运行单行查询。有关更多信息，请参阅
+        <a href="execute-transactions.html">执行事务</a>.
+      </td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <code><a href="https://pkg.go.dev/database/sql#Stmt.QueryRow">Stmt.QueryRow</a></code><br />
+        <code><a href="https://pkg.go.dev/database/sql#Stmt.QueryRowContext">Stmt.QueryRowContext</a></code>
+      </td>
+      <td class="DocTable-cell">使用已准备好的语句运行单行查询。有关详细信息，请参阅<a href="prepared-statements.html">使用预准备语句</a>.
+      </td>
+    </tr>
+    <tr class="DocTable-row">
+        <td class="DocTable-cell">
+  <code><a href="https://pkg.go.dev/database/sql#Conn.QueryRowContext">Conn.QueryRowContext</a></code>
+      </td>
+      <td class="DocTable-cell">用于保留连接。有关更多信息，请参阅
+        <a href="manage-connections.html">管理连接</a>.
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 id="multiple_rows">查询多行</h3>
+<p>可以使用<code>Query</code> 或 <code>QueryContext</code>查询多行，它们返回表示查询结果的<code>Rows</code>。您的代码使用 <a href="https://pkg.go.dev/database/sql#Rows.Next" rel="noreferrer" target="_blank"><code>Rows.Next</code></a>循环访问返回的行。每次迭代都调用 <code>Scan</code> 以将列值复制到变量中。</p>
+<p><code>QueryContext</code>的工作方式与<code>Query</code> 类似，但具有<code>context.Context</code>参数。有关详细信息，请参阅<a href="cancel-operations.html">取消正在进行的操作</a>。</p>
+<p>下面的示例执行一个查询以返回指定艺术家的专辑。专辑以一个 <code>sql.Rows</code>返回。该代码使用 <a href="https://pkg.go.dev/database/sql#Rows.Scan" rel="noreferrer" target="_blank"><code>Rows.Scan</code></a>  将列值复制到由指针表示的变量中。</p>
+<pre><code>func albumsByArtist(artist string) ([]Album, error) {
+    rows, err := db.Query(&quot;SELECT * FROM album WHERE artist = ?&quot;, artist)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    // 用于保存返回行中的数据的专辑切片
+    var albums []Album
+
+    // 遍历行，使用Scan将列数据分配给结构字段。
+    for rows.Next() {
+        var alb Album
+        if err := rows.Scan(&amp;alb.ID, &amp;alb.Title, &amp;alb.Artist,
+            &amp;alb.Price, &amp;alb.Quantity); err != nil {
+            return albums, err
+        }
+        albums = append(albums, album)
+    }
+    if err = rows.Err(); err != nil {
+        return albums, err
+    }
+    return albums, nil
+}
+</code></pre>
+<p>请注意对<a href="https://pkg.go.dev/database/sql#Rows.Close" rel="noreferrer" target="_blank"><code>rows.Close</code></a>的延迟调用。这将释放行持有的任何资源，无论函数如何返回。在行中一直循环也会隐式关闭它，但最好使用 <code>defer</code> 来确保无论如何都关闭<code>rows</code> 。</p>
+<p><strong>注意:</strong> 预准备语句中的参数占位符因您使用的 DBMS 和驱动程序而异。例如，Postgres 的 <a href="https://pkg.go.dev/github.com/lib/pq" rel="noreferrer" target="_blank">pq 驱动</a> 需要一个占位符，例如是<code>$1</code>而不是 <code>?</code>。</p>
+<h4 id="multiple_rows_errors">处理错误</h4>
+<p>确保 <code>sql.Rows</code>在循环查询结果后检查错误。如果查询失败，这就是您的代码发现的方式。</p>
+<h4 id="multiple_rows_functions">返回多行的函数</h4>
+<table id="multiple-row-functions-list" class="DocTable">
+  <thead>
+    <tr class="DocTable-head">
+      <th class="DocTable-cell" width="20%">函数</th>
+      <th class="DocTable-cell">描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <code><a href="https://pkg.go.dev/database/sql#DB.Query">DB.Query</a></code><br />
+        <code><a href="https://pkg.go.dev/database/sql#DB.QueryContext">DB.QueryContext</a></code>
+      </td>
+      <td class="DocTable-cell">单独运行查询.</td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <code><a href="https://pkg.go.dev/database/sql#Tx.Query">Tx.Query</a></code><br />
+        <code><a href="https://pkg.go.dev/database/sql#Tx.QueryContext">Tx.QueryContext</a></code>
+      </td>
+      <td class="DocTable-cell">在更大的事务中运行查询。有关更多信息，请参阅
+        <a href="execute-transactions.html">执行事务</a>.
+      </td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <code><a href="https://pkg.go.dev/database/sql#Stmt.Query">Stmt.Query</a></code><br />
+        <code><a href="https://pkg.go.dev/database/sql#Stmt.QueryContext">Stmt.QueryContext</a></code>
+      </td>
+      <td class="DocTable-cell">使用已准备好的语句运行查询。有关详细信息，请参阅
+        <a href="prepared-statements.html">使用预准备语句</a>.
+    </td>
+    </tr>
+    <tr class="DocTable-row">
+      <td class="DocTable-cell">
+        <code><a href="https://pkg.go.dev/database/sql#Conn.QueryContext">Conn.QueryContext</a></code>
+      </td>
+      <td class="DocTable-cell">用于保留连接。有关更多信息，请参阅
+        <a href="manage-connections.html">管理连接</a>.
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 id="nullable_columns">处理可为null的列值</h3>
+<p><code>database/sql</code>包提供了几种特殊的类型，当列的值可能为 null 时，可以用作  <code>Scan</code> 函数的参数。每个都包括一个<code>Valid</code>字段，用于报告该值是否为非 null，以及一个保存该值（如果是这样）的字段.</p>
+<p>以下示例中的代码查询客户名称。如果 name 值为 null，则代码将替换另一个值以在应用程序中使用。</p>
+<pre><code>var s sql.NullString
+err := db.QueryRow(&quot;SELECT name FROM customer WHERE id = ?&quot;, id).Scan(&amp;s)
+if err != nil {
+    log.Fatal(err)
+}
+
+// 查找客户名称，如果不存在，请使用占位符.
+name := &quot;Valued Customer&quot;
+if s.Valid {
+    name = s.String
+}
+</code></pre>
+<p>在<code>sql</code>  包参考中查看有关每种类型的详细信息：</p>
+<ul>
+<li><a href="https://pkg.go.dev/database/sql#NullBool" rel="noreferrer" target="_blank"><code>NullBool</code></a></li>
+<li><a href="https://pkg.go.dev/database/sql#NullFloat64" rel="noreferrer" target="_blank"><code>NullFloat64</code></a></li>
+<li><a href="https://pkg.go.dev/database/sql#NullInt32" rel="noreferrer" target="_blank"><code>NullInt32</code></a></li>
+<li><a href="https://pkg.go.dev/database/sql#NullInt64" rel="noreferrer" target="_blank"><code>NullInt64</code></a></li>
+<li><a href="https://pkg.go.dev/database/sql#NullString" rel="noreferrer" target="_blank"><code>NullString</code></a></li>
+<li><a href="https://pkg.go.dev/database/sql#NullTime" rel="noreferrer" target="_blank"><code>NullTime</code></a></li>
+</ul>
+<h3 id="column_data">从列中获取数据</h3>
+<p>循环查询返回的行时，您可以使用<code>Scan</code>将行的列值复制到 Go 值中，如<a href="https://pkg.go.dev/database/sql#Rows.Scan" rel="noreferrer" target="_blank"><code>Rows.Scan</code></a>参考中所述。</p>
+<p>所有驱动程序都支持一组基本的数据转换，例如将SQL <code>INT</code> 转换为 Go <code>int</code>。一些驱动程序扩展了这组转换；有关详细信息，请参阅每个驱动程序的文档。</p>
+<p>如您所料， <code>Scan</code>将从列类型转换为类似的 Go 类型。例如， <code>Scan</code> 将从 SQL <code>CHAR</code>, <code>VARCHAR</code> 和 <code>TEXT</code>  转换为 Go  <code>string</code>。但是，<code>Scan</code> 还会执行到适合列值的另一种 Go 类型的转换。例如，如果列是始终包含数字的 <code>VARCHAR</code>，则可以指定数字 Go 类型（如 <code>int</code>）来接收该值， <code>Scan</code>  将为你使用 <code>strconv.Atoi</code> 对其进行转换。</p>
+<p>有关<code>Scan</code>函数进行的转换的更多详细信息，请参阅<a href="https://pkg.go.dev/database/sql#Rows.Scan" rel="noreferrer" target="_blank"><code>Rows.Scan</code></a>参考资料。</p>
+<h3 id="multiple_result_sets">处理多个结果集</h3>
+<p>当您的数据库操作可能返回多个结果集时，您可以使用 <a href="https://pkg.go.dev/database/sql#Rows.NextResultSet" rel="noreferrer" target="_blank"><code>Rows.NextResultSet</code></a>检索这些结果集. 例如，当您发送单独查询多个表的 SQL 并为每个表返回一个结果集时，这可能很有用。</p>
+<p><code>Rows.NextResultSet</code>准备下一个结果集，以便调用 <code>Rows.Next</code> 从下一个结果集中检索第一行。它返回一个布尔值，指示是否有下一个结果集</p>
+<p>以下示例中的代码使用 <code>DB.Query</code>以执行两个 SQL 语句。第一个结果集来自过程中的第一个查询，检索<code>album</code>表中的所有行。下一个结果集来自第二个查询，从<code>song</code>表中检索行.</p>
+<pre><code>rows, err := db.Query(&quot;SELECT * from album; SELECT * from song;&quot;)
+if err != nil {
+    log.Fatal(err)
+}
+defer rows.Close()
+
+// 循环遍历第一个结果集.
+for rows.Next() {
+    // 处理结果集.
+}
+
+// 前进到下一个结果集.
+rows.NextResultSet()
+
+// 循环遍历第二个结果集.
+for rows.Next() {
+    // Handle second set.
+}
+
+// 检查任一结果集中是否存在任何错误.
+if err := rows.Err(); err != nil {
+    log.Fatal(err)
+}
+</code></pre>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="querying.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

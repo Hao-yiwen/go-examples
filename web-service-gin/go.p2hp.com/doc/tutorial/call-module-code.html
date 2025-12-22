@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/tutorial/call-module-code">
+<meta name="og:title" content="从另一个模块调用您的代码 - The Go Programming Language">
+<title>从另一个模块调用您的代码 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>从另一个模块调用您的代码</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+
+
+
+
+<p>
+  在<a href="https://go.p2hp.com/doc/tutorial/create-module.html">上一节</a>中，您创建了一个<code>greetings</code>模块。在本节中，您将编写代码以调用刚刚编写的模块中的 <code>Hello</code> 函数。您将编写可以作为应用程序执行的代码，并调用<code>greetings</code>模块中的代码。
+</p>
+
+<aside class="Note">
+  <strong>注意:</strong> 本主题是从<a href="https://go.p2hp.com/doc/tutorial/create-module.html">创建 Go 模块</a>开始的多部分教程的一部分.
+</aside>
+
+<ol>
+  <li>
+    为 Go 模块源代码创建一个 <code>hello</code> 目录。这是您编写调用方的位置.
+
+    <p>
+      创建此目录后，您应该在层次结构中的同一级别同时具有 hello 和 greetings 目录，如下所示:
+    </p>
+      <pre>&lt;home&gt;/
+ |-- greetings/
+ |-- hello/</pre>
+
+    <p>
+      例如，如果您的命令提示符位于 greetings 目录中，则可以使用以下命令:
+    </p>
+
+    <pre>
+cd ..
+mkdir hello
+cd hello
+</pre
+    >
+  </li>
+
+  <li>
+    为您将要编写的代码启用依赖项跟踪.
+
+    <p>
+      要为您的代码启用依赖项跟踪，请运行<a
+        href="https://go.p2hp.com/ref/mod#go-mod-init"
+        ><code>go mod init</code> 命令</a>，为其指定您的代码所在模块的名称</p>
+
+    <p>
+        出于本教程的目的，请使用<code>example.com/hello</code>用于模块路径。
+    </p>
+
+    <pre>
+$ go mod init example.com/hello
+go: creating new go.mod: module example.com/hello
+</pre>
+  </li>
+
+  <li>
+    在hello 目录中用文本编辑器创建一个用于编写代码的文件，并将其命名为 hello.go
+  </li>
+
+  <li>
+   编写代码来调用<code>Hello</code>函数，然后打印函数的返回值。
+
+    <p>
+      为此，请将以下代码粘贴到 hello.go 中.
+    </p>
+
+    <pre>
+package main
+
+import (
+    "fmt"
+
+    "example.com/greetings"
+)
+
+func main() {
+    // 获取问候信息并打印出来.
+    message := greetings.Hello("Gladys")
+    fmt.Println(message)
+}
+</pre>
+
+    <p>
+      在此代码中，您:
+    </p>
+
+    <ul>
+      <li>
+        声明一个<code>main</code>包。在 Go 中，作为应用程序执行的代码必须在<code>main</code>包中.
+      </li>
+      <li>
+        导入两个包：<code>example.com/greetings</code> 和 <a href="https://pkg.go.dev/fmt/"><code>fmt</code> 包</a>。这使代码可以访问这些包中的函数。导入 <code>example.com/greetings</code>（您之前创建的模块中包含的包）使你可以访问 <code>Hello</code> 函数。您还导入了<code>fmt</code>，其中包含用于处理输入和输出文本（如将文本打印到控制台）的函数。
+      </li>
+      <li>
+        通过调用 <code>greetings</code>包的 <code>Hello</code>函数获取问候语。
+      </li>
+    </ul>
+  </li>
+
+  <li>
+    编辑 <code>example.com/hello</code>模块以使用本地 <code>example.com/greetings</code> 模块。
+
+    <p>
+      对于生产用途，您可以从其存储库（具有反映其已发布位置的模块路径）发布 <code>example.com/greetings</code> 模块，Go 工具可以在其中找到它以下载它。现在，由于尚未发布该模块，因此需要调整 <code>example.com/hello</code>模块，以便它可以在本地文件系统上找到 <code>example.com/greetings</code> 代码。
+    </p>
+
+    <p>
+      为此，请使用 <a href="https://go.p2hp.com/ref/mod#go-mod-edit"><code>go
+        mod edit</code> 命令</a>编辑 <code>example.com/hello</code> 模块，将 Go 工具从其模块路径（模块不在的位置）重定向到本地目录（所在的位置）。
+    </p>
+
+    <ol>
+      <li>
+        从 hello 目录中的命令提示符处，运行以下命令:
+
+    <pre>
+$ go mod edit -replace example.com/greetings=../greetings
+</pre>
+
+    <p>
+        该命令指定 <code>example.com/greetings</code> 应替换为 <code>../greetings</code>，用于查找依赖项。运行该命令后，hello 目录中的 go.mod 文件应包含一个 <a href="../modules/gomod-ref.html#replace">
+          <code>replace</code> 指令</a>:
+    </p>
+
+        <pre>
+module example.com/hello
+
+go 1.16
+
+<ins>replace example.com/greetings => ../greetings</ins>
+</pre>
+      </li>
+
+      <li>
+        在 hello 目录的命令提示符下，运行 <a href="https://go.p2hp.com/ref/mod#go-mod-tidy">
+          <code>go mod tidy</code> 命令</a>以同步 <code>example.com/hello</code> 模块的依赖项，添加代码所需的依赖项，但尚未在模块中跟踪的依赖项。
+
+        <pre>$ go mod tidy
+go: found example.com/greetings in example.com/greetings v0.0.0-00010101000000-000000000000
+</pre>
+        <p>
+         命令完成后，<code>example.com/hello</code> 模块的 go.mod 文件应如下所示：
+        </p>
+
+        <pre>module example.com/hello
+
+go 1.16
+
+replace example.com/greetings => ../greetings
+
+<ins>require example.com/greetings v0.0.0-00010101000000-000000000000</ins></pre>
+
+        <p>
+          该命令在greetings目录中找到本地代码，然后添加了一个 <a href="../modules/gomod-ref.html#require"><code>require</code>
+            指令</a>来指定<code>example.com/hello</code> 需要 <code>example.com/greetings</code>。您在 hello.go 中导入<code>greetings</code>包时创建了此依赖项.
+        </p>
+        <p>
+          模块路径后面的数字是<em>伪版本号</em> - 用于代替语义版本号（模块还没有）的生成的数字.
+        </p>
+        <p>
+          要引用<em>已发布</em>的模块，go.mod 文件通常会省略<code>replace</code>指令并使用末尾带有标记版本号的<code>require</code>指令。
+        </p>
+
+        <pre>require example.com/greetings v1.1.0</pre>
+
+        <p>有关版本号的更多信息，请参阅 
+          <a href="../modules/version-numbers.html">模块版本编号</a>.</p>
+      </li>
+    </ol>
+  <li>
+    在 <code>hello</code> 目录中的命令提示符下，运行代码以确认其正常工作。
+
+    <pre>
+$ go run .
+Hi, Gladys. Welcome!
+</pre>
+  </li>
+</ol>
+
+<p>
+  恭喜！您已经编写了两个功能模块.
+</p>
+
+<p>
+  在下一个主题中，您将添加一些错误处理.
+</p>
+
+<p class="Navigation">
+  <a class="Navigation-prev" href="https://go.p2hp.com/doc/tutorial/create-module.html"
+    >&lt; 创建一个Go模块</a
+  >
+  <a class="Navigation-next" href="handle-errors.html"
+    >返回并处理错误 &gt;</a
+  >
+</p>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="call-module-code.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

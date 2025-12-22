@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+<link rel="alternate" title="The Go Blog" type="application/atom+xml" href="https://go.p2hp.com/blog/feed.atom">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/blog/declaration-syntax">
+<meta name="og:title" content="Go&#39;s Declaration Syntax - The Go Programming Language">
+<title>Go&#39;s Declaration Syntax - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/runningsquare.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/declaration-syntax">
+    
+    <h1 class="small"><a href="https://go.p2hp.com/blog/">The Go Blog</a></h1>
+    
+
+    <h1>Go&#39;s Declaration Syntax</h1>
+      
+      <p class="author">
+      Rob Pike<br>
+      7 July 2010
+      </p>
+      
+      <h2 id="introduction">Introduction</h2>
+<p>Newcomers to Go wonder why the declaration syntax is different from the
+tradition established in the C family.
+In this post we&rsquo;ll compare the two approaches and explain why Go&rsquo;s declarations look as they do.</p>
+<h2 id="c-syntax">C syntax</h2>
+<p>First, let&rsquo;s talk about C syntax. C took an unusual and clever approach
+to declaration syntax.
+Instead of describing the types with special syntax,
+one writes an expression involving the item being declared,
+and states what type that expression will have. Thus</p>
+<pre><code>int x;
+</code></pre>
+<p>declares x to be an int: the expression &lsquo;x&rsquo; will have type int.
+In general, to figure out how to write the type of a new variable,
+write an expression involving that variable that evaluates to a basic type,
+then put the basic type on the left and the expression on the right.</p>
+<p>Thus, the declarations</p>
+<pre><code>int *p;
+int a[3];
+</code></pre>
+<p>state that p is a pointer to int because &lsquo;*p&rsquo; has type int,
+and that a is an array of ints because a[3] (ignoring the particular index value,
+which is punned to be the size of the array) has type int.</p>
+<p>What about functions? Originally, C&rsquo;s function declarations wrote the types
+of the arguments outside the parens, like this:</p>
+<pre><code>int main(argc, argv)
+    int argc;
+    char *argv[];
+{ /* ... */ }
+</code></pre>
+<p>Again, we see that main is a function because the expression main(argc,
+argv) returns an int.
+In modern notation we&rsquo;d write</p>
+<pre><code>int main(int argc, char *argv[]) { /* ... */ }
+</code></pre>
+<p>but the basic structure is the same.</p>
+<p>This is a clever syntactic idea that works well for simple types but can get confusing fast.
+The famous example is declaring a function pointer.
+Follow the rules and you get this:</p>
+<pre><code>int (*fp)(int a, int b);
+</code></pre>
+<p>Here, fp is a pointer to a function because if you write the expression (*fp)(a,
+b) you&rsquo;ll call a function that returns int.
+What if one of fp&rsquo;s arguments is itself a function?</p>
+<pre><code>int (*fp)(int (*ff)(int x, int y), int b)
+</code></pre>
+<p>That&rsquo;s starting to get hard to read.</p>
+<p>Of course, we can leave out the name of the parameters when we declare a function, so main can be declared</p>
+<pre><code>int main(int, char *[])
+</code></pre>
+<p>Recall that argv is declared like this,</p>
+<pre><code>char *argv[]
+</code></pre>
+<p>so you drop the name from the middle of its declaration to construct its type.
+It&rsquo;s not obvious, though, that you declare something of type char *[] by
+putting its name in the middle.</p>
+<p>And look what happens to fp&rsquo;s declaration if you don&rsquo;t name the parameters:</p>
+<pre><code>int (*fp)(int (*)(int, int), int)
+</code></pre>
+<p>Not only is it not obvious where to put the name inside</p>
+<pre><code>int (*)(int, int)
+</code></pre>
+<p>it&rsquo;s not exactly clear that it&rsquo;s a function pointer declaration at all.
+And what if the return type is a function pointer?</p>
+<pre><code>int (*(*fp)(int (*)(int, int), int))(int, int)
+</code></pre>
+<p>It&rsquo;s hard even to see that this declaration is about fp.</p>
+<p>You can construct more elaborate examples but these should illustrate some
+of the difficulties that C&rsquo;s declaration syntax can introduce.</p>
+<p>There&rsquo;s one more point that needs to be made, though.
+Because type and declaration syntax are the same,
+it can be difficult to parse expressions with types in the middle.
+This is why, for instance, C casts always parenthesize the type, as in</p>
+<pre><code>(int)M_PI
+</code></pre>
+<h2 id="go-syntax">Go syntax</h2>
+<p>Languages outside the C family usually use a distinct type syntax in declarations.
+Although it&rsquo;s a separate point, the name usually comes first,
+often followed by a colon.
+Thus our examples above become something like (in a fictional but illustrative language)</p>
+<pre><code>x: int
+p: pointer to int
+a: array[3] of int
+</code></pre>
+<p>These declarations are clear, if verbose - you just read them left to right.
+Go takes its cue from here, but in the interests of brevity it drops the
+colon and removes some of the keywords:</p>
+<pre><code>x int
+p *int
+a [3]int
+</code></pre>
+<p>There is no direct correspondence between the look of [3]int and how to
+use a in an expression.
+(We&rsquo;ll come back to pointers in the next section.) You gain clarity at the
+cost of a separate syntax.</p>
+<p>Now consider functions. Let&rsquo;s transcribe the declaration for main as it would read in Go,
+although the real main function in Go takes no arguments:</p>
+<pre><code>func main(argc int, argv []string) int
+</code></pre>
+<p>Superficially that&rsquo;s not much different from C,
+other than the change from <code>char</code> arrays to strings,
+but it reads well from left to right:</p>
+<p>function main takes an int and a slice of strings and returns an int.</p>
+<p>Drop the parameter names and it&rsquo;s just as clear - they&rsquo;re always first so there&rsquo;s no confusion.</p>
+<pre><code>func main(int, []string) int
+</code></pre>
+<p>One merit of this left-to-right style is how well it works as the types
+become more complex.
+Here&rsquo;s a declaration of a function variable (analogous to a function pointer in C):</p>
+<pre><code>f func(func(int,int) int, int) int
+</code></pre>
+<p>Or if f returns a function:</p>
+<pre><code>f func(func(int,int) int, int) func(int, int) int
+</code></pre>
+<p>It still reads clearly, from left to right,
+and it&rsquo;s always obvious which name is being declared - the name comes first.</p>
+<p>The distinction between type and expression syntax makes it easy to write and invoke closures in Go:</p>
+<pre><code>sum := func(a, b int) int { return a+b } (3, 4)
+</code></pre>
+<h2 id="pointers">Pointers</h2>
+<p>Pointers are the exception that proves the rule.
+Notice that in arrays and slices, for instance,
+Go&rsquo;s type syntax puts the brackets on the left of the type but the expression
+syntax puts them on the right of the expression:</p>
+<pre><code>var a []int
+x = a[1]
+</code></pre>
+<p>For familiarity, Go&rsquo;s pointers use the * notation from C,
+but we could not bring ourselves to make a similar reversal for pointer types.
+Thus pointers work like this</p>
+<pre><code>var p *int
+x = *p
+</code></pre>
+<p>We couldn&rsquo;t say</p>
+<pre><code>var p *int
+x = p*
+</code></pre>
+<p>because that postfix * would conflate with multiplication. We could have used the Pascal ^, for example:</p>
+<pre><code>var p ^int
+x = p^
+</code></pre>
+<p>and perhaps we should have (and chosen another operator for xor),
+because the prefix asterisk on both types and expressions complicates things
+in a number of ways.
+For instance, although one can write</p>
+<pre><code>[]int(&quot;hi&quot;)
+</code></pre>
+<p>as a conversion, one must parenthesize the type if it starts with a *:</p>
+<pre><code>(*int)(nil)
+</code></pre>
+<p>Had we been willing to give up * as pointer syntax, those parentheses would be unnecessary.</p>
+<p>So Go&rsquo;s pointer syntax is tied to the familiar C form,
+but those ties mean that we cannot break completely from using parentheses
+to disambiguate types and expressions in the grammar.</p>
+<p>Overall, though, we believe Go&rsquo;s type syntax is easier to understand than C&rsquo;s, especially when things get complicated.</p>
+<h2 id="notes">Notes</h2>
+<p>Go&rsquo;s declarations read left to right. It&rsquo;s been pointed out that C&rsquo;s read in a spiral!
+See <a href="http://c-faq.com/decl/spiral.anderson.html" rel="noreferrer" target="_blank"> The &ldquo;Clockwise/Spiral Rule&rdquo;</a> by David Anderson.</p>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        <p>
+        
+          
+            <b>Next article: </b><a href="https://go.p2hp.com/blog/codelab-share">Share Memory By Communicating</a><br>
+          
+        
+        
+          
+            <b>Previous article: </b><a href="https://go.p2hp.com/blog/io2010">Go Programming session video from Google I/O</a><br>
+          
+        
+        <b><a href="https://go.p2hp.com/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="../../go.dev/js/jquery.js"></script>
+<script src="../../go.dev/js/playground.js"></script>
+<script src="https://go.p2hp.com/go.dev/js/play.js"></script>
+<script src="../../go.dev/js/godocs.js"></script>
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="gos_declaration_syntax.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

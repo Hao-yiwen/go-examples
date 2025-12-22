@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/tutorial/web-service-gin">
+<meta name="og:title" content="教程：使用 Go 和 Gin 开发 RESTful API - The Go Programming Language">
+<title>教程：使用 Go 和 Gin 开发 RESTful API - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>教程：使用 Go 和 Gin 开发 RESTful API</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+<p>本教程介绍了使用 Go 和 <a href="https://gin-gonic.com/docs/" rel="noreferrer" target="_blank">Gin Web 框架</a> (Gin)编写 RESTful Web 服务 API 的基础知识.</p>
+<p>如果您对 Go 及其工具有基本的了解，您将从本教程中获得最大收益。如果这是您第一次接触 Go，请参阅 <a href="getting-started.html">教程：Go 入门</a>以获取 快速介绍。</p>
+<p>Gin 简化了许多与构建 Web 应用程序（包括 Web 服务）相关的编码任务。在本教程中，您将使用 Gin 路由请求、检索请求详细信息以及组织 JSON 以进行响应。</p>
+<p>在本教程中，您将构建一个具有两个端点的 RESTful API 服务器。您的示例项目将是有关复古爵士乐唱片的数据存储库.</p>
+<p>本教程包括以下部分:</p>
+<ol>
+<li>设计 API 端点.</li>
+<li>为您的代码创建一个文件夹.</li>
+<li>创建数据.</li>
+<li>编写一个处理程序来返回所有项目(item).</li>
+<li>编写一个处理程序来添加一个新项目.</li>
+<li>编写一个处理程序来返回一个特定的项目.</li>
+</ol>
+<p><strong>注意:</strong> 有关其他教程，请参阅 <a href="index.html">教程</a>.</p>
+<p>要尝试将此作为您在 Google Cloud Shell 中完成的交互式教程，请点击下面的按钮.</p>
+<p><a href="https://ide.cloud.google.com/?cloudshell_workspace=~&amp;walkthrough_tutorial_url=https://raw.githubusercontent.com/golang/tour/master/tutorial/web-service-gin.md" rel="noreferrer" target="_blank"><img src="https://gstatic.com/cloudssh/images/open-btn.png" alt="Open in Cloud Shell"></a></p>
+<h2 id="heading">先决条件</h2>
+<ul>
+<li><strong>Go 1.16 或更高版本的安装.</strong> 有关安装说明，请参阅
+<a href="../install.html">安装 Go</a>.</li>
+<li><strong>一种编辑代码的工具.</strong> 您拥有的任何文本编辑器都可以正常工作.</li>
+<li><strong>命令终端.</strong> Go 适用于 Linux 和 Mac 上的任何终端，以及 Windows 中的 PowerShell 或 cmd.</li>
+<li><strong>curl 工具.</strong> 在 Linux 和 Mac 上，这应该已经安装了. 在 Windows 上，它包含在 Windows 10 Insider build 17063 及更高版本中。对于较早的 Windows 版本，您可能需要安装它。有关更多信息，请参阅
+<a href="https://docs.microsoft.com/en-us/virtualization/community/team-blog/2017/20171219-tar-and-curl-come-to-windows" rel="noreferrer" target="_blank">Tar 和 Curl 来到 Windows</a>.</li>
+</ul>
+<h2 id="design_endpoints">设计 API 端点</h2>
+<p>您将构建一个 API，该 API 提供对销售黑胶唱片老式唱片的商店的访问。因此，您需要提供端点，客户端可以通过这些端点为用户获取和添加专辑.</p>
+<p>在开发 API 时，您通常从设计端点开始。如果端点易于理解，您的 API 用户将获得更多成功.</p>
+<p>以下是您将在本教程中创建的端点.</p>
+<p>/albums</p>
+<ul>
+<li><code>GET</code> – 获取所有专辑的列表，以 JSON 形式返回.</li>
+<li><code>POST</code> – 从以 JSON 形式发送的请求数据中添加新专辑.</li>
+</ul>
+<p>/albums/:id</p>
+<ul>
+<li><code>GET</code> – 通过 ID 获取专辑，以 JSON 形式返回专辑数据.</li>
+</ul>
+<p>接下来，您将为您的代码创建一个文件夹.</p>
+<h2 id="create_folder">为您的代码创建一个文件夹</h2>
+<p>首先，为您将编写的代码创建一个项目(project).</p>
+<ol>
+<li>
+<p>打开命令提示符并切换到您的home目录.</p>
+<p>在 Linux 或 Mac 上:</p>
+<pre><code>$ cd
+</code></pre>
+<p>在 Windows 上:</p>
+<pre><code>C:\&gt; cd %HOMEPATH%
+</code></pre>
+</li>
+<li>
+<p>使用命令提示符为您的代码创建一个名为 web-service-gin 的目录.</p>
+<pre><code>$ mkdir web-service-gin
+$ cd web-service-gin
+</code></pre>
+</li>
+<li>
+<p>创建一个模块，您可以在其中管理依赖项.</p>
+<p>运行<code>go mod init</code> 命令，为其指定代码所在模块的路径.</p>
+<pre><code>$ go mod init example/web-service-gin
+go: creating new go.mod: module example/web-service-gin
+</code></pre>
+<p>此命令会创建一个 go.mod 文件，您添加的依赖项将在其中列出以进行跟踪。有关使用模块路径命名模块的更多信息，请参阅 <a href="../modules/managing-dependencies.html#naming_module">管理依赖项</a>.</p>
+</li>
+</ol>
+<p>接下来，您将设计用于处理数据的数据结构.</p>
+<h2 id="create_data">创建数据</h2>
+<p>为了使本教程简单，您将数据存储在内存中。更典型的 API 将与数据库交互.</p>
+<p>请注意，将数据存储在内存中意味着每次停止服务器时专辑集都会丢失，然后在启动时重新创建.</p>
+<h4 id="heading-1">写代码</h4>
+<ol>
+<li>
+<p>使用您的文本编辑器，在 web-service 目录中创建一个名为 main.go 的文件。您将在此文件中编写 Go 代码.</p>
+</li>
+<li>
+<p>在 main.go 文件的顶部，粘贴以下包声明.</p>
+<pre><code>package main
+</code></pre>
+<p>独立程序（而不是库）始终位于包<code>main</code>中.</p>
+</li>
+<li>
+<p>在包声明下方，粘贴以下<code>album</code> 结构声明 。您将使用它在内存中存储专辑数据.</p>
+<p>结构标记，例如<code>json:&quot;artist&quot;</code>指定当结构的内容序列化为 JSON 时字段的名称应该是什么。如果没有它们，JSON 将使用结构体的大写字段名称——这种样式在 JSON 中并不常见.</p>
+<pre><code>// album 表示有关专辑的数据.
+type album struct {
+    ID     string  `json:&quot;id&quot;`
+    Title  string  `json:&quot;title&quot;`
+    Artist string  `json:&quot;artist&quot;`
+    Price  float64 `json:&quot;price&quot;`
+}
+</code></pre>
+</li>
+<li>
+<p>在您刚刚添加的结构声明下方，粘贴以下<code>album</code>结构片段， 其中包含您将用于启动的数据.</p>
+<pre><code>// 专辑切片以填充专辑数据记录.
+var albums = []album{
+    {ID: &quot;1&quot;, Title: &quot;Blue Train&quot;, Artist: &quot;John Coltrane&quot;, Price: 56.99},
+    {ID: &quot;2&quot;, Title: &quot;Jeru&quot;, Artist: &quot;Gerry Mulligan&quot;, Price: 17.99},
+    {ID: &quot;3&quot;, Title: &quot;Sarah Vaughan and Clifford Brown&quot;, Artist: &quot;Sarah Vaughan&quot;, Price: 39.99},
+}
+</code></pre>
+</li>
+</ol>
+<p>接下来，您将编写代码来实现您的第一个端点.</p>
+<h2 id="all_items">编写一个处理程序来返回所有项目</h2>
+<p>当客户端在 <code>GET /albums</code>上发出请求时，您希望以 JSON 格式返回所有专辑。</p>
+<p>为此，您将编写以下内容:</p>
+<ul>
+<li>准备响应的逻辑</li>
+<li>将请求路径映射到逻辑的代码</li>
+</ul>
+<p>请注意，这与它们在运行时的执行方式相反，但首先要添加依赖项，然后添加依赖于它们的代码。</p>
+<h4 id="heading-2">写代码</h4>
+<ol>
+<li>
+<p>在上一节中添加的结构体代码下，粘贴以下代码以获取专辑列表.</p>
+<p>此<code>getAlbums</code>函数从<code>album</code>结构切片创建 JSON ，将 JSON 写入响应。</p>
+<pre><code>// getAlbums 以 JSON 格式响应所有专辑的列表.
+func getAlbums(c *gin.Context) {
+    c.IndentedJSON(http.StatusOK, albums)
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>
+<p>编写一个带<a href="https://pkg.go.dev/github.com/gin-gonic/gin#Context" rel="noreferrer" target="_blank"><code>gin.Context</code></a> 参数的 <code>getAlbums</code>函数 。请注意，您可以为该函数指定任何名称——Gin 和 Go 都不需要特定的函数名称格式.</p>
+<p><code>gin.Context</code>是Gin最重要的部分。它携带请求详细信息、验证和序列化 JSON 等。（尽管名称相似，但这与 Go 的内置<a href="https://go.p2hp.com/pkg/context/"><code>context</code></a> 包不同。）</p>
+</li>
+<li>
+<p>调用<a href="https://pkg.go.dev/github.com/gin-gonic/gin#Context.IndentedJSON" rel="noreferrer" target="_blank"><code>Context.IndentedJSON</code></a> 将结构序列化为 JSON 并将其添加到响应中。</p>
+<p>该函数的第一个参数是要发送到客户端的 HTTP 状态代码。在这里，您将从 <code>net/http</code> 包传递 <a href="https://pkg.go.dev/net/http#StatusOK" rel="noreferrer" target="_blank"><code>StatusOK</code></a> 常量，以指示 <code>200 OK</code>。</p>
+<p>请注意，您可以将 <code>Context.IndentedJSON</code> 替换为对 <a href="https://pkg.go.dev/github.com/gin-gonic/gin#Context.JSON" rel="noreferrer" target="_blank"><code>Context.JSON</code></a> 的调用。在实践中，缩进形式在调试时更容易使用，并且大小差异通常很小。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>在 main.go 的顶部附近，就在<code>albums</code>切片声明的下方，粘贴下面的代码以将处理程序函数分配给端点路径。</p>
+<p>这会建立一个关联，在该关联中<code>getAlbums</code>处理对<code>/albums</code>端点路径的请求。</p>
+<pre><code>func main() {
+    router := gin.Default()
+    router.GET(&quot;/albums&quot;, getAlbums)
+
+    router.Run(&quot;localhost:8080&quot;)
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>
+<p>使用<a href="https://pkg.go.dev/github.com/gin-gonic/gin#Default" rel="noreferrer" target="_blank"><code>Default</code></a>初始化 Gin 路由器.</p>
+</li>
+<li>
+<p>使用<a href="https://pkg.go.dev/github.com/gin-gonic/gin#RouterGroup.GET" rel="noreferrer" target="_blank"><code>GET</code></a> 函数将<code>GET</code> HTTP 方法和<code>/albums</code>路径与处理程序函数相关联.</p>
+<p>请注意，您正在传递 <code>getAlbums</code> 函数的 <em>名称</em> 。这与传递函数的 <em>结果</em> 不同，后者可以通过传递 <code>getAlbums()</code> 来完成（请注意括号）.</p>
+</li>
+<li>
+<p>使用<a href="https://pkg.go.dev/github.com/gin-gonic/gin#Engine.Run" rel="noreferrer" target="_blank"><code>Run</code></a>函数将路由器连接到一个<code>http.Server</code>并启动服务器。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>在 main.go 的顶部附近，就在包声明的下方，导入支持刚刚编写的代码所需的包.</p>
+<p>第一行代码应该是这样的:</p>
+<pre><code>package main
+
+import (
+    &quot;net/http&quot;
+
+    &quot;github.com/gin-gonic/gin&quot;
+)
+</code></pre>
+</li>
+<li>
+<p>保存 main.go.</p>
+</li>
+</ol>
+<h4 id="heading-3">运行代码</h4>
+<ol>
+<li>
+<p>开始将 Gin 模块作为依赖项进行跟踪.</p>
+<p>在命令行中，使用<a href="https://go.p2hp.com/cmd/go/#hdr-Add_dependencies_to_current_module_and_install_them"><code>go get</code></a> 将 github.com/gin-gonic/gin 模块添加为您的模块的依赖项。使用点参数表示“获取当前目录中代码的依赖项”.</p>
+<pre><code>$ go get .
+go get: added github.com/gin-gonic/gin v1.7.2
+</code></pre>
+<p>Go 解析并下载此依赖项，以满足您在上一步中添加的 <code>import</code>声明.</p>
+</li>
+<li>
+<p>从包含 main.go 的目录中的命令行，运行代码。使用点参数表示“在当前目录中运行代码。”</p>
+<pre><code>$ go run .
+</code></pre>
+<p>代码运行后，您就有了一个正在运行的 HTTP 服务器，您可以向其发送请求.</p>
+</li>
+<li>
+<p>在新的命令行窗口中，用 <code>curl</code>向正在运行的 Web 服务发出请求。</p>
+<pre><code>$ curl http://localhost:8080/albums
+</code></pre>
+<p>该命令应显示您为服务填充的数据.</p>
+<pre><code>[
+        {
+                &quot;id&quot;: &quot;1&quot;,
+                &quot;title&quot;: &quot;Blue Train&quot;,
+                &quot;artist&quot;: &quot;John Coltrane&quot;,
+                &quot;price&quot;: 56.99
+        },
+        {
+                &quot;id&quot;: &quot;2&quot;,
+                &quot;title&quot;: &quot;Jeru&quot;,
+                &quot;artist&quot;: &quot;Gerry Mulligan&quot;,
+                &quot;price&quot;: 17.99
+        },
+        {
+                &quot;id&quot;: &quot;3&quot;,
+                &quot;title&quot;: &quot;Sarah Vaughan and Clifford Brown&quot;,
+                &quot;artist&quot;: &quot;Sarah Vaughan&quot;,
+                &quot;price&quot;: 39.99
+        }
+]
+</code></pre>
+</li>
+</ol>
+<p>您已经启动了一个 API！在下一部分中，您将使用代码创建另一个端点来处理<code>POST</code>添加项目的请求。</p>
+<h2 id="add_item">编写处理程序以添加新项目</h2>
+<p>当客户端在 <code>/albums</code> 发出 <code>POST</code>  请求时，您希望将请求正文中所述的专辑添加到现有专辑数据中。</p>
+<p>为此，您将编写以下内容:</p>
+<ul>
+<li>将新专辑添加到现有列表的逻辑.</li>
+<li>将 <code>POST</code>请求路由到您的逻辑的一些代码.</li>
+</ul>
+<h4 id="heading-4">写代码</h4>
+<ol>
+<li>
+<p>添加代码以将专辑数据添加到专辑列表中.</p>
+<p>在 <code>import</code>语句之后的某处粘贴以下代码。（文件的末尾是这段代码的好地方，但 Go 不强制你声明函数的顺序。）</p>
+<pre><code>// postAlbums 从请求体中收到的JSON中添加一个专辑 .
+func postAlbums(c *gin.Context) {
+    var newAlbum album
+
+    // 调用 BindJSON 将收到的 JSON 绑定到
+    // newAlbum.
+    if err := c.BindJSON(&amp;newAlbum); err != nil {
+        return
+    }
+
+    // 将新专辑添加到切片.
+    albums = append(albums, newAlbum)
+    c.IndentedJSON(http.StatusCreated, newAlbum)
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>使用 <a href="https://pkg.go.dev/github.com/gin-gonic/gin#Context.BindJSON" rel="noreferrer" target="_blank"><code>Context.BindJSON</code></a> 将请求正文绑定到 <code>newAlbum</code>.</li>
+<li>将从 JSON 初始化的 <code>album</code> 结构追加到 <code>album</code> 切片.</li>
+<li>向响应添加 <code>201</code> 状态代码，以及表示您添加的专辑的 JSON.</li>
+</ul>
+</li>
+<li>
+<p>更改您的<code>main</code> 函数，使其包含 <code>router.POST</code>函数，如下所示.</p>
+<pre><code>func main() {
+    router := gin.Default()
+    router.GET(&quot;/albums&quot;, getAlbums)
+    router.POST(&quot;/albums&quot;, postAlbums)
+
+    router.Run(&quot;localhost:8080&quot;)
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>
+<p>将  <code>/albums</code> 路径上的 <code>POST</code>  方法与 <code>postAlbums</code> 函数相关联.</p>
+<p>使用 Gin，您可以将处理程序与 HTTP 方法和路径组合相关联。通过这种方式，您可以根据客户端使用的方法单独路由发送到单个路径的请求.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="heading-5">运行代码</h4>
+<ol>
+<li>
+<p>如果服务器从上一节开始仍在运行，请停止它.</p>
+</li>
+<li>
+<p>从包含 main.go 的目录中的命令行，运行代码.</p>
+<pre><code>$ go run .
+</code></pre>
+</li>
+<li>
+<p>从不同的命令行窗口，用于<code>curl</code>向正在运行的 Web 服务发出请求。</p>
+<pre><code>$ curl http://localhost:8080/albums \
+    --include \
+    --header &quot;Content-Type: application/json&quot; \
+    --request &quot;POST&quot; \
+    --data '{&quot;id&quot;: &quot;4&quot;,&quot;title&quot;: &quot;The Modern Sound of Betty Carter&quot;,&quot;artist&quot;: &quot;Betty Carter&quot;,&quot;price&quot;: 49.99}'
+</code></pre>
+<p>该命令应显示添加专辑的headers和 JSON.</p>
+<pre><code>HTTP/1.1 201 Created
+Content-Type: application/json; charset=utf-8
+Date: Wed, 02 Jun 2021 00:34:12 GMT
+Content-Length: 116
+
+{
+    &quot;id&quot;: &quot;4&quot;,
+    &quot;title&quot;: &quot;The Modern Sound of Betty Carter&quot;,
+    &quot;artist&quot;: &quot;Betty Carter&quot;,
+    &quot;price&quot;: 49.99
+}
+</code></pre>
+</li>
+<li>
+<p>与上一节一样，使用<code>curl</code>检索专辑的完整列表，您可以使用它来确认新专辑已添加。</p>
+<pre><code>$ curl http://localhost:8080/albums \
+    --header &quot;Content-Type: application/json&quot; \
+    --request &quot;GET&quot;
+</code></pre>
+<p>该命令应显示专辑列表.</p>
+<pre><code>[
+        {
+                &quot;id&quot;: &quot;1&quot;,
+                &quot;title&quot;: &quot;Blue Train&quot;,
+                &quot;artist&quot;: &quot;John Coltrane&quot;,
+                &quot;price&quot;: 56.99
+        },
+        {
+                &quot;id&quot;: &quot;2&quot;,
+                &quot;title&quot;: &quot;Jeru&quot;,
+                &quot;artist&quot;: &quot;Gerry Mulligan&quot;,
+                &quot;price&quot;: 17.99
+        },
+        {
+                &quot;id&quot;: &quot;3&quot;,
+                &quot;title&quot;: &quot;Sarah Vaughan and Clifford Brown&quot;,
+                &quot;artist&quot;: &quot;Sarah Vaughan&quot;,
+                &quot;price&quot;: 39.99
+        },
+        {
+                &quot;id&quot;: &quot;4&quot;,
+                &quot;title&quot;: &quot;The Modern Sound of Betty Carter&quot;,
+                &quot;artist&quot;: &quot;Betty Carter&quot;,
+                &quot;price&quot;: 49.99
+        }
+]
+</code></pre>
+</li>
+</ol>
+<p>在下一节中，您将添加代码来处理特定项的 <code>GET</code>。</p>
+<h2 id="specific_item">编写处理程序以返回特定项目</h2>
+<p>当客户端向  <code>GET /albums/[id]</code> 发出请求时，您希望返回 ID 与 <code>id</code> path 参数匹配的专辑。</p>
+<p>为此，您将:</p>
+<ul>
+<li>添加逻辑以检索请求的专辑.</li>
+<li>将路径映射到逻辑.</li>
+</ul>
+<h4 id="heading-6">写代码</h4>
+<ol>
+<li>
+<p>在上一节中添加的 <code>postAlbums</code> 函数下，粘贴以下代码以检索特定专辑。</p>
+<p>此 <code>getAlbumByID</code> 函数将提取请求路径中的 ID，然后找到匹配的专辑。</p>
+<pre><code>// getAlbumByID 查找 ID 值与客户端发送的 id 
+// 参数匹配的专辑，然后返回该专辑作为响应.
+func getAlbumByID(c *gin.Context) {
+    id := c.Param(&quot;id&quot;)
+
+    // 循环浏览专辑列表，查找
+    // ID 值与参数匹配的专辑.
+    for _, a := range albums {
+        if a.ID == id {
+            c.IndentedJSON(http.StatusOK, a)
+            return
+        }
+    }
+    c.IndentedJSON(http.StatusNotFound, gin.H{&quot;message&quot;: &quot;album not found&quot;})
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>
+<p>使用 <a href="https://pkg.go.dev/github.com/gin-gonic/gin#Context.Param" rel="noreferrer" target="_blank"><code>Context.Param</code></a>从 URL 中检索 <code>id</code> path 参数。将此处理程序映射到路径时，将在路径中包含参数的占位符.</p>
+</li>
+<li>
+<p>循环访问切片中的<code>album</code>结构，查找其  <code>ID</code> 字段值与 <code>id</code>  参数值匹配的结构。如果找到，则将该 <code>album</code> 结构序列化为 JSON，并将其作为响应返回，并带有<code>200 OK</code> HTTP 状态码.</p>
+<p>如上所述，现实世界的服务可能会使用数据库查询来执行此查找.</p>
+</li>
+<li>
+<p>如果专辑没有找到则返回一个带<a href="https://pkg.go.dev/net/http#StatusNotFound" rel="noreferrer" target="_blank"><code>http.StatusNotFound</code></a>的HTTP<code>404</code>错误.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>最后，更改您的<code>main</code>使其包含对<code>router.GET</code> 的新调用，路径现在为<code>/albums/:id</code>，如以下示例所示。</p>
+<pre><code>func main() {
+    router := gin.Default()
+    router.GET(&quot;/albums&quot;, getAlbums)
+    router.GET(&quot;/albums/:id&quot;, getAlbumByID)
+    router.POST(&quot;/albums&quot;, postAlbums)
+
+    router.Run(&quot;localhost:8080&quot;)
+}
+</code></pre>
+<p>在此代码中，您:</p>
+<ul>
+<li>在 Gin 中，路径中项目前面的冒号表示该项目是路径参数.</li>
+</ul>
+</li>
+</ol>
+<h4 id="heading-7">运行代码</h4>
+<ol>
+<li>
+<p>如果服务器从上一节开始仍在运行，请停止它.</p>
+</li>
+<li>
+<p>从包含 main.go 的目录中的命令行，运行代码以启动服务器.</p>
+<pre><code>$ go run .
+</code></pre>
+</li>
+<li>
+<p>从不同的命令行窗口，用 <code>curl</code>向正在运行的 Web 服务发出请求.</p>
+<pre><code>$ curl http://localhost:8080/albums/2
+</code></pre>
+<p>该命令应显示您使用其 ID 的专辑的 JSON。如果未找到专辑，您将收到带有错误消息的 JSON.</p>
+<pre><code>{
+        &quot;id&quot;: &quot;2&quot;,
+        &quot;title&quot;: &quot;Jeru&quot;,
+        &quot;artist&quot;: &quot;Gerry Mulligan&quot;,
+        &quot;price&quot;: 17.99
+}
+</code></pre>
+</li>
+</ol>
+<h2 id="conclusion">总结</h2>
+<p>恭喜！您刚刚使用 Go 和 Gin 编写了一个简单的 RESTful Web 服务.</p>
+<p>建议的下一个主题:</p>
+<ul>
+<li>如果您是 Go 新手，您会在<a href="../effective_go.html">Effective Go</a>和<a href="../code.html">如何编写 Go 代码</a>中找到有用的最佳实践 。</li>
+<li><a href="https://go.p2hp.com/tour/">Go 边学边练</a>是对Go基础知识的一个很好的分步介绍。</li>
+<li>有关 Gin 的更多信息，请参阅 <a href="https://pkg.go.dev/github.com/gin-gonic/gin" rel="noreferrer" target="_blank">Gin Web 框架包文档</a> 或<a href="https://gin-gonic.com/docs/" rel="noreferrer" target="_blank">Gin Web 框架文档</a>。</li>
+</ul>
+<h2 id="completed_code">完整代码</h2>
+<p>本节包含您使用本教程构建的应用程序的代码.</p>
+<pre><code>package main
+
+import (
+    &quot;net/http&quot;
+
+    &quot;github.com/gin-gonic/gin&quot;
+)
+
+// album 表示有关专辑的数据.
+type album struct {
+    ID     string  `json:&quot;id&quot;`
+    Title  string  `json:&quot;title&quot;`
+    Artist string  `json:&quot;artist&quot;`
+    Price  float64 `json:&quot;price&quot;`
+}
+
+// 专辑切片以填充专辑数据记录.
+var albums = []album{
+    {ID: &quot;1&quot;, Title: &quot;Blue Train&quot;, Artist: &quot;John Coltrane&quot;, Price: 56.99},
+    {ID: &quot;2&quot;, Title: &quot;Jeru&quot;, Artist: &quot;Gerry Mulligan&quot;, Price: 17.99},
+    {ID: &quot;3&quot;, Title: &quot;Sarah Vaughan and Clifford Brown&quot;, Artist: &quot;Sarah Vaughan&quot;, Price: 39.99},
+}
+
+func main() {
+    router := gin.Default()
+    router.GET(&quot;/albums&quot;, getAlbums)
+    router.GET(&quot;/albums/:id&quot;, getAlbumByID)
+    router.POST(&quot;/albums&quot;, postAlbums)
+
+    router.Run(&quot;localhost:8080&quot;)
+}
+
+// getAlbums 以 JSON 格式响应所有专辑的列表.
+func getAlbums(c *gin.Context) {
+    c.IndentedJSON(http.StatusOK, albums)
+}
+
+// postAlbums 从请求体中收到的JSON中添加一个专辑.
+func postAlbums(c *gin.Context) {
+    var newAlbum album
+
+    // 调用 BindJSON 将收到的 JSON 绑定到
+    // newAlbum.
+    if err := c.BindJSON(&amp;newAlbum); err != nil {
+        return
+    }
+
+    // 将新专辑添加到切片.
+    albums = append(albums, newAlbum)
+    c.IndentedJSON(http.StatusCreated, newAlbum)
+}
+
+// getAlbumByID 查找 ID 值与客户端发送的 id
+// 参数匹配的专辑，然后返回该专辑作为响应.
+func getAlbumByID(c *gin.Context) {
+    id := c.Param(&quot;id&quot;)
+
+    // 循环浏览专辑列表，查找
+    // ID 值与参数匹配的专辑.
+    for _, a := range albums {
+        if a.ID == id {
+            c.IndentedJSON(http.StatusOK, a)
+            return
+        }
+    }
+    c.IndentedJSON(http.StatusNotFound, gin.H{&quot;message&quot;: &quot;album not found&quot;})
+}
+</code></pre>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="web-service-gin.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

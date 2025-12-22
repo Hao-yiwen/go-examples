@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+
+
+
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#00add8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+<link rel="stylesheet" href="../../css/styles.css">
+
+  
+  
+  
+<script src="../../go.dev/js/site.js"></script>
+<meta name="og:url" content="https://go.dev/doc/modules/release-workflow">
+<meta name="og:title" content="模块发布和版本控制工作流 - The Go Programming Language">
+<title>模块发布和版本控制工作流 - Go中文网 Go语言中文网 golang</title>
+
+ 
+<meta name="og:description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件">
+ 
+<meta name="description" content="Go中文网 Go语言中文网 golang ;Go 是一种开源编程语言，可以轻松构建简单、可靠和高效的软件.">
+
+ 
+<meta name="og:image" content="https://go.dev/doc/gopher/gopher5logo.jpg">
+<meta name="twitter:image" content="https://go.dev/doc/gopher/gopherbelly300.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@golang">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4638549725433695" crossorigin="anonymous"></script><script src="https://www.p2hp.com/tj.js"></script></head>
+<body class="Site">
+  
+
+  
+
+
+<header class="Site-header js-siteHeader">
+  <div class="Header Header--dark">
+    <nav class="Header-nav">
+      <a href="https://go.p2hp.com/" title="Go中文网">
+        <img
+          class="js-headerLogo Header-logo"
+          src="../../go.dev/images/go-logo-white.svg"
+          alt="Go">
+      </a>
+      <div class="Header-rightContent">
+        <ul class="Header-menu">
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/solutions/" target="">为什么用Go</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/learn/" target="">快速开始</a>
+          </li>
+          <li class="Header-menuItem  Header-menuItem--active">
+            <a href="../index.html" target="">文档</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://pkg.go.dev" target="_blank">包</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/play/" target="">在线运行</a>
+          </li>
+          <li class="Header-menuItem ">
+            <a href="https://go.p2hp.com/blog/" target="">博客</a>
+          </li>
+        </ul>
+        <button class="Header-navOpen js-headerMenuButton Header-navOpen--white" aria-label="Open navigation.">
+        </button>
+      </div>
+    </nav>
+    
+  </div>
+</header>
+<aside class="NavigationDrawer js-header">
+  <nav class="NavigationDrawer-nav">
+    <div class="NavigationDrawer-header">
+      <a href="https://go.p2hp.com/">
+        <img class="NavigationDrawer-logo" src="../../go.dev/images/go-logo-blue.svg" alt="Go.">
+      </a>
+    </div>
+    <ul class="NavigationDrawer-list">
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/solutions/">为什么用Go</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/learn/">快速开始</a>
+        </li>
+        <li class="NavigationDrawer-listItem  NavigationDrawer-listItem--active">
+          <a href="../index.html">文档</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://pkg.go.dev">包</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/play/">在线运行</a>
+        </li>
+        <li class="NavigationDrawer-listItem ">
+          <a href="https://go.p2hp.com/blog/">博客</a>
+        </li>
+    </ul>
+  </nav>
+</aside>
+<div class="NavigationDrawer-scrim js-scrim" role="presentation"></div>
+<main class="SiteContent SiteContent--default">
+  
+
+
+<article class="Doc Article">
+
+
+<h1>模块发布和版本控制工作流</h1>
+
+
+
+
+
+
+<div id="nav" class="TOC"></div>
+
+
+<p>当您开发供其他开发人员使用的模块时，您可以遵循有助于确保使用该模块的开发人员获得可靠、一致的体验的工作流程。本主题描述了该工作流中的高级步骤。</p>
+<p>有关模块开发的概述，请参阅<a href="developing.html">开发和发布模块</a>。</p>
+<p><strong>另请参见</strong></p>
+<ul>
+<li>如果您只想在代码中使用外部包，请务必查看<a href="managing-dependencies.html">管理依赖项</a>。</li>
+<li>对于每个新版本，您都用其版本号表示对模块的更改。有关更多信息，请参阅<a href="version-numbers.html">模块版本编号</a>。</li>
+</ul>
+<h2 id="common-steps">常见的工作流步骤</h2>
+<p>以下序列说明了一个示例新模块的发布和版本控制工作流步骤。有关每个步骤的更多信息，请参阅本主题中的部分。</p>
+<ol>
+<li>
+<p><strong>开始一个模块</strong> 并组织它的源代码，使开发人员更容易使用和维护。</p>
+<p>如果您是开发模块的新手，请查看 <a href="../tutorial/create-module.html">教程：创建 Go 模块</a>。</p>
+<p>在 Go 的去中心化模块发布系统中，如何组织代码很重要。有关更多信息，请参阅<a href="managing-source.html">管理模块源</a>。</p>
+</li>
+<li>
+<p>创建为编写调用未发布模块中的函数的<strong>本地客户端代码</strong>.</p>
+<p>在发布模块之前，它不适用于使用命令（如 <code>go get</code>）的典型依赖项管理工作流。在此阶段测试模块代码的一个好方法是在它位于调用代码的本地目录中时尝试它.</p>
+<p>有关本地开发的更多信息，请参阅 <a href="release-workflow.html#unpublished">针对未发布的模块进行编码</a>.</p>
+</li>
+<li>
+<p>当模块的代码准备好供其他开发人员试用时， <strong>开始发布 v0 预发布版本</strong>，例如 alphas 和 betas。有关更多信息，请参阅 <a href="release-workflow.html#pre-release">发布预发布版本</a>.</p>
+</li>
+<li>
+<p><strong>发布一个v0</strong> 不保证稳定，但用户可以尝试。有关更多信息，请参阅 <a href="release-workflow.html#first-unstable">发布第一个（不稳定）版本</a>.</p>
+</li>
+<li>
+<p>在您的 v0 版本发布后，您可以（并且应该！）继续<strong>发布它的新版本</strong>.</p>
+<p>这些新版本可能包括bug修复（补丁版本）、对模块公共 API 的添加（次要版本），甚至是重大更改。由于 v0 版本不保证稳定性或向后兼容性，因此您可以对其版本进行重大更改.</p>
+<p>有关更多信息，请参阅<a href="release-workflow.html#bug-fixes">发布bug修复</a>和<a href="release-workflow.html#non-breaking">发布非破坏性 API 更改</a>.</p>
+</li>
+<li>
+<p>当您准备好发布稳定版本时，您可以<strong>将预发布版本发布为 alphas 和 betas</strong>。有关更多信息，请参阅<a href="release-workflow.html#pre-release">发布预发布版本</a>.</p>
+</li>
+<li>
+<p>发布 v1 作为<strong>第一个稳定版本</strong>.</p>
+<p>这是对模块稳定性做出承诺的第一个版本。有关更多信息，请参阅<a href="release-workflow.html#first-stable">发布第一个稳定版本</a>.</p>
+</li>
+<li>
+<p>在 v1 版本中，<strong>继续修复bug</strong>，并在必要时向模块的公共 API 添加内容.</p>
+<p>有关更多信息，请参阅 <a href="release-workflow.html#bug-fixes">发布bug修复</a> 和 <a href="release-workflow.html#non-breaking">发布非破坏性 API 更改</a>.</p>
+</li>
+<li>
+<p>如果无法避免，请在<strong>新的主要版本</strong>中发布重大更改。</p>
+<p>主要版本更新 &ndash; 例如从 v1.x.x 到v2.x.x &ndash; 对于模块的用户来说可能是一个非常具有破坏性的升级。这应该是最后的手段。有关更多信息，请参阅 <a href="release-workflow.html#breaking">发布重大 API 更改</a>。</p>
+</li>
+</ol>
+<h2 id="unpublished">针对未发布的模块进行编码</h2>
+<p>当您开始开发模块或模块的新版本时，您还没有发布它。在发布模块之前，您将无法使用 Go 命令将模块添加为依赖项。相反，首先，当在另一个模块中编写调用未发布模块中的函数的客户端代码时，您需要在本地文件系统上引用该模块的副本。</p>
+<p>您可以使用客户端模块的 go.mod 文件中的<code>replace</code>指令从客户端模块的 go.mod 文件中本地引用模块。有关更多信息，请参阅<a href="managing-dependencies.html#local_directory">在本地目录中Requiring模块代码</a>。</p>
+<h2 id="pre-release">发布预发布版本</h2>
+<p>您可以发布预发布版本以使模块可供其他人试用并给您反馈。预发布版本不包括稳定性保证。</p>
+<p>预发行版本号附加了预发行标识符。有关版本号的更多信息，请参阅<a href="version-numbers.html">模块版本编号</a>。</p>
+<p>这里有两个例子:</p>
+<pre><code>v0.2.1-beta.1
+v1.2.3-alpha
+</code></pre>
+<p>在提供预发布版时，请记住，使用预发布的开发人员需要使用 <code>go get</code> 命令按版本显式指定预发布版。这是因为，在默认情况下，<code>go</code>命令在查找您要求的模块时更喜欢发布版本而不是预发布版本。因此，开发人员必须通过明确指定来获得预发布，如下例所示：</p>
+<pre><code>go get example.com/theirmodule@v1.2.3-alpha
+</code></pre>
+<p>您可以通过在存储库中标记模块代码，并在标记中指定预发布标识符来发布预发布版。有关详细信息，请参阅<a href="publishing.html">发布模块</a>.</p>
+<h2 id="first-unstable">发布第一个（不稳定的）版本</h2>
+<p>与发布预发布版本一样，您可以发布不保证稳定性或向后兼容性的发布版本，但为用户提供试用该模块并为您提供反馈的机会。</p>
+<p>不稳定版本是那些版本号在 v0.x.x 范围内的版本。 v0 版本不提供稳定性或向后兼容性保证。但它为您提供了一种在对 v1 及更高版本做出稳定性承诺之前获取反馈和改进 API 的方法。有关更多信息，请参阅<a href="version-numbers.html">模块版本编号</a>。</p>
+<p>与其他已发布版本一样，您可以在对发布稳定的 v1 版本进行更改时增加 v0 版本号的次要和补丁部分。例如，在发布 v.0.0.0 之后，您可能会发布带有第一组bug修复的 v0.0.1。</p>
+<p>这是一个示例版本号:</p>
+<pre><code>v0.1.3
+</code></pre>
+<p>您可以通过标记存储库中的模块代码来发布不稳定版本，并在标记中指定 v0 版本号。有关更多信息，请参阅<a href="publishing.html">发布模块</a>.</p>
+<h2 id="first-stable">发布第一个稳定版本</h2>
+<p>您的第一个稳定版本将具有 v1.x.x版本号。第一个稳定版本是在预发布和 v0 版本之后发布的，您可以通过它们获得反馈、bug错误并为用户稳定模块.</p>
+<p>在 v1 版本中，您向使用您的模块的开发人员做出以下承诺:</p>
+<ul>
+<li>他们可以升级到主要版本的后续次要版本和补丁版本，而不会破坏自己的代码.</li>
+<li>您不会对模块的公共 API 进行进一步的更改 &ndash; 包括它的函数和方法签名 &ndash; 这会破坏向后兼容性.</li>
+<li>您不会删除任何导出的类型，这会破坏向后兼容性.</li>
+<li>未来对 API 的更改（例如向一个结构添加新字段）将向后兼容，并将包含在新的次要版本中.</li>
+<li>Bug修复（例如安全修复）将包含在补丁版本中或作为次要版本的一部分。</li>
+</ul>
+<p><strong>注意:</strong> 虽然您的第一个主要版本可能是 v0 版本，但 v0 版本并不表示稳定性或向后兼容性保证。因此，当您从 v0 递增到 v1 时，您无需注意破坏向后兼容性，因为 v0 版本被认为不稳定。</p>
+<p>有关版本号的更多信息，请参阅 <a href="version-numbers.html">模块版本编号</a>.</p>
+<p>下面是一个稳定版本号的例子:</p>
+<pre><code>v1.0.0
+</code></pre>
+<p>您可以通过在存储库中标记模块代码，并在标记中指定 v1 版本号来发布第一个稳定版本。有关详细信息，请参阅<a href="publishing.html">发布模块</a>。</p>
+<h2 id="bug-fixes">发布bug修复</h2>
+<p>您可以发布一个版本，其中的更改仅限于bug修复。这称为补丁版本.</p>
+<p><em>补丁版本</em> 仅包含较小的更改。特别是，它没有对模块的公共 API 进行任何更改。使用代码的开发人员可以安全地升级到这个版本，而无需更改他们的代码.</p>
+<p><strong>注意:</strong> 您的补丁版本应该尽量不要将任何该模块自己的传递依赖项升级为超过补丁版本。否则，升级到模块补丁的人可能会意外地对他们使用的传递依赖项进行更具侵入性的更改。</p>
+<p>补丁版本会增加模块版本号的补丁部分。有关更多信息，请参阅<a href="version-numbers.html">模块版本编号</a>。</p>
+<p>在以下示例中，v1.0.1 是一个补丁版本.</p>
+<p>旧版本: <code>v1.0.0</code></p>
+<p>新版本: <code>v1.0.1</code></p>
+<p>您可以通过标记存储库中的模块代码来发布补丁版本，并增加标记中的补丁版本号。有关更多信息，请参阅<a href="publishing.html">发布模块</a>。</p>
+<h2 id="non-breaking">发布非破坏性API 更改</h2>
+<p>您可以对模块的公共 API 进行非破坏性更改，并在 <em>次要</em> 版本中发布这些更改。</p>
+<p>此版本更改了 API，但不会破坏调用代码。这可能包括对模块自身依赖项的更改或添加新函数、方法、结构字段或类型。即使包含了更改，这种版本也保证了调用模块函数的现有代码的向后兼容性和稳定性.</p>
+<p>次要版本会增加模块版本号的次要部分。有关更多信息，请参阅<a href="version-numbers.html">模块版本编号</a>。</p>
+<p>在以下示例中，v1.1.0 是次要版本.</p>
+<p>旧版本: <code>v1.0.1</code></p>
+<p>新版本: <code>v1.1.0</code></p>
+<p>您可以通过标记存储库中的模块代码来发布次要版本，并增加标记中的次要版本号。有关更多信息，请参阅<a href="publishing.html">发布模块</a>。</p>
+<h2 id="breaking">发布破坏性 API 更改</h2>
+<p>您可以通过发布 <em>主要</em> 版本来发布破坏向后兼容性的版本。</p>
+<p>主要版本不保证向后兼容性，通常是因为它包含对模块公共 API 的更改，这些更改会破坏使用模块以前版本的代码.</p>
+<p>鉴于主要版本升级可能对依赖于模块的代码产生破坏性影响，如果可以的话，您应避免进行主要版本更新。有关主要版本更新的更多信息，请参阅<a href="major-version.html">开发主要版本更新</a>。有关避免进行重大更改的策略，请参阅博客文章<a href="https://go.p2hp.com/blog/module-compatibility">保持你的模块兼容</a>.</p>
+<p>发布其他类型的版本实质上需要使用版本号标记模块代码，而发布主要版本更新需要更多步骤.</p>
+<ol>
+<li>
+<p>在开始开发新的主要版本之前，在您的存储库中为新版本的源代码创建一个位置.</p>
+<p>一种方法是在存储库中创建一个新分支，专门用于新的主要版本及其后续的次要和补丁版本。有关更多信息，请参阅<a href="managing-source.html">管理模块源</a>.</p>
+</li>
+<li>
+<p>在模块的 go.mod 文件中，修改模块路径以附加新的主要版本号，如下例所示:</p>
+<pre><code>example.com/mymodule/v2
+</code></pre>
+<p>鉴于模块路径是模块的标识符，此更改有效地创建了一个新模块。它还更改了包路径，确保开发人员不会无意中导入破坏其代码的版本。相反，那些想要升级的人会用新路径明确替换旧路径.</p>
+</li>
+<li>
+<p>在您的代码中，更改您正在更新的模块中导入包的任何包路径，包括您正在更新的模块中的包。您需要这样做，因为您更改了模块路径.</p>
+</li>
+<li>
+<p>与任何新版本一样，您应该在发布正式版本之前发布预发布版本以获得反馈和错误报告.</p>
+</li>
+<li>
+<p>通过在存储库中标记模块代码，递增标记中的主要版本号（例如从 v1.5.2 到 v2.0.0），发布新的主要版本.</p>
+<p>有关更多信息，请参阅<a href="publishing.html">发布模块</a>.</p>
+</li>
+</ol>
+<p><strong>注</strong> ：名词：主要（major），次要（minor），补丁（patch),预发布（ pre-release ），稳定（stable)，非稳定（unstable).</p>
+
+
+</article>
+
+
+
+</main>
+<footer class="Site-footer">
+  <div class="Footer">
+    <div class="Container">
+      <div class="Footer-links">
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/solutions/"  target="" class="Footer-link Footer-link--primary">
+              为什么用Go
+            </a>
+              <a href="https://go.p2hp.com/solutions/#use-cases"  target="" class="Footer-link">
+                用例
+              </a>
+              <a href="https://go.p2hp.com/solutions/#case-studies"  target="" class="Footer-link">
+                实例探究
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/learn/"  target="" class="Footer-link Footer-link--primary">
+              快速开始
+            </a>
+              <a href="https://go.p2hp.com/play"  target="" class="Footer-link">
+                在线运行
+              </a>
+              <a href="https://go.p2hp.com/tour/"  target="" class="Footer-link">
+                边学边练
+              </a>
+              <a href="https://stackoverflow.com/questions/tagged/go?tab=Newest"  target="_blank" class="Footer-link">
+                Stack Overflow
+              </a>
+              <a href="https://go.p2hp.com/help/"  target="" class="Footer-link">
+                帮助
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://pkg.go.dev"  target="_blank" class="Footer-link Footer-link--primary">
+              包
+            </a>
+              <a href="https://go.p2hp.com/pkg/"  target="_blank" class="Footer-link">
+                标准库
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="https://go.p2hp.com/project"  target="" class="Footer-link Footer-link--primary">
+              关于
+            </a>
+              <a href="https://go.p2hp.com/dl/"  target="" class="Footer-link">
+                下载
+              </a>
+              <a href="https://go.p2hp.com/blog/"  target="" class="Footer-link">
+                博客
+              </a>
+              <a href="https://github.com/golang/go/issues"  target="_blank" class="Footer-link">
+                问题追踪
+              </a>
+              <a href="../devel/release.html"  target="" class="Footer-link">
+                发行说明
+              </a>
+              <a href="https://go.p2hp.com/blog/go-brand"  target="_blank" class="Footer-link">
+                品牌指南
+              </a>
+              <a href="https://go.p2hp.com/conduct"  target="" class="Footer-link">
+                行为守则
+              </a>
+          </div>
+          <div class="Footer-linkColumn">
+            <a href="release-workflow.html"  target="_blank" class="Footer-link Footer-link--primary">
+              连接
+            </a>
+              <a href="https://github.com/golang"  target="_blank" class="Footer-link">
+                GitHub
+              </a>
+              <a href="https://invite.slack.golangbridge.org/"  target="_blank" class="Footer-link">
+                Slack
+              </a>
+              <a href="https://www.meetup.com/pro/go"  target="_blank" class="Footer-link">
+                Meetup
+              </a>
+              <a href="https://golangweekly.com/"  target="_blank" class="Footer-link">
+                Golang Weekly
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="Footer">
+    <div class="Container Container--fullBleed">
+      <div class="Footer-bottom">
+        <img class="Footer-gopher" src="../../go.dev/images/gophers/pilot-bust.svg" alt="The Go Gopher">
+        <ul class="Footer-listRow">
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/copyright">版权</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/tos">服务条款</a>
+          </li>
+          <li class="Footer-listItem">
+            <a href="https://www.p2hp.com/privacy-policy.php"
+              target="_blank"
+              rel="noopener">
+              隐私政策
+            </a>
+            </li>
+            <li class="Footer-listItem">
+            <a href="https://go.p2hp.com/sitemap"
+              target="_blank"
+              rel="noopener">
+              网站地图
+            </a>
+            </li>
+          
+          <li class="Footer-listItem">
+            <a
+              href="https://go.p2hp.com/lianxi"
+              target="_blank"
+              >
+              联系本站
+            </a>
+          </li>
+          <li class="Footer-listItem">
+            
+              <a href="https://go.p2hp.com">Go中文网</a>版权所有 © 2021-2023
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              由 Lenix 建立和翻译 <span style="color: #e27575;font-size: 14px;">❤</span>
+             
+          </li>
+          <li class="Footer-listItem">
+            
+              请按Ctrl+D试试
+             
+          </li>
+          <li class="Footer-listItem go-Footer-listItem">
+            <button class="go-Button go-Button--text go-Footer-toggleTheme js-toggleTheme" aria-label="Toggle theme">
+              <img
+                data-value="auto"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_6_gm_grey_24dp.svg"
+                alt="System theme">
+              <img
+                data-value="dark"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/brightness_2_gm_grey_24dp.svg"
+                alt="Dark theme">
+              <img
+                data-value="light"
+                class="go-Icon go-Icon--inverted"
+                height="24"
+                width="24"
+                src="../../go.dev/images/icons/light_mode_gm_grey_24dp.svg"
+                alt="Light theme">
+            </button>
+          </li>
+        </ul>
+        <a class="Footer-googleLogo" target="_blank" href="https://go.p2hp.com" rel="noopener">
+          <img class="Footer-googleLogoImg" src="../../go.dev/images/go-white.png" alt="go中文网 logo">
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../go.dev/js/jquery.js"></script>
+  <script src="../../go.dev/js/carousels.js"></script>
+  <script src="../../go.dev/js/searchBox.js"></script>
+  <script src="../../go.dev/js/misc.js"></script>
+  <script src="../../go.dev/js/hats.js"></script>
+  <script src="../../go.dev/js/playground.js"></script>
+  <script src="../../go.dev/js/godocs.js"></script>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
