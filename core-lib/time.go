@@ -18,7 +18,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, %s!", name)
 }
 
-func main() {
+func test3() {
 	now := time.Now()
 
 	fmt.Println("Current:", now.Format("2006-01-02 15:04:05"))
