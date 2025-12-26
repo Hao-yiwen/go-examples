@@ -24,14 +24,15 @@ func NewProductHandler(productService service.ProductService) *ProductHandler {
 }
 
 // GetProducts godoc
-// @Summary      获取所有产品
-// @Description  获取产品列表
-// @Tags         products
-// @Accept       json
-// @Produce      json
-// @Success      200  {object}  response.Response{data=[]model.Product}
-// @Failure      500  {object}  response.Response
-// @Router       /api/v1/products [get]
+//
+//	@Summary		获取所有产品
+//	@Description	获取产品列表
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	response.Response{data=[]model.Product}
+//	@Failure		500	{object}	response.Response
+//	@Router			/api/v1/products [get]
 func (h *ProductHandler) GetProducts(c *gin.Context) {
 	ctx, cancel := createContextWithTimeout(c, 5*time.Second)
 	defer cancel()
@@ -47,16 +48,17 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 }
 
 // GetProduct godoc
-// @Summary      获取单个产品
-// @Description  根据ID获取产品详情
-// @Tags         products
-// @Accept       json
-// @Produce      json
-// @Param        id   path      int  true  "产品ID"
-// @Success      200  {object}  response.Response{data=model.Product}
-// @Failure      400  {object}  response.Response
-// @Failure      404  {object}  response.Response
-// @Router       /api/v1/products/{id} [get]
+//
+//	@Summary		获取单个产品
+//	@Description	根据ID获取产品详情
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"产品ID"
+//	@Success		200	{object}	response.Response{data=model.Product}
+//	@Failure		400	{object}	response.Response
+//	@Failure		404	{object}	response.Response
+//	@Router			/api/v1/products/{id} [get]
 func (h *ProductHandler) GetProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -79,15 +81,16 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 }
 
 // CreateProduct godoc
-// @Summary      创建产品
-// @Description  创建一个新产品
-// @Tags         products
-// @Accept       json
-// @Produce      json
-// @Param        product  body      model.CreateProductRequest  true  "产品信息"
-// @Success      201      {object}  response.Response{data=model.Product}
-// @Failure      400      {object}  response.Response
-// @Router       /api/v1/products [post]
+//
+//	@Summary		创建产品
+//	@Description	创建一个新产品
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			product	body		model.CreateProductRequest	true	"产品信息"
+//	@Success		201		{object}	response.Response{data=model.Product}
+//	@Failure		400		{object}	response.Response
+//	@Router			/api/v1/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var req model.CreateProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -109,17 +112,18 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 }
 
 // UpdateProduct godoc
-// @Summary      更新产品
-// @Description  根据ID更新产品信息
-// @Tags         products
-// @Accept       json
-// @Produce      json
-// @Param        id       path      int                         true  "产品ID"
-// @Param        product  body      model.UpdateProductRequest  true  "更新信息"
-// @Success      200      {object}  response.Response{data=model.Product}
-// @Failure      400      {object}  response.Response
-// @Failure      404      {object}  response.Response
-// @Router       /api/v1/products/{id} [put]
+//
+//	@Summary		更新产品
+//	@Description	根据ID更新产品信息
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int							true	"产品ID"
+//	@Param			product	body		model.UpdateProductRequest	true	"更新信息"
+//	@Success		200		{object}	response.Response{data=model.Product}
+//	@Failure		400		{object}	response.Response
+//	@Failure		404		{object}	response.Response
+//	@Router			/api/v1/products/{id} [put]
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -148,16 +152,17 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 }
 
 // DeleteProduct godoc
-// @Summary      删除产品
-// @Description  根据ID删除产品
-// @Tags         products
-// @Accept       json
-// @Produce      json
-// @Param        id   path      int  true  "产品ID"
-// @Success      200  {object}  response.Response
-// @Failure      400  {object}  response.Response
-// @Failure      404  {object}  response.Response
-// @Router       /api/v1/products/{id} [delete]
+//
+//	@Summary		删除产品
+//	@Description	根据ID删除产品
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"产品ID"
+//	@Success		200	{object}	response.Response
+//	@Failure		400	{object}	response.Response
+//	@Failure		404	{object}	response.Response
+//	@Router			/api/v1/products/{id} [delete]
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -180,16 +185,17 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 }
 
 // ReduceStock godoc
-// @Summary      减少库存
-// @Description  减少产品库存数量
-// @Tags         products
-// @Accept       json
-// @Produce      json
-// @Param        id       path      int                    true  "产品ID"
-// @Param        request  body      ReduceStockRequest     true  "减少数量"
-// @Success      200      {object}  response.Response
-// @Failure      400      {object}  response.Response
-// @Router       /api/v1/products/{id}/reduce-stock [post]
+//
+//	@Summary		减少库存
+//	@Description	减少产品库存数量
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"产品ID"
+//	@Param			request	body		ReduceStockRequest	true	"减少数量"
+//	@Success		200		{object}	response.Response
+//	@Failure		400		{object}	response.Response
+//	@Router			/api/v1/products/{id}/reduce-stock [post]
 func (h *ProductHandler) ReduceStock(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)

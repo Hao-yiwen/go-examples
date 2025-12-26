@@ -1,16 +1,16 @@
 // Package main Simple Gin API
 //
-// @title           Simple Gin API
-// @version         1.0
-// @description     一个基于 Gin 框架的示例 API 服务
+//	@title			Simple Gin API
+//	@version		1.0
+//	@description	一个基于 Gin 框架的示例 API 服务
 //
-// @contact.name    API Support
-// @contact.email   support@example.com
+//	@contact.name	API Support
+//	@contact.email	support@example.com
 //
-// @host            localhost:8080
-// @BasePath        /
+//	@host			localhost:8080
+//	@BasePath		/
 //
-// @schemes         http
+//	@schemes		http
 package main
 
 import (
