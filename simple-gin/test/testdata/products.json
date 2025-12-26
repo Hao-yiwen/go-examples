@@ -1,0 +1,16 @@
+{
+  "products": [
+    {
+      "name": "测试产品1",
+      "price": 99.99,
+      "stock": 100,
+      "category": "Test"
+    },
+    {
+      "name": "测试产品2",
+      "price": 199.99,
+      "stock": 50,
+      "category": "Test"
+    }
+  ]
+}

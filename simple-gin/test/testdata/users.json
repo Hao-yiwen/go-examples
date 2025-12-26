@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "name": "测试用户1",
+      "email": "user1@test.com",
+      "phone": "13800000001"
+    },
+    {
+      "name": "测试用户2",
+      "email": "user2@test.com",
+      "phone": "13800000002"
+    },
+    {
+      "name": "测试用户3",
+      "email": "user3@test.com",
+      "phone": "13800000003"
+    }
+  ],
+  "invalid_users": [
+    {
+      "name": "",
+      "email": "invalid-email",
+      "phone": "123"
+    }
+  ]
+}

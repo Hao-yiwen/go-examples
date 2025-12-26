@@ -1,159 +1,228 @@
-# Simple Gin - 规范的Gin项目结构示例
+# Simple Gin - 标准 Go 项目结构示例
 
-这是一个基于Gin框架的规范Web应用项目，展示了企业级Go项目的标准架构和最佳实践。
+基于 Gin 框架的 Web 应用，遵循 [golang-standards/project-layout](https://github.com/golang-standards/project-layout) 标准目录结构。
 
 ## 项目结构
 
 ```
 simple-gin/
-├── config/           # 配置模块
-│   └── config.go     # 应用程序配置（服务器、数据库等）
-├── models/           # 数据模型层
-│   ├── user.go       # 用户模型 + 请求体定义
-│   └── product.go    # 产品模型 + 请求体定义
-├── database/         # 数据层（模拟数据存储）
-│   └── db.go         # 模拟数据库实现，实现 Database 接口
-├── service/          # 业务逻辑层（新增）
-│   ├── database.go   # Database 接口定义（依赖倒置）
-│   ├── user_service.go   # 用户服务实现（使用context）
-│   └── product_service.go # 产品服务实现（使用context）
-├── handlers/         # HTTP请求处理层（控制器）
-│   ├── helper.go     # Context 辅助函数
-│   ├── user.go       # 用户处理器（依赖UserService）
-│   └── product.go    # 产品处理器（依赖ProductService）
-├── middleware/       # 中间件层
-│   └── middleware.go # 日志、错误恢复、CORS等中间件
-├── routes/           # 路由配置层
-│   └── routes.go     # 定义所有API路由、依赖注入
-├── main.go           # 应用程序入口
-├── go.mod            # Go Module 依赖声明
-└── go.sum            # Go Module 依赖哈希值
-
+├── cmd/                         # 主程序入口
+│   └── simple-gin/
+│       └── main.go              # 应用程序入口
+├── configs/                     # 配置文件
+│   └── config.yaml              # YAML 配置
+├── internal/                    # 私有代码（Go 强制禁止外部导入）
+│   ├── config/                  # 配置加载
+│   │   └── config.go
+│   ├── container/               # 依赖注入容器
+│   │   └── container.go
+│   ├── handler/                 # HTTP 处理器（控制器）
+│   │   ├── helper.go
+│   │   ├── product.go
+│   │   └── user.go
+│   ├── middleware/              # HTTP 中间件
+│   │   └── middleware.go
+│   ├── model/                   # 数据模型
+│   │   ├── product.go
+│   │   └── user.go
+│   ├── repository/              # 数据访问层
+│   │   └── db.go
+│   ├── router/                  # 路由配置
+│   │   └── router.go
+│   └── service/                 # 业务逻辑层
+│       ├── database.go          # 接口定义
+│       ├── product_service.go
+│       └── user_service.go
+├── pkg/                         # 公共库（可被外部项目导入）
+│   ├── response/                # 统一响应格式
+│   │   └── response.go
+│   ├── utils/                   # 通用工具
+│   │   ├── string.go
+│   │   └── string_test.go
+│   └── validator/               # 数据验证
+│       ├── validator.go
+│       └── validator_test.go
+├── test/                        # 测试文件
+│   ├── integration/             # 集成测试
+│   │   └── api_test.go
+│   └── testdata/                # 测试数据
+│       ├── products.json
+│       └── users.json
+├── go.mod
+├── go.sum
+└── README.md
 ```
 
-## 架构设计特点
+## 目录说明
 
-### 企业级分层架构
-- **Models 层**: 定义数据结构和请求/响应体
-- **Database 层**: 数据存储和访问逻辑（这里模拟）
-  - 实现 `service.Database` 接口
-  - 编译时验证接口实现
-- **Service 层** (新增): 业务逻辑层
-  - `UserService` 和 `ProductService` 接口定义
-  - 使用 Go `context.Context` 处理超时和取消
-  - 包含业务规则校验
-  - 依赖 Database 接口（依赖倒置原则）
-- **Handlers 层** (控制器): HTTP 请求处理
-  - `UserHandler` 和 `ProductHandler` 控制器
-  - 依赖注入 Service 接口
-  - 创建具有超时的 context 传递给 Service
-- **Routes 层**: 路由定义和依赖注入
-- **Middleware 层**: 横切关注点（日志、错误处理、CORS等）
-- **Config 层**: 应用程序配置管理
+| 目录 | 用途 | 导入限制 |
+|------|------|----------|
+| `cmd/` | 可执行程序入口，支持多个应用 | - |
+| `internal/` | 项目私有代码 | **Go 编译器强制禁止外部导入** |
+| `pkg/` | 公共库代码 | 任何项目都可以导入使用 |
+| `configs/` | 配置文件模板 | - |
+| `test/` | 集成测试和测试数据 | - |
 
-### 核心设计原则
-- ✅ **依赖倒置原则 (DIP)**: Handler → Service → Database，通过接口解耦
-- ✅ **接口隔离**: Database 接口定义在 Service 层，实现在 Database 层
-- ✅ **控制反转 (IoC)**: 在 main.go 中进行依赖注入
-- ✅ **Context 传播**: 从 HTTP 请求到业务逻辑的超时控制
-- ✅ **RESTful API** 设计
-- ✅ 请求参数验证（使用 Gin 的 binding tag）
-- ✅ 统一的 JSON 响应格式
-- ✅ 中间件支持（日志、错误恢复、CORS、请求ID）
-- ✅ 线程安全的数据存储（使用 sync.RWMutex）
-- ✅ 完整的 CRUD 操作
+## 快速开始
+
+### 前置条件
+- Go 1.21+
+
+### 安装依赖
+```bash
+go mod download
+```
+
+### 运行
+```bash
+# 方式一：直接运行
+go run ./cmd/simple-gin
+
+# 方式二：编译后运行
+go build -o bin/simple-gin ./cmd/simple-gin
+./bin/simple-gin
+```
+
+### 测试
+```bash
+# 运行所有测试
+go test ./...
+
+# 运行单元测试（pkg）
+go test -v ./pkg/...
+
+# 运行集成测试
+go test -v ./test/integration/...
+
+# 测试覆盖率
+go test -cover ./...
+
+# 性能测试
+go test -bench=. ./pkg/validator/
+```
 
 ## API 接口
+
+### 健康检查
+```
+GET /ping
+```
 
 ### 用户接口
 ```
 GET    /api/v1/users           # 获取所有用户
-POST   /api/v1/users           # 创建新用户
+POST   /api/v1/users           # 创建用户
 GET    /api/v1/users/:id       # 获取指定用户
-PUT    /api/v1/users/:id       # 更新指定用户
-DELETE /api/v1/users/:id       # 删除指定用户
+PUT    /api/v1/users/:id       # 更新用户
+DELETE /api/v1/users/:id       # 删除用户
 ```
 
 ### 产品接口
 ```
-GET    /api/v1/products        # 获取所有产品
-POST   /api/v1/products        # 创建新产品
-GET    /api/v1/products/:id    # 获取指定产品
-PUT    /api/v1/products/:id    # 更新指定产品
-DELETE /api/v1/products/:id    # 删除指定产品
-POST   /api/v1/products/:id/reduce-stock  # 减少产品库存（业务操作示例）
+GET    /api/v1/products                  # 获取所有产品
+POST   /api/v1/products                  # 创建产品
+GET    /api/v1/products/:id              # 获取指定产品
+PUT    /api/v1/products/:id              # 更新产品
+DELETE /api/v1/products/:id              # 删除产品
+POST   /api/v1/products/:id/reduce-stock # 减少库存
 ```
 
-### 健康检查
-```
-GET    /ping                   # 健康检查
-```
+## 使用示例
 
-## 运行项目
-
-### 前置条件
-- Go 1.25 或更高版本
-- 安装依赖: `go mod download`
-
-### 启动服务器
+### API 调用
 ```bash
-go run main.go
-```
+# 健康检查
+curl http://localhost:8080/ping
 
-输出示例：
-```
-2024-12-26 10:15:30 Config loaded. Server will run on port 8080
-2024-12-26 10:15:30 Database initialized. Connection: postgres://postgres:password123@localhost:5432/simple_gin_db
-2024-12-26 10:15:30 Starting server on :8080
-```
-
-### 编译构建
-```bash
-go build
-./simple-gin
-```
-
-## API 使用示例
-
-### 获取所有用户
-```bash
+# 获取所有用户
 curl http://localhost:8080/api/v1/users
-```
 
-### 创建新用户
-```bash
+# 创建用户
 curl -X POST http://localhost:8080/api/v1/users \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "王五",
-    "email": "wangwu@example.com",
-    "phone": "13800138002"
-  }'
-```
+  -d '{"name": "王五", "email": "wangwu@example.com", "phone": "13800138002"}'
 
-### 获取指定用户
-```bash
+# 获取单个用户
 curl http://localhost:8080/api/v1/users/1
-```
 
-### 更新用户
-```bash
+# 更新用户
 curl -X PUT http://localhost:8080/api/v1/users/1 \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "张三（更新）",
-    "email": "zhangsan_new@example.com"
-  }'
-```
+  -d '{"name": "张三（已更新）"}'
 
-### 删除用户
-```bash
+# 删除用户
 curl -X DELETE http://localhost:8080/api/v1/users/1
 ```
 
+### 在其他项目中使用 pkg
+```go
+import (
+    "example/simple-gin/pkg/response"
+    "example/simple-gin/pkg/validator"
+    "example/simple-gin/pkg/utils"
+)
+
+// 统一响应
+response.Success(c, data)
+response.BadRequest(c, "invalid input")
+response.NotFound(c, "user not found")
+
+// 数据验证
+validator.IsValidEmail("test@example.com")  // true
+validator.IsValidPhone("13800138000")       // true
+validator.IsNotEmpty("hello")               // true
+
+// 工具函数
+utils.Contains([]int{1, 2, 3}, 2)           // true
+utils.Unique([]int{1, 1, 2, 2, 3})          // [1, 2, 3]
+utils.Filter(slice, func(x int) bool { return x > 0 })
+```
+
+## 架构设计
+
+### 分层架构
+```
+HTTP Request
+    ↓
+┌─────────────────┐
+│   Middleware    │  ← 日志、CORS、Recovery、RequestID
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│    Handler      │  ← HTTP 请求处理、参数绑定、响应
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│    Service      │  ← 业务逻辑、Context 超时控制
+└────────┬────────┘
+         ↓
+┌─────────────────┐
+│   Repository    │  ← 数据访问（当前为内存模拟）
+└─────────────────┘
+```
+
+### 依赖注入
+```
+main.go
+  ↓
+Container（依赖注入容器）
+  ├── Config
+  ├── Repository (Database)
+  ├── Services (UserService, ProductService)
+  └── Handlers (UserHandler, ProductHandler)
+  ↓
+Router（路由注册）
+```
+
+### 核心设计原则
+- **依赖倒置 (DIP)**: Handler → Service → Repository，通过接口解耦
+- **接口隔离**: Database 接口定义在 Service 层
+- **控制反转 (IoC)**: Container 管理所有依赖
+- **Context 传播**: 请求超时控制贯穿所有层
+
 ## 数据模型
 
-### User (用户)
+### User
 ```go
 type User struct {
     ID        int       `json:"id"`
@@ -165,7 +234,7 @@ type User struct {
 }
 ```
 
-### Product (产品)
+### Product
 ```go
 type Product struct {
     ID       int     `json:"id"`
@@ -176,158 +245,67 @@ type Product struct {
 }
 ```
 
-## 配置说明
+## 中间件
 
-所有配置在 `config/config.go` 中定义：
+| 中间件 | 功能 |
+|--------|------|
+| LoggingMiddleware | 请求日志记录 |
+| RecoveryMiddleware | Panic 恢复 |
+| CORSMiddleware | 跨域资源共享 |
+| RequestIDMiddleware | 请求 ID 追踪 |
 
-```go
-Config struct {
-    Server ServerConfig        // 服务器配置 (端口、模式)
-    DB     DatabaseConfig      // 数据库配置 (模拟)
-}
-```
+## 配置
 
-**注意**: 这个项目的数据库配置是模拟的，使用内存存储。实际生产项目中应该连接真实的数据库（PostgreSQL、MySQL 等）。
+配置文件: `configs/config.yaml`
 
-## 中间件列表
+支持的配置项:
+- Server: 端口、模式、超时
+- Database: 连接信息
+- Logger: 日志级别、格式
+- Cache: 缓存类型、TTL
+- Middleware: CORS、超时
 
-1. **LoggingMiddleware** - 请求/响应日志记录
-2. **RecoveryMiddleware** - Panic 恢复处理
-3. **CORSMiddleware** - 跨域资源共享
-4. **RequestIDMiddleware** - 请求ID追踪
+配置优先级: 环境变量 > 配置文件 > 默认值
 
-## 项目初始化数据
+环境变量前缀: `SIMPLE_GIN_`
 
-项目启动时会自动初始化以下数据：
+## 扩展指南
 
-**用户**:
-- ID: 1, Name: 张三, Email: zhangsan@example.com
-- ID: 2, Name: 李四, Email: lisi@example.com
+### 添加新模型
+1. `internal/model/` 创建模型文件
+2. `internal/repository/` 添加数据访问方法
+3. `internal/service/` 创建服务接口和实现
+4. `internal/handler/` 创建处理器
+5. `internal/router/` 注册路由
+6. `internal/container/` 添加依赖注入
 
-**产品**:
-- ID: 1, Name: iPhone 15, Price: 5999, Stock: 50
-- ID: 2, Name: MacBook Pro, Price: 12999, Stock: 30
-
-## 从这个模板扩展
-
-### 添加新的模型
-1. 在 `models/` 下创建新文件（如 `order.go`）
-2. 在 `database/` 中添加 CRUD 方法
-3. 在 `handlers/` 下创建处理器文件
-4. 在 `routes/routes.go` 中注册路由
+### 添加公共库
+1. `pkg/` 下创建包目录
+2. 编写代码和单元测试
+3. 其他项目可直接导入使用
 
 ### 连接真实数据库
-1. 更新 `config/config.go` 的数据库配置
-2. 使用 ORM（如 GORM）替换 `database/db.go` 的内存存储
-3. 更新处理器以使用真实数据库查询
+1. 修改 `internal/repository/db.go`
+2. 使用 GORM 或其他 ORM
+3. 更新 `configs/config.yaml`
 
-### 添加身份验证
-1. 在 `middleware/` 中创建认证中间件
-2. 在需要保护的路由上应用该中间件
+## 初始数据
 
-## 最佳实践
+项目启动时自动初始化:
 
-✅ **遵循的原则**:
-- 清晰的分层架构
-- 单一职责原则
-- 一致的错误处理
-- 统一的 API 响应格式
-- 请求验证和类型安全
-- 线程安全的数据操作
-- RESTful API 设计
+**用户:**
+- 张三 (zhangsan@example.com)
+- 李四 (lisi@example.com)
 
-## Service 层使用 Context 的示例
+**产品:**
+- iPhone 15 (5999 元)
+- MacBook Pro (12999 元)
 
-Service 层的每个方法都接受 `context.Context` 参数，用于控制超时和取消：
+## 依赖
 
-```go
-// UserService 接口定义
-type UserService interface {
-    GetUsers(ctx context.Context) ([]*models.User, error)
-    GetUserByID(ctx context.Context, id int) (*models.User, error)
-    CreateUser(ctx context.Context, req *models.CreateUserRequest) (*models.User, error)
-    UpdateUser(ctx context.Context, id int, req *models.UpdateUserRequest) (*models.User, error)
-    DeleteUser(ctx context.Context, id int) error
-}
-
-// Handler 中的使用
-func (h *UserHandler) GetUsers(c *gin.Context) {
-    // 创建 5 秒超时的 context
-    ctx, cancel := createContextWithTimeout(c, 5*time.Second)
-    defer cancel()
-
-    // Service 会监听 context 的取消信号
-    users, err := h.userService.GetUsers(ctx)
-    // ...
-}
-```
-
-**Context 的作用**:
-- ✅ 请求级别的超时控制（5秒）
-- ✅ 监听客户端连接中断（context 取消）
-- ✅ 跨层级传播超时信息
-- ✅ 支持链路追踪的请求 ID 传递
-
-## 依赖注入流程
-
-```
-main.go
-  ↓
-创建 Database 实例
-  ↓
-创建 UserService 和 ProductService（注入 Database）
-  ↓
-routes.SetupRoutes(router, userService, productService)
-  ↓
-创建 UserHandler 和 ProductHandler（注入 Service）
-  ↓
-注册路由处理函数
-```
-
-这种设计使得：
-- 各层完全解耦，可独立测试
-- 容易替换实现（如将模拟 Database 替换为真实数据库）
-- 遵循 SOLID 原则
-
-## 生成的依赖
-
-主要依赖:
-- `github.com/gin-gonic/gin` - Gin Web 框架
-
-所有完整依赖见 `go.mod` 和 `go.sum` 文件。
+- [gin-gonic/gin](https://github.com/gin-gonic/gin) - Web 框架
+- [spf13/viper](https://github.com/spf13/viper) - 配置管理
 
 ---
 
-## 关键文件说明
-
-### service/user_service.go
-- 实现 `UserService` 接口
-- 所有方法都使用 `context.Context`
-- 包含业务规则校验（如 email 格式、ID 合法性）
-- 监听 context 取消信号
-
-### handlers/user.go
-- 实现 `UserHandler` 控制器
-- 依赖注入 `UserService` 接口
-- 创建超时 context 并传递给 Service
-- 错误映射为 HTTP 状态码
-
-### handlers/helper.go
-- 定义 `createContextWithTimeout` 函数
-- 将 Gin 的 `Request.Context()` 转换为带超时的 context
-
-### routes/routes.go
-- 配置所有 API 路由
-- 进行依赖注入（创建 Handler 实例）
-- 路由分组和中间件应用
-
----
-
-这个项目展示了一个规范、可扩展的**企业级** Go Web 应用架构，涵盖了：
-- 完整的分层设计
-- 接口设计与依赖注入
-- Context 的正确使用
-- 错误处理与日志
-- RESTful API 设计
-
-可以直接用作新项目的基础模板！
+这是一个标准的 Go 项目模板，可直接用于新项目开发。
