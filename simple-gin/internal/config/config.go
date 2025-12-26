@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/spf13/viper"
@@ -84,12 +83,13 @@ func LoadConfig() *Config {
 	// 读取配置文件（先读，后设置默认值）
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Println("Config file not found, using defaults and environment variables")
+			fmt.Println("Config file not found, using defaults and environment variables")
 		} else {
-			log.Fatalf("Error reading config file: %v", err)
+			fmt.Printf("Error reading config file: %v\n", err)
+			os.Exit(1)
 		}
 	} else {
-		log.Printf("Config file loaded: %s", v.ConfigFileUsed())
+		fmt.Printf("Config file loaded: %s\n", v.ConfigFileUsed())
 	}
 
 	// 设置所有默认值（覆盖缺失的配置项）
@@ -98,16 +98,17 @@ func LoadConfig() *Config {
 	// 反序列化为结构体
 	cfg := &Config{}
 	if err := v.Unmarshal(cfg); err != nil {
-		log.Fatalf("Error unmarshaling config: %v", err)
-		return nil
+		fmt.Printf("Error unmarshaling config: %v\n", err)
+		os.Exit(1)
 	}
 
 	// 验证配置
 	if err := cfg.Validate(); err != nil {
-		log.Fatalf("Config validation failed: %v", err)
+		fmt.Printf("Config validation failed: %v\n", err)
+		os.Exit(1)
 	}
 
-	log.Println("Config loaded successfully")
+	fmt.Println("Config loaded successfully")
 	return cfg
 }
 

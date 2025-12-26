@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"log/slog"
+	"strconv"
+	"time"
+
 	"example/simple-gin/internal/model"
 	"example/simple-gin/internal/service"
 	"example/simple-gin/pkg/response"
-	"log"
-	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,7 +40,7 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 
 	users, err := h.userService.GetUsers(ctx)
 	if err != nil {
-		log.Printf("Handler: error getting users: %v", err)
+		slog.Error("error getting users", "error", err)
 		response.InternalError(c, "failed to get users: "+err.Error())
 		return
 	}
@@ -72,7 +73,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 
 	user, err := h.userService.GetUserByID(ctx, id)
 	if err != nil {
-		log.Printf("Handler: error getting user %d: %v", id, err)
+		slog.Error("error getting user", "id", id, "error", err)
 		response.NotFound(c, err.Error())
 		return
 	}
@@ -103,7 +104,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	user, err := h.userService.CreateUser(ctx, &req)
 	if err != nil {
-		log.Printf("Handler: error creating user: %v", err)
+		slog.Error("error creating user", "error", err)
 		response.BadRequest(c, err.Error())
 		return
 	}
@@ -143,7 +144,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 
 	user, err := h.userService.UpdateUser(ctx, id, &req)
 	if err != nil {
-		log.Printf("Handler: error updating user %d: %v", id, err)
+		slog.Error("error updating user", "id", id, "error", err)
 		response.NotFound(c, err.Error())
 		return
 	}
@@ -176,7 +177,7 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 
 	err = h.userService.DeleteUser(ctx, id)
 	if err != nil {
-		log.Printf("Handler: error deleting user %d: %v", id, err)
+		slog.Error("error deleting user", "id", id, "error", err)
 		response.NotFound(c, err.Error())
 		return
 	}

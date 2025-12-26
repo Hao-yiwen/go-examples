@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"log/slog"
+
 	"example/simple-gin/internal/model"
 	"example/simple-gin/pkg/validator"
-	"log"
 )
 
 // ProductService 产品服务接口定义
@@ -40,12 +41,12 @@ func NewProductService(db Database) ProductService {
 func (s *productService) GetProducts(ctx context.Context) ([]*model.Product, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("GetProducts request cancelled: %v", ctx.Err())
+		slog.Warn("GetProducts request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
 
-	log.Println("Service: fetching all products")
+	slog.Debug("fetching all products")
 	products := s.db.GetAllProducts()
 
 	if products == nil {
@@ -59,7 +60,7 @@ func (s *productService) GetProducts(ctx context.Context) ([]*model.Product, err
 func (s *productService) GetProductByID(ctx context.Context, id int) (*model.Product, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("GetProductByID request cancelled: %v", ctx.Err())
+		slog.Warn("GetProductByID request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
@@ -68,7 +69,7 @@ func (s *productService) GetProductByID(ctx context.Context, id int) (*model.Pro
 		return nil, errors.New("invalid product id")
 	}
 
-	log.Printf("Service: fetching product by id: %d", id)
+	slog.Debug("fetching product by id", "id", id)
 	product := s.db.GetProduct(id)
 
 	if product == nil {
@@ -82,7 +83,7 @@ func (s *productService) GetProductByID(ctx context.Context, id int) (*model.Pro
 func (s *productService) CreateProduct(ctx context.Context, req *model.CreateProductRequest) (*model.Product, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("CreateProduct request cancelled: %v", ctx.Err())
+		slog.Warn("CreateProduct request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
@@ -108,7 +109,7 @@ func (s *productService) CreateProduct(ctx context.Context, req *model.CreatePro
 		return nil, errors.New("stock cannot be negative")
 	}
 
-	log.Printf("Service: creating product with name: %s", req.Name)
+	slog.Info("creating product", "name", req.Name)
 	product := s.db.CreateProduct(req)
 
 	return product, nil
@@ -118,7 +119,7 @@ func (s *productService) CreateProduct(ctx context.Context, req *model.CreatePro
 func (s *productService) UpdateProduct(ctx context.Context, id int, req *model.UpdateProductRequest) (*model.Product, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("UpdateProduct request cancelled: %v", ctx.Err())
+		slog.Warn("UpdateProduct request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
@@ -138,7 +139,7 @@ func (s *productService) UpdateProduct(ctx context.Context, id int, req *model.U
 		return nil, errors.New("price must be greater than 0")
 	}
 
-	log.Printf("Service: updating product with id: %d", id)
+	slog.Info("updating product", "id", id)
 	product := s.db.UpdateProduct(id, req)
 
 	return product, nil
@@ -148,7 +149,7 @@ func (s *productService) UpdateProduct(ctx context.Context, id int, req *model.U
 func (s *productService) DeleteProduct(ctx context.Context, id int) error {
 	select {
 	case <-ctx.Done():
-		log.Printf("DeleteProduct request cancelled: %v", ctx.Err())
+		slog.Warn("DeleteProduct request cancelled", "error", ctx.Err())
 		return ctx.Err()
 	default:
 	}
@@ -157,7 +158,7 @@ func (s *productService) DeleteProduct(ctx context.Context, id int) error {
 		return errors.New("invalid product id")
 	}
 
-	log.Printf("Service: deleting product with id: %d", id)
+	slog.Info("deleting product", "id", id)
 	if !s.db.DeleteProduct(id) {
 		return errors.New("product not found")
 	}
@@ -169,7 +170,7 @@ func (s *productService) DeleteProduct(ctx context.Context, id int) error {
 func (s *productService) ReduceStock(ctx context.Context, id, quantity int) error {
 	select {
 	case <-ctx.Done():
-		log.Printf("ReduceStock request cancelled: %v", ctx.Err())
+		slog.Warn("ReduceStock request cancelled", "error", ctx.Err())
 		return ctx.Err()
 	default:
 	}
@@ -191,7 +192,7 @@ func (s *productService) ReduceStock(ctx context.Context, id, quantity int) erro
 		return errors.New("insufficient stock")
 	}
 
-	log.Printf("Service: reducing stock for product id: %d, quantity: %d", id, quantity)
+	slog.Info("reducing stock", "id", id, "quantity", quantity)
 	product.Stock -= quantity
 
 	return nil

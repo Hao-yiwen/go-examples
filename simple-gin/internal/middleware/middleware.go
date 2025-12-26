@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +33,7 @@ func LoggingMiddleware() gin.HandlerFunc {
 // RecoveryMiddleware 错误恢复中间件
 func RecoveryMiddleware() gin.HandlerFunc {
 	return gin.CustomRecovery(func(c *gin.Context, err interface{}) {
-		log.Printf("panic error: %v", err)
+		slog.Error("panic recovered", "error", err, "path", c.Request.URL.Path)
 		c.AbortWithStatusJSON(500, gin.H{
 			"code": 500,
 			"msg":  "internal server error",

@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"log/slog"
+
 	"example/simple-gin/internal/model"
 	"example/simple-gin/pkg/validator"
-	"log"
 )
 
 // UserService 用户服务接口定义
@@ -38,12 +39,12 @@ func NewUserService(db Database) UserService {
 func (s *userService) GetUsers(ctx context.Context) ([]*model.User, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("GetUsers request cancelled: %v", ctx.Err())
+		slog.Warn("GetUsers request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
 
-	log.Println("Service: fetching all users")
+	slog.Debug("fetching all users")
 	users := s.db.GetAllUsers()
 
 	if users == nil {
@@ -57,7 +58,7 @@ func (s *userService) GetUsers(ctx context.Context) ([]*model.User, error) {
 func (s *userService) GetUserByID(ctx context.Context, id int) (*model.User, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("GetUserByID request cancelled: %v", ctx.Err())
+		slog.Warn("GetUserByID request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
@@ -66,7 +67,7 @@ func (s *userService) GetUserByID(ctx context.Context, id int) (*model.User, err
 		return nil, errors.New("invalid user id")
 	}
 
-	log.Printf("Service: fetching user by id: %d", id)
+	slog.Debug("fetching user by id", "id", id)
 	user := s.db.GetUser(id)
 
 	if user == nil {
@@ -80,7 +81,7 @@ func (s *userService) GetUserByID(ctx context.Context, id int) (*model.User, err
 func (s *userService) CreateUser(ctx context.Context, req *model.CreateUserRequest) (*model.User, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("CreateUser request cancelled: %v", ctx.Err())
+		slog.Warn("CreateUser request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
@@ -102,7 +103,7 @@ func (s *userService) CreateUser(ctx context.Context, req *model.CreateUserReque
 		return nil, errors.New("invalid phone format")
 	}
 
-	log.Printf("Service: creating user with email: %s", req.Email)
+	slog.Info("creating user", "email", req.Email)
 	user := s.db.CreateUser(req)
 
 	return user, nil
@@ -112,7 +113,7 @@ func (s *userService) CreateUser(ctx context.Context, req *model.CreateUserReque
 func (s *userService) UpdateUser(ctx context.Context, id int, req *model.UpdateUserRequest) (*model.User, error) {
 	select {
 	case <-ctx.Done():
-		log.Printf("UpdateUser request cancelled: %v", ctx.Err())
+		slog.Warn("UpdateUser request cancelled", "error", ctx.Err())
 		return nil, ctx.Err()
 	default:
 	}
@@ -136,7 +137,7 @@ func (s *userService) UpdateUser(ctx context.Context, id int, req *model.UpdateU
 		return nil, errors.New("invalid phone format")
 	}
 
-	log.Printf("Service: updating user with id: %d", id)
+	slog.Info("updating user", "id", id)
 	user := s.db.UpdateUser(id, req)
 
 	return user, nil
@@ -146,7 +147,7 @@ func (s *userService) UpdateUser(ctx context.Context, id int, req *model.UpdateU
 func (s *userService) DeleteUser(ctx context.Context, id int) error {
 	select {
 	case <-ctx.Done():
-		log.Printf("DeleteUser request cancelled: %v", ctx.Err())
+		slog.Warn("DeleteUser request cancelled", "error", ctx.Err())
 		return ctx.Err()
 	default:
 	}
@@ -155,7 +156,7 @@ func (s *userService) DeleteUser(ctx context.Context, id int) error {
 		return errors.New("invalid user id")
 	}
 
-	log.Printf("Service: deleting user with id: %d", id)
+	slog.Info("deleting user", "id", id)
 	if !s.db.DeleteUser(id) {
 		return errors.New("user not found")
 	}

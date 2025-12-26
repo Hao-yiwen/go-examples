@@ -1,11 +1,12 @@
 package container
 
 import (
+	"log/slog"
+
 	"example/simple-gin/internal/config"
 	"example/simple-gin/internal/handler"
 	"example/simple-gin/internal/repository"
 	"example/simple-gin/internal/service"
-	"log"
 )
 
 // Container 依赖注入容器
@@ -46,7 +47,7 @@ func NewContainer(cfg *config.Config) (*Container, error) {
 	// 初始化处理器
 	c.initHandlers()
 
-	log.Println("Container initialized successfully")
+	slog.Info("container initialized successfully")
 	return c, nil
 }
 
@@ -57,7 +58,7 @@ func (c *Container) initDatabase() error {
 		return err
 	}
 	c.DB = db
-	log.Println("Database layer initialized")
+	slog.Debug("database layer initialized")
 	return nil
 }
 
@@ -65,14 +66,14 @@ func (c *Container) initDatabase() error {
 func (c *Container) initServices() {
 	c.UserService = service.NewUserService(c.DB)
 	c.ProductService = service.NewProductService(c.DB)
-	log.Println("Service layer initialized")
+	slog.Debug("service layer initialized")
 }
 
 // initHandlers 初始化处理器层
 func (c *Container) initHandlers() {
 	c.UserHandler = handler.NewUserHandler(c.UserService)
 	c.ProductHandler = handler.NewProductHandler(c.ProductService)
-	log.Println("Handler layer initialized")
+	slog.Debug("handler layer initialized")
 }
 
 // GetMiddlewares 返回所有中间件

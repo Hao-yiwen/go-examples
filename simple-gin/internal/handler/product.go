@@ -1,12 +1,13 @@
 package handler
 
 import (
+	"log/slog"
+	"strconv"
+	"time"
+
 	"example/simple-gin/internal/model"
 	"example/simple-gin/internal/service"
 	"example/simple-gin/pkg/response"
-	"log"
-	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,7 +40,7 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 
 	products, err := h.productService.GetProducts(ctx)
 	if err != nil {
-		log.Printf("Handler: error getting products: %v", err)
+		slog.Error("error getting products", "error", err)
 		response.InternalError(c, "failed to get products: "+err.Error())
 		return
 	}
@@ -72,7 +73,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 
 	product, err := h.productService.GetProductByID(ctx, id)
 	if err != nil {
-		log.Printf("Handler: error getting product %d: %v", id, err)
+		slog.Error("error getting product", "id", id, "error", err)
 		response.NotFound(c, err.Error())
 		return
 	}
@@ -103,7 +104,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 
 	product, err := h.productService.CreateProduct(ctx, &req)
 	if err != nil {
-		log.Printf("Handler: error creating product: %v", err)
+		slog.Error("error creating product", "error", err)
 		response.BadRequest(c, err.Error())
 		return
 	}
@@ -143,7 +144,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 
 	product, err := h.productService.UpdateProduct(ctx, id, &req)
 	if err != nil {
-		log.Printf("Handler: error updating product %d: %v", id, err)
+		slog.Error("error updating product", "id", id, "error", err)
 		response.NotFound(c, err.Error())
 		return
 	}
@@ -176,7 +177,7 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	err = h.productService.DeleteProduct(ctx, id)
 	if err != nil {
-		log.Printf("Handler: error deleting product %d: %v", id, err)
+		slog.Error("error deleting product", "id", id, "error", err)
 		response.NotFound(c, err.Error())
 		return
 	}
@@ -215,7 +216,7 @@ func (h *ProductHandler) ReduceStock(c *gin.Context) {
 
 	err = h.productService.ReduceStock(ctx, id, req.Quantity)
 	if err != nil {
-		log.Printf("Handler: error reducing stock for product %d: %v", id, err)
+		slog.Error("error reducing stock", "id", id, "error", err)
 		response.BadRequest(c, err.Error())
 		return
 	}
