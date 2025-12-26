@@ -11,43 +11,26 @@ simple-gin/
 │       └── main.go              # 应用程序入口
 ├── configs/                     # 配置文件
 │   └── config.yaml              # YAML 配置
+├── docs/                        # Swagger 文档（自动生成）
+│   ├── docs.go
+│   ├── swagger.json
+│   └── swagger.yaml
 ├── internal/                    # 私有代码（Go 强制禁止外部导入）
 │   ├── config/                  # 配置加载
-│   │   └── config.go
 │   ├── container/               # 依赖注入容器
-│   │   └── container.go
-│   ├── handler/                 # HTTP 处理器（控制器）
-│   │   ├── helper.go
-│   │   ├── product.go
-│   │   └── user.go
+│   ├── handler/                 # HTTP 处理器（含 Swagger 注释）
 │   ├── middleware/              # HTTP 中间件
-│   │   └── middleware.go
 │   ├── model/                   # 数据模型
-│   │   ├── product.go
-│   │   └── user.go
 │   ├── repository/              # 数据访问层
-│   │   └── db.go
 │   ├── router/                  # 路由配置
-│   │   └── router.go
 │   └── service/                 # 业务逻辑层
-│       ├── database.go          # 接口定义
-│       ├── product_service.go
-│       └── user_service.go
 ├── pkg/                         # 公共库（可被外部项目导入）
 │   ├── response/                # 统一响应格式
-│   │   └── response.go
 │   ├── utils/                   # 通用工具
-│   │   ├── string.go
-│   │   └── string_test.go
 │   └── validator/               # 数据验证
-│       ├── validator.go
-│       └── validator_test.go
 ├── test/                        # 测试文件
 │   ├── integration/             # 集成测试
-│   │   └── api_test.go
 │   └── testdata/                # 测试数据
-│       ├── products.json
-│       └── users.json
 ├── go.mod
 ├── go.sum
 └── README.md
@@ -57,55 +40,119 @@ simple-gin/
 
 | 目录 | 用途 | 导入限制 |
 |------|------|----------|
-| `cmd/` | 可执行程序入口，支持多个应用 | - |
+| `cmd/` | 可执行程序入口 | - |
 | `internal/` | 项目私有代码 | **Go 编译器强制禁止外部导入** |
 | `pkg/` | 公共库代码 | 任何项目都可以导入使用 |
-| `configs/` | 配置文件模板 | - |
+| `docs/` | Swagger 文档 | 自动生成，勿手动修改 |
+| `configs/` | 配置文件 | - |
 | `test/` | 集成测试和测试数据 | - |
 
 ## 快速开始
 
 ### 前置条件
 - Go 1.21+
+- Make（可选，用于简化命令）
+- swag CLI（可选，用于更新文档）
 
 ### 安装依赖
 ```bash
+# 使用 Make
+make deps
+
+# 或手动安装
 go mod download
+
+# 安装开发工具（swag, lint, air）
+make tools
 ```
 
 ### 运行
 ```bash
-# 方式一：直接运行
-go run ./cmd/simple-gin
+# 使用 Make
+make run          # 直接运行
+make dev          # 开发模式（生成文档 + 运行）
+make build        # 编译到 bin/
 
-# 方式二：编译后运行
+# 或手动运行
+go run ./cmd/simple-gin
 go build -o bin/simple-gin ./cmd/simple-gin
 ./bin/simple-gin
 ```
 
+启动后访问：
+- API: http://localhost:8080
+- Swagger UI: http://localhost:8080/swagger/index.html
+
 ### 测试
 ```bash
-# 运行所有测试
+# 使用 Make
+make test              # 运行所有测试
+make test-v            # 详细输出
+make test-cover        # 显示覆盖率
+make test-cover-html   # 生成 HTML 覆盖率报告
+make test-unit         # 只运行单元测试
+make test-integration  # 只运行集成测试
+make bench             # 运行性能测试
+
+# 或手动运行
 go test ./...
-
-# 运行单元测试（pkg）
 go test -v ./pkg/...
-
-# 运行集成测试
 go test -v ./test/integration/...
-
-# 测试覆盖率
 go test -cover ./...
-
-# 性能测试
-go test -bench=. ./pkg/validator/
 ```
+
+## Swagger 文档
+
+### 访问方式
+启动服务后访问：http://localhost:8080/swagger/index.html
+
+### 更新文档
+修改 handler 中的注释后，重新生成文档：
+```bash
+# 使用 Make
+make docs
+
+# 或手动运行
+swag init -g cmd/simple-gin/main.go -o docs
+```
+
+### 注释格式
+```go
+// CreateUser godoc
+// @Summary      创建用户
+// @Description  创建一个新用户
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user  body      model.CreateUserRequest  true  "用户信息"
+// @Success      201   {object}  response.Response{data=model.User}
+// @Failure      400   {object}  response.Response
+// @Router       /api/v1/users [post]
+func (h *UserHandler) CreateUser(c *gin.Context) {
+```
+
+### 常用注释标签
+
+| 标签 | 说明 | 示例 |
+|------|------|------|
+| `@Summary` | 接口简述 | `@Summary 创建用户` |
+| `@Description` | 详细描述 | `@Description 创建一个新用户` |
+| `@Tags` | 分组标签 | `@Tags users` |
+| `@Param` | 参数定义 | `@Param id path int true "用户ID"` |
+| `@Success` | 成功响应 | `@Success 200 {object} Response` |
+| `@Failure` | 失败响应 | `@Failure 400 {object} Response` |
+| `@Router` | 路由路径 | `@Router /api/v1/users [post]` |
 
 ## API 接口
 
 ### 健康检查
 ```
 GET /ping
+```
+
+### Swagger 文档
+```
+GET /swagger/*any
 ```
 
 ### 用户接口
@@ -189,11 +236,11 @@ HTTP Request
 └────────┬────────┘
          ↓
 ┌─────────────────┐
-│    Handler      │  ← HTTP 请求处理、参数绑定、响应
+│    Handler      │  ← HTTP 请求处理、参数绑定、Swagger 注释
 └────────┬────────┘
          ↓
 ┌─────────────────┐
-│    Service      │  ← 业务逻辑、Context 超时控制
+│    Service      │  ← 业务逻辑、数据验证、Context 超时
 └────────┬────────┘
          ↓
 ┌─────────────────┐
@@ -211,7 +258,7 @@ Container（依赖注入容器）
   ├── Services (UserService, ProductService)
   └── Handlers (UserHandler, ProductHandler)
   ↓
-Router（路由注册）
+Router（路由注册 + Swagger）
 ```
 
 ### 核心设计原则
@@ -271,13 +318,14 @@ type Product struct {
 
 ## 扩展指南
 
-### 添加新模型
-1. `internal/model/` 创建模型文件
+### 添加新接口
+1. `internal/model/` 创建模型文件（添加 `example` 标签）
 2. `internal/repository/` 添加数据访问方法
 3. `internal/service/` 创建服务接口和实现
-4. `internal/handler/` 创建处理器
+4. `internal/handler/` 创建处理器（添加 Swagger 注释）
 5. `internal/router/` 注册路由
 6. `internal/container/` 添加依赖注入
+7. 运行 `swag init -g cmd/simple-gin/main.go -o docs` 更新文档
 
 ### 添加公共库
 1. `pkg/` 下创建包目录
@@ -305,6 +353,61 @@ type Product struct {
 
 - [gin-gonic/gin](https://github.com/gin-gonic/gin) - Web 框架
 - [spf13/viper](https://github.com/spf13/viper) - 配置管理
+- [swaggo/swag](https://github.com/swaggo/swag) - Swagger 文档生成
+- [swaggo/gin-swagger](https://github.com/swaggo/gin-swagger) - Gin Swagger 中间件
+
+## Makefile 命令
+
+项目提供了完整的 Makefile 简化开发流程。查看所有可用命令：
+
+```bash
+make help
+```
+
+### 命令速查表
+
+| 分类 | 命令 | 说明 |
+|------|------|------|
+| **构建** | `make build` | 编译项目到 `bin/` |
+| | `make run` | 直接运行项目 |
+| | `make dev` | 开发模式（生成文档 + 运行） |
+| **测试** | `make test` | 运行所有测试 |
+| | `make test-v` | 运行测试（详细输出） |
+| | `make test-cover` | 显示测试覆盖率 |
+| | `make test-cover-html` | 生成覆盖率 HTML 报告 |
+| | `make test-unit` | 只运行单元测试（pkg） |
+| | `make test-integration` | 只运行集成测试 |
+| | `make bench` | 运行性能测试 |
+| **文档** | `make docs` | 生成 Swagger 文档 |
+| | `make docs-fmt` | 格式化 Swagger 注释 |
+| **依赖** | `make deps` | 下载依赖 |
+| | `make deps-update` | 更新依赖 |
+| | `make deps-tidy` | 清理依赖 |
+| **代码质量** | `make fmt` | 格式化代码 |
+| | `make lint` | 代码检查（需要 golangci-lint） |
+| | `make vet` | go vet 检查 |
+| **清理** | `make clean` | 清理构建产物 |
+| | `make clean-all` | 清理所有（包括文档） |
+| **工具** | `make tools` | 安装开发工具（swag, lint, air） |
+
+### 常用开发流程
+
+```bash
+# 首次使用
+make deps           # 下载依赖
+make tools          # 安装开发工具
+
+# 日常开发
+make dev            # 生成文档并运行
+
+# 提交前检查
+make fmt            # 格式化代码
+make lint           # 代码检查
+make test           # 运行测试
+
+# 构建发布
+make build          # 编译项目
+```
 
 ---
 

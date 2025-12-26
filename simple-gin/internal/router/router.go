@@ -6,7 +6,11 @@ import (
 	"example/simple-gin/internal/service"
 	"example/simple-gin/pkg/response"
 
+	_ "example/simple-gin/docs" // swagger docs
+
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // SetupRoutes 设置所有路由
@@ -17,7 +21,10 @@ func SetupRoutes(router *gin.Engine, userService service.UserService, productSer
 	router.Use(middleware.CORSMiddleware())
 	router.Use(middleware.RequestIDMiddleware())
 
-	// 健康检查 - 使用 pkg/response
+	// Swagger 文档路由
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// 健康检查
 	router.GET("/ping", func(c *gin.Context) {
 		response.Success(c, gin.H{"message": "pong"})
 	})
@@ -32,22 +39,22 @@ func SetupRoutes(router *gin.Engine, userService service.UserService, productSer
 		// 用户相关路由
 		users := v1.Group("/users")
 		{
-			users.GET("", userHandler.GetUsers)          // 获取所有用户
-			users.POST("", userHandler.CreateUser)       // 创建用户
-			users.GET("/:id", userHandler.GetUser)       // 获取单个用户
-			users.PUT("/:id", userHandler.UpdateUser)    // 更新用户
-			users.DELETE("/:id", userHandler.DeleteUser) // 删除用户
+			users.GET("", userHandler.GetUsers)
+			users.POST("", userHandler.CreateUser)
+			users.GET("/:id", userHandler.GetUser)
+			users.PUT("/:id", userHandler.UpdateUser)
+			users.DELETE("/:id", userHandler.DeleteUser)
 		}
 
 		// 产品相关路由
 		products := v1.Group("/products")
 		{
-			products.GET("", productHandler.GetProducts)                   // 获取所有产品
-			products.POST("", productHandler.CreateProduct)                // 创建产品
-			products.GET("/:id", productHandler.GetProduct)                // 获取单个产品
-			products.PUT("/:id", productHandler.UpdateProduct)             // 更新产品
-			products.DELETE("/:id", productHandler.DeleteProduct)          // 删除产品
-			products.POST("/:id/reduce-stock", productHandler.ReduceStock) // 减少库存
+			products.GET("", productHandler.GetProducts)
+			products.POST("", productHandler.CreateProduct)
+			products.GET("/:id", productHandler.GetProduct)
+			products.PUT("/:id", productHandler.UpdateProduct)
+			products.DELETE("/:id", productHandler.DeleteProduct)
+			products.POST("/:id/reduce-stock", productHandler.ReduceStock)
 		}
 	}
 }

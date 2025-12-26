@@ -23,7 +23,15 @@ func NewProductHandler(productService service.ProductService) *ProductHandler {
 	}
 }
 
-// GetProducts 获取所有产品
+// GetProducts godoc
+// @Summary      获取所有产品
+// @Description  获取产品列表
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  response.Response{data=[]model.Product}
+// @Failure      500  {object}  response.Response
+// @Router       /api/v1/products [get]
 func (h *ProductHandler) GetProducts(c *gin.Context) {
 	ctx, cancel := createContextWithTimeout(c, 5*time.Second)
 	defer cancel()
@@ -38,7 +46,17 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 	response.Success(c, products)
 }
 
-// GetProduct 获取单个产品
+// GetProduct godoc
+// @Summary      获取单个产品
+// @Description  根据ID获取产品详情
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "产品ID"
+// @Success      200  {object}  response.Response{data=model.Product}
+// @Failure      400  {object}  response.Response
+// @Failure      404  {object}  response.Response
+// @Router       /api/v1/products/{id} [get]
 func (h *ProductHandler) GetProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -60,7 +78,16 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 	response.Success(c, product)
 }
 
-// CreateProduct 创建产品
+// CreateProduct godoc
+// @Summary      创建产品
+// @Description  创建一个新产品
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        product  body      model.CreateProductRequest  true  "产品信息"
+// @Success      201      {object}  response.Response{data=model.Product}
+// @Failure      400      {object}  response.Response
+// @Router       /api/v1/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var req model.CreateProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -81,7 +108,18 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	response.Created(c, product)
 }
 
-// UpdateProduct 更新产品
+// UpdateProduct godoc
+// @Summary      更新产品
+// @Description  根据ID更新产品信息
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id       path      int                         true  "产品ID"
+// @Param        product  body      model.UpdateProductRequest  true  "更新信息"
+// @Success      200      {object}  response.Response{data=model.Product}
+// @Failure      400      {object}  response.Response
+// @Failure      404      {object}  response.Response
+// @Router       /api/v1/products/{id} [put]
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -109,7 +147,17 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	response.Success(c, product)
 }
 
-// DeleteProduct 删除产品
+// DeleteProduct godoc
+// @Summary      删除产品
+// @Description  根据ID删除产品
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "产品ID"
+// @Success      200  {object}  response.Response
+// @Failure      400  {object}  response.Response
+// @Failure      404  {object}  response.Response
+// @Router       /api/v1/products/{id} [delete]
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -131,7 +179,17 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 	response.Success(c, nil)
 }
 
-// ReduceStock 减少产品库存
+// ReduceStock godoc
+// @Summary      减少库存
+// @Description  减少产品库存数量
+// @Tags         products
+// @Accept       json
+// @Produce      json
+// @Param        id       path      int                    true  "产品ID"
+// @Param        request  body      ReduceStockRequest     true  "减少数量"
+// @Success      200      {object}  response.Response
+// @Failure      400      {object}  response.Response
+// @Router       /api/v1/products/{id}/reduce-stock [post]
 func (h *ProductHandler) ReduceStock(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -140,9 +198,7 @@ func (h *ProductHandler) ReduceStock(c *gin.Context) {
 		return
 	}
 
-	var req struct {
-		Quantity int `json:"quantity" binding:"required,gt=0"`
-	}
+	var req ReduceStockRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, "invalid request body: "+err.Error())
 		return
@@ -159,4 +215,9 @@ func (h *ProductHandler) ReduceStock(c *gin.Context) {
 	}
 
 	response.Success(c, nil)
+}
+
+// ReduceStockRequest 减少库存请求
+type ReduceStockRequest struct {
+	Quantity int `json:"quantity" binding:"required,gt=0" example:"10"`
 }

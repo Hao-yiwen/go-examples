@@ -23,7 +23,15 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 	}
 }
 
-// GetUsers 获取所有用户
+// GetUsers godoc
+// @Summary      获取所有用户
+// @Description  获取用户列表
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  response.Response{data=[]model.User}
+// @Failure      500  {object}  response.Response
+// @Router       /api/v1/users [get]
 func (h *UserHandler) GetUsers(c *gin.Context) {
 	ctx, cancel := createContextWithTimeout(c, 5*time.Second)
 	defer cancel()
@@ -38,7 +46,17 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 	response.Success(c, users)
 }
 
-// GetUser 获取单个用户
+// GetUser godoc
+// @Summary      获取单个用户
+// @Description  根据ID获取用户详情
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "用户ID"
+// @Success      200  {object}  response.Response{data=model.User}
+// @Failure      400  {object}  response.Response
+// @Failure      404  {object}  response.Response
+// @Router       /api/v1/users/{id} [get]
 func (h *UserHandler) GetUser(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -60,7 +78,16 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	response.Success(c, user)
 }
 
-// CreateUser 创建用户
+// CreateUser godoc
+// @Summary      创建用户
+// @Description  创建一个新用户
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user  body      model.CreateUserRequest  true  "用户信息"
+// @Success      201   {object}  response.Response{data=model.User}
+// @Failure      400   {object}  response.Response
+// @Router       /api/v1/users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var req model.CreateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -81,7 +108,18 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	response.Created(c, user)
 }
 
-// UpdateUser 更新用户
+// UpdateUser godoc
+// @Summary      更新用户
+// @Description  根据ID更新用户信息
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id    path      int                      true  "用户ID"
+// @Param        user  body      model.UpdateUserRequest  true  "更新信息"
+// @Success      200   {object}  response.Response{data=model.User}
+// @Failure      400   {object}  response.Response
+// @Failure      404   {object}  response.Response
+// @Router       /api/v1/users/{id} [put]
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -109,7 +147,17 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	response.Success(c, user)
 }
 
-// DeleteUser 删除用户
+// DeleteUser godoc
+// @Summary      删除用户
+// @Description  根据ID删除用户
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "用户ID"
+// @Success      200  {object}  response.Response
+// @Failure      400  {object}  response.Response
+// @Failure      404  {object}  response.Response
+// @Router       /api/v1/users/{id} [delete]
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)

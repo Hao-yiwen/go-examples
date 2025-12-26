@@ -71,11 +71,11 @@ func LoadConfig() *Config {
 	v := viper.New()
 
 	// 配置文件设置
-	v.SetConfigName("config")           // 配置文件名（不包括扩展名）
-	v.SetConfigType("yaml")             // 配置文件格式
-	v.AddConfigPath(".")                // 在当前目录查找
-	v.AddConfigPath("./configs")        // 在 configs 目录查找
-	v.AddConfigPath(os.Getenv("HOME"))  // 在 HOME 目录查找
+	v.SetConfigName("config")          // 配置文件名（不包括扩展名）
+	v.SetConfigType("yaml")            // 配置文件格式
+	v.AddConfigPath(".")               // 在当前目录查找
+	v.AddConfigPath("./configs")       // 在 configs 目录查找
+	v.AddConfigPath(os.Getenv("HOME")) // 在 HOME 目录查找
 
 	// 环境变量支持
 	v.SetEnvPrefix("SIMPLE_GIN")

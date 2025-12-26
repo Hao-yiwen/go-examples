@@ -1,0 +1,477 @@
+basePath: /
+definitions:
+  handler.ReduceStockRequest:
+    properties:
+      quantity:
+        example: 10
+        type: integer
+    required:
+    - quantity
+    type: object
+  model.CreateProductRequest:
+    properties:
+      category:
+        example: Electronics
+        type: string
+      name:
+        example: iPhone 15
+        type: string
+      price:
+        example: 5999
+        type: number
+      stock:
+        example: 100
+        minimum: 0
+        type: integer
+    required:
+    - category
+    - name
+    - price
+    - stock
+    type: object
+  model.CreateUserRequest:
+    properties:
+      email:
+        example: zhangsan@example.com
+        type: string
+      name:
+        example: 张三
+        type: string
+      phone:
+        example: "13800138000"
+        type: string
+    required:
+    - email
+    - name
+    - phone
+    type: object
+  model.Product:
+    properties:
+      category:
+        example: Electronics
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: iPhone 15
+        type: string
+      price:
+        example: 5999
+        type: number
+      stock:
+        example: 100
+        type: integer
+    type: object
+  model.UpdateProductRequest:
+    properties:
+      category:
+        example: Electronics
+        type: string
+      name:
+        example: iPhone 15 Pro
+        type: string
+      price:
+        example: 7999
+        type: number
+      stock:
+        example: 50
+        minimum: 0
+        type: integer
+    type: object
+  model.UpdateUserRequest:
+    properties:
+      email:
+        example: lisi@example.com
+        type: string
+      name:
+        example: 李四
+        type: string
+      phone:
+        example: "13900139000"
+        type: string
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        example: zhangsan@example.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: 张三
+        type: string
+      phone:
+        example: "13800138000"
+        type: string
+      updated_at:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+  description: 一个基于 Gin 框架的示例 API 服务
+  title: Simple Gin API
+  version: "1.0"
+paths:
+  /api/v1/products:
+    get:
+      consumes:
+      - application/json
+      description: 获取产品列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Product'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 获取所有产品
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新产品
+      parameters:
+      - description: 产品信息
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Product'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 创建产品
+      tags:
+      - products
+  /api/v1/products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据ID删除产品
+      parameters:
+      - description: 产品ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 删除产品
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: 根据ID获取产品详情
+      parameters:
+      - description: 产品ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Product'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 获取单个产品
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: 根据ID更新产品信息
+      parameters:
+      - description: 产品ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新信息
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Product'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 更新产品
+      tags:
+      - products
+  /api/v1/products/{id}/reduce-stock:
+    post:
+      consumes:
+      - application/json
+      description: 减少产品库存数量
+      parameters:
+      - description: 产品ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 减少数量
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ReduceStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 减少库存
+      tags:
+      - products
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.User'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 获取所有用户
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新用户
+      parameters:
+      - description: 用户信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 创建用户
+      tags:
+      - users
+  /api/v1/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据ID删除用户
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 删除用户
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: 根据ID获取用户详情
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 获取单个用户
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: 根据ID更新用户信息
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新信息
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 更新用户
+      tags:
+      - users
+schemes:
+- http
+swagger: "2.0"

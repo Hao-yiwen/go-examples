@@ -71,9 +71,9 @@ func TestIsNotEmpty(t *testing.T) {
 
 func TestIsInRange(t *testing.T) {
 	tests := []struct {
-		name       string
+		name            string
 		value, min, max int
-		want       bool
+		want            bool
 	}{
 		{"in range", 5, 1, 10, true},
 		{"at min", 1, 1, 10, true},

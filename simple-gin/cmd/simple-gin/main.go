@@ -1,3 +1,16 @@
+// Package main Simple Gin API
+//
+// @title           Simple Gin API
+// @version         1.0
+// @description     一个基于 Gin 框架的示例 API 服务
+//
+// @contact.name    API Support
+// @contact.email   support@example.com
+//
+// @host            localhost:8080
+// @BasePath        /
+//
+// @schemes         http
 package main
 
 import (
@@ -15,7 +28,6 @@ func main() {
 	log.Printf("Config loaded. Server will run on port %d", cfg.Server.Port)
 
 	// 2. 使用容器进行依赖注入
-	// 容器负责初始化所有依赖关系：数据库、服务、处理器等
 	c, err := container.NewContainer(cfg)
 	if err != nil {
 		log.Fatalf("Failed to initialize container: %v", err)
@@ -31,18 +43,13 @@ func main() {
 	// 4. 创建Gin引擎
 	r := gin.New()
 
-	// 5. 设置路由（从容器中获取服务）
-	// 现在路由层只需关心服务接口，不需要关心初始化细节
+	// 5. 设置路由
 	router.SetupRoutes(r, c.UserService, c.ProductService)
 
 	// 6. 启动服务器
 	log.Printf("Starting server on %s", cfg.Server.GetServerAddr())
+	log.Printf("Swagger UI: http://localhost%s/swagger/index.html", cfg.Server.GetServerAddr())
 	if err := r.Run(cfg.Server.GetServerAddr()); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
-
-	// 7. 优雅关闭（可选）
-	// if err := c.Close(); err != nil {
-	//     log.Fatalf("Failed to close container: %v", err)
-	// }
 }
