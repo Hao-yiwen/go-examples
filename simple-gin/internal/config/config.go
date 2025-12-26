@@ -10,10 +10,16 @@ import (
 // Config 应用程序全局配置结构
 type Config struct {
 	Server     ServerConfig     `mapstructure:"server"`
+	Swagger    SwaggerConfig    `mapstructure:"swagger"`
 	DB         DatabaseConfig   `mapstructure:"database"`
 	Logger     LoggerConfig     `mapstructure:"logger"`
 	Cache      CacheConfig      `mapstructure:"cache"`
 	Middleware MiddlewareConfig `mapstructure:"middleware"`
+}
+
+// SwaggerConfig Swagger 文档配置
+type SwaggerConfig struct {
+	Enabled bool `mapstructure:"enabled"`
 }
 
 // ServerConfig 服务器配置
@@ -65,12 +71,22 @@ type CORSConfig struct {
 
 // LoadConfig 从配置文件加载配置（使用 Viper）
 // 优先级：环境变量 > 配置文件 > 默认值
+// 根据 APP_ENV 环境变量加载不同配置：
+//   - APP_ENV=prod  → config.prod.yaml
+//   - APP_ENV=test  → config.test.yaml
+//   - 默认          → config.yaml
 func LoadConfig() *Config {
 	// 创建新的Viper实例，避免全局状态污染
 	v := viper.New()
 
+	// 根据环境变量选择配置文件
+	env := os.Getenv("APP_ENV")
+	configName := "config"
+	if env != "" {
+		configName = "config." + env // config.prod, config.test
+	}
+
 	// 配置文件设置
-	v.SetConfigName("config")          // 配置文件名（不包括扩展名）
 	v.SetConfigType("yaml")            // 配置文件格式
 	v.AddConfigPath(".")               // 在当前目录查找
 	v.AddConfigPath("./configs")       // 在 configs 目录查找
@@ -80,16 +96,33 @@ func LoadConfig() *Config {
 	v.SetEnvPrefix("SIMPLE_GIN")
 	v.AutomaticEnv()
 
-	// 读取配置文件（先读，后设置默认值）
+	// 尝试加载配置文件，如果环境配置不存在则回退到默认配置
+	v.SetConfigName(configName)
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			fmt.Println("Config file not found, using defaults and environment variables")
+			// 如果指定了环境但配置文件不存在，回退到默认 config.yaml
+			if env != "" {
+				fmt.Printf("Config file '%s.yaml' not found, falling back to 'config.yaml'\n", configName)
+				v.SetConfigName("config")
+				if err := v.ReadInConfig(); err != nil {
+					if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+						fmt.Println("Config file 'config.yaml' not found, using defaults and environment variables")
+					} else {
+						fmt.Printf("Error reading config file: %v\n", err)
+						os.Exit(1)
+					}
+				} else {
+					fmt.Printf("Config file loaded: %s (fallback)\n", v.ConfigFileUsed())
+				}
+			} else {
+				fmt.Println("Config file 'config.yaml' not found, using defaults and environment variables")
+			}
 		} else {
 			fmt.Printf("Error reading config file: %v\n", err)
 			os.Exit(1)
 		}
 	} else {
-		fmt.Printf("Config file loaded: %s\n", v.ConfigFileUsed())
+		fmt.Printf("Config file loaded: %s (env: %s)\n", v.ConfigFileUsed(), env)
 	}
 
 	// 设置所有默认值（覆盖缺失的配置项）
@@ -118,6 +151,9 @@ func setDefaultsWithViper(v *viper.Viper) {
 	v.SetDefault("server.port", 8080)
 	v.SetDefault("server.mode", "debug")
 	v.SetDefault("server.timeout", "30s")
+
+	// Swagger
+	v.SetDefault("swagger.enabled", true)
 
 	// Database
 	v.SetDefault("database.driver", "postgres")

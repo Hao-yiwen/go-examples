@@ -54,13 +54,20 @@ func main() {
 	r := gin.New()
 
 	// 6. 设置路由
-	router.SetupRoutes(r, c.UserService, c.ProductService)
+	routerCfg := &router.RouterConfig{
+		EnableSwagger: cfg.Swagger.Enabled,
+	}
+	router.SetupRoutes(r, c.UserService, c.ProductService, routerCfg)
 
 	// 7. 启动服务器
-	slog.Info("starting server",
-		"addr", cfg.Server.GetServerAddr(),
-		"swagger", "http://localhost"+cfg.Server.GetServerAddr()+"/swagger/index.html",
-	)
+	if cfg.Swagger.Enabled {
+		slog.Info("starting server",
+			"addr", cfg.Server.GetServerAddr(),
+			"swagger", "http://localhost"+cfg.Server.GetServerAddr()+"/swagger/index.html",
+		)
+	} else {
+		slog.Info("starting server", "addr", cfg.Server.GetServerAddr())
+	}
 	if err := r.Run(cfg.Server.GetServerAddr()); err != nil {
 		slog.Error("failed to start server", "error", err)
 		os.Exit(1)

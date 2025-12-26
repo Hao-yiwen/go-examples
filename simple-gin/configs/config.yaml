@@ -1,10 +1,13 @@
-# Simple-Gin 配置文件
+# Simple-Gin 配置文件（开发环境）
 # 支持环境变量覆盖，使用 ${VAR_NAME} 格式
 
 server:
   port: 8080
   mode: debug  # debug 或 release
   timeout: 30s
+
+swagger:
+  enabled: true  # 开发/测试环境开启，生产环境关闭
 
 database:
   # PostgreSQL 连接配置（当前为模拟）

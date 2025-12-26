@@ -10,7 +10,8 @@ simple-gin/
 │   └── simple-gin/
 │       └── main.go              # 应用程序入口
 ├── configs/                     # 配置文件
-│   └── config.yaml              # YAML 配置
+│   ├── config.yaml              # 开发环境配置
+│   └── config.prod.yaml         # 生产环境配置
 ├── docs/                        # Swagger 文档（自动生成）
 │   ├── docs.go
 │   ├── swagger.json
@@ -303,10 +304,41 @@ type Product struct {
 
 ## 配置
 
-配置文件: `configs/config.yaml`
+### 多环境配置
+
+项目支持多环境配置，通过 `APP_ENV` 环境变量切换：
+
+```
+configs/
+├── config.yaml       # 开发环境（默认）
+├── config.prod.yaml  # 生产环境
+└── config.test.yaml  # 测试环境（可选）
+```
+
+| 环境 | 命令 | 配置文件 | Swagger |
+|------|------|----------|---------|
+| 开发 | `make run` | config.yaml | 开启 |
+| 测试 | `make run-test` | config.test.yaml | 开启 |
+| 生产 | `make run-prod` | config.prod.yaml | 关闭 |
+
+```bash
+# 开发环境（默认）
+make run
+
+# 生产环境
+make run-prod
+# 或
+APP_ENV=prod go run ./cmd/simple-gin
+
+# 也可以通过环境变量覆盖单个配置
+SIMPLE_GIN_SWAGGER_ENABLED=false make run
+```
+
+### 配置项
 
 支持的配置项:
 - Server: 端口、模式、超时
+- Swagger: 是否启用文档
 - Database: 连接信息
 - Logger: 日志级别、格式
 - Cache: 缓存类型、TTL
@@ -369,7 +401,9 @@ make help
 | 分类 | 命令 | 说明 |
 |------|------|------|
 | **构建** | `make build` | 编译项目到 `bin/` |
-| | `make run` | 直接运行项目 |
+| | `make run` | 开发环境运行（Swagger 开启） |
+| | `make run-prod` | 生产环境运行（Swagger 关闭） |
+| | `make run-test` | 测试环境运行 |
 | | `make dev` | 开发模式（生成文档 + 运行） |
 | **测试** | `make test` | 运行所有测试 |
 | | `make test-v` | 运行测试（详细输出） |

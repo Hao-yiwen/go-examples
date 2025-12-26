@@ -1,7 +1,7 @@
 # Simple Gin Makefile
 # 使用方法: make help
 
-.PHONY: all build run dev test test-v test-cover bench clean deps docs lint fmt help
+.PHONY: all build run run-prod run-test dev test test-v test-cover bench clean deps docs lint fmt help
 
 # 变量定义
 APP_NAME := simple-gin
@@ -21,9 +21,17 @@ build:
 	go build -o $(BUILD_DIR)/$(APP_NAME) $(MAIN_FILE)
 	@echo ">>> 编译完成: $(BUILD_DIR)/$(APP_NAME)"
 
-## run: 直接运行（不编译到文件）
+## run: 直接运行（开发环境）
 run:
 	go run $(MAIN_FILE)
+
+## run-prod: 生产环境运行（关闭 Swagger）
+run-prod:
+	APP_ENV=prod go run $(MAIN_FILE)
+
+## run-test: 测试环境运行
+run-test:
+	APP_ENV=test go run $(MAIN_FILE)
 
 ## dev: 开发模式（生成文档 + 运行）
 dev: docs run
@@ -145,7 +153,9 @@ help:
 	@echo ""
 	@echo "构建:"
 	@echo "  make build          - 编译项目到 bin/"
-	@echo "  make run            - 直接运行项目"
+	@echo "  make run            - 开发环境运行（Swagger 开启）"
+	@echo "  make run-prod       - 生产环境运行（Swagger 关闭）"
+	@echo "  make run-test       - 测试环境运行"
 	@echo "  make dev            - 开发模式（生成文档 + 运行）"
 	@echo ""
 	@echo "测试:"

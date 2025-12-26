@@ -13,16 +13,23 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// RouterConfig 路由配置选项
+type RouterConfig struct {
+	EnableSwagger bool
+}
+
 // SetupRoutes 设置所有路由
-func SetupRoutes(router *gin.Engine, userService service.UserService, productService service.ProductService) {
+func SetupRoutes(router *gin.Engine, userService service.UserService, productService service.ProductService, cfg *RouterConfig) {
 	// 应用中间件
 	router.Use(middleware.LoggingMiddleware())
 	router.Use(middleware.RecoveryMiddleware())
 	router.Use(middleware.CORSMiddleware())
 	router.Use(middleware.RequestIDMiddleware())
 
-	// Swagger 文档路由
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Swagger 文档路由（根据配置启用）
+	if cfg != nil && cfg.EnableSwagger {
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	// 健康检查
 	router.GET("/ping", func(c *gin.Context) {

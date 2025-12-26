@@ -35,7 +35,10 @@ func setupTestRouter() *gin.Engine {
 	c, _ := container.NewContainer(cfg)
 
 	r := gin.New()
-	router.SetupRoutes(r, c.UserService, c.ProductService)
+	routerCfg := &router.RouterConfig{
+		EnableSwagger: true, // 测试环境启用 Swagger
+	}
+	router.SetupRoutes(r, c.UserService, c.ProductService, routerCfg)
 
 	return r
 }
