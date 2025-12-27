@@ -1,13 +1,20 @@
 # Simple Gin Makefile
 # 使用方法: make help
 
-.PHONY: all build run run-prod run-test dev test test-v test-cover bench clean deps docs lint fmt help
+.PHONY: all build run run-prod run-test dev test test-v test-cover bench clean deps docs lint fmt help \
+	docker-build docker-run docker-stop docker-rm docker-logs docker-push docker-clean
 
 # 变量定义
 APP_NAME := simple-gin
 BUILD_DIR := bin
 MAIN_FILE := ./cmd/simple-gin
 DOCS_DIR := docs
+
+# Docker 变量
+DOCKER_IMAGE := $(APP_NAME)
+DOCKER_TAG := latest
+DOCKER_CONTAINER := $(APP_NAME)
+DOCKER_PORT := 8080
 
 # 默认目标
 all: deps docs build
@@ -134,15 +141,57 @@ tools:
 	go install github.com/air-verse/air@latest
 	@echo ">>> 工具安装完成"
 
-# ==================== Docker 相关（可选）====================
+# ==================== Docker 相关 ====================
 
 ## docker-build: 构建 Docker 镜像
 docker-build:
-	docker build -t $(APP_NAME):latest .
+	@echo ">>> 构建 Docker 镜像..."
+	docker build -t $(DOCKER_IMAGE):$(DOCKER_TAG) .
+	@echo ">>> 镜像构建完成: $(DOCKER_IMAGE):$(DOCKER_TAG)"
 
 ## docker-run: 运行 Docker 容器
 docker-run:
-	docker run -p 8080:8080 $(APP_NAME):latest
+	@echo ">>> 启动 Docker 容器..."
+	docker run -d -p $(DOCKER_PORT):8080 --name $(DOCKER_CONTAINER) $(DOCKER_IMAGE):$(DOCKER_TAG)
+	@echo ">>> 容器已启动: $(DOCKER_CONTAINER)"
+	@echo ">>> 访问地址: http://localhost:$(DOCKER_PORT)"
+
+## docker-run-prod: 使用生产配置运行容器
+docker-run-prod:
+	@echo ">>> 启动 Docker 容器（生产环境）..."
+	docker run -d -p $(DOCKER_PORT):8080 \
+		-v $(PWD)/configs/config.prod.yaml:/app/configs/config.yaml \
+		--name $(DOCKER_CONTAINER) $(DOCKER_IMAGE):$(DOCKER_TAG)
+	@echo ">>> 容器已启动: $(DOCKER_CONTAINER)"
+
+## docker-stop: 停止容器
+docker-stop:
+	@echo ">>> 停止容器..."
+	docker stop $(DOCKER_CONTAINER) || true
+	@echo ">>> 容器已停止"
+
+## docker-rm: 删除容器
+docker-rm: docker-stop
+	@echo ">>> 删除容器..."
+	docker rm $(DOCKER_CONTAINER) || true
+	@echo ">>> 容器已删除"
+
+## docker-logs: 查看容器日志
+docker-logs:
+	docker logs -f $(DOCKER_CONTAINER)
+
+## docker-restart: 重启容器
+docker-restart: docker-rm docker-run
+
+## docker-push: 推送镜像到仓库
+docker-push:
+	docker push $(DOCKER_IMAGE):$(DOCKER_TAG)
+
+## docker-clean: 清理 Docker 资源
+docker-clean: docker-rm
+	@echo ">>> 删除镜像..."
+	docker rmi $(DOCKER_IMAGE):$(DOCKER_TAG) || true
+	@echo ">>> Docker 资源已清理"
 
 # ==================== 帮助信息 ====================
 
@@ -187,4 +236,15 @@ help:
 	@echo ""
 	@echo "工具:"
 	@echo "  make tools          - 安装开发工具（swag, lint, air）"
+	@echo ""
+	@echo "Docker:"
+	@echo "  make docker-build   - 构建 Docker 镜像"
+	@echo "  make docker-run     - 运行容器（开发环境）"
+	@echo "  make docker-run-prod- 运行容器（生产环境）"
+	@echo "  make docker-stop    - 停止容器"
+	@echo "  make docker-rm      - 删除容器"
+	@echo "  make docker-logs    - 查看容器日志"
+	@echo "  make docker-restart - 重启容器"
+	@echo "  make docker-push    - 推送镜像到仓库"
+	@echo "  make docker-clean   - 清理 Docker 资源"
 	@echo ""
