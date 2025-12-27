@@ -32,7 +32,7 @@ docker-compose*.yml
 
 # 文档
 *.md
-# docs/ is needed for Swagger - do not ignore
+docs/
 
 # 其他
 .claude/

@@ -13,8 +13,14 @@ COPY go.mod go.sum ./
 # 下载依赖
 RUN go mod download
 
+# 安装 swag 工具
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 # 复制源代码
 COPY . .
+
+# 生成 Swagger 文档
+RUN swag init -g cmd/simple-gin/main.go -o docs
 
 # 构建应用
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /app/bin/simple-gin ./cmd/simple-gin
