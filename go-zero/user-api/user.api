@@ -1,0 +1,223 @@
+syntax = "v1"
+
+info (
+	title:   "用户管理系统API"
+	desc:    "用户管理、认证、角色权限API接口"
+	author:  "go-zero-user"
+	version: "v1"
+)
+
+// 用户注册请求
+type RegisterReq {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email,optional"`
+	Phone    string `json:"phone,optional"`
+}
+
+// 用户注册响应
+type RegisterResp {
+	Id       int64  `json:"id"`
+	Username string `json:"username"`
+}
+
+// 用户登录请求
+type LoginReq {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// 用户登录响应
+type LoginResp {
+	Id           int64  `json:"id"`
+	Username     string `json:"username"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+	ExpiresAt    int64  `json:"expiresAt"`
+}
+
+// 用户信息
+type UserInfo {
+	Id        int64  `json:"id"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Avatar    string `json:"avatar"`
+	Status    int64  `json:"status"`
+	CreatedAt int64  `json:"createdAt"`
+}
+
+// 获取用户信息响应
+type GetUserInfoResp {
+	User UserInfo `json:"user"`
+}
+
+// 更新用户信息请求
+type UpdateUserReq {
+	Email  string `json:"email,optional"`
+	Phone  string `json:"phone,optional"`
+	Avatar string `json:"avatar,optional"`
+}
+
+// 更新用户信息响应
+type UpdateUserResp {
+	Success bool `json:"success"`
+}
+
+// 删除用户请求
+type DeleteUserReq {
+	Id int64 `path:"id"`
+}
+
+// 删除用户响应
+type DeleteUserResp {
+	Success bool `json:"success"`
+}
+
+// 用户列表请求
+type ListUserReq {
+	Page     int64 `form:"page,default=1"`
+	PageSize int64 `form:"pageSize,default=10"`
+}
+
+// 用户列表响应
+type ListUserResp {
+	Users []UserInfo `json:"users"`
+	Total int64      `json:"total"`
+}
+
+// 刷新Token请求
+type RefreshTokenReq {
+	RefreshToken string `json:"refreshToken"`
+}
+
+// 刷新Token响应
+type RefreshTokenResp {
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+	ExpiresAt    int64  `json:"expiresAt"`
+}
+
+// 退出登录响应
+type LogoutResp {
+	Success bool `json:"success"`
+}
+
+// 角色信息
+type RoleInfo {
+	Id          int64  `json:"id"`
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	Description string `json:"description"`
+	Status      int64  `json:"status"`
+	CreatedAt   int64  `json:"createdAt"`
+}
+
+// 创建角色请求
+type CreateRoleReq {
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	Description string `json:"description,optional"`
+}
+
+// 创建角色响应
+type CreateRoleResp {
+	Id int64 `json:"id"`
+}
+
+// 角色列表请求
+type ListRoleReq {
+	Page     int64 `form:"page,default=1"`
+	PageSize int64 `form:"pageSize,default=10"`
+}
+
+// 角色列表响应
+type ListRoleResp {
+	Roles []RoleInfo `json:"roles"`
+	Total int64      `json:"total"`
+}
+
+// 更新角色请求
+type UpdateRoleReq {
+	Id          int64  `path:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description,optional"`
+	Status      int64  `json:"status,optional"`
+}
+
+// 更新角色响应
+type UpdateRoleResp {
+	Success bool `json:"success"`
+}
+
+// 分配角色请求
+type AssignRoleReq {
+	UserId  int64   `json:"userId"`
+	RoleIds []int64 `json:"roleIds"`
+}
+
+// 分配角色响应
+type AssignRoleResp {
+	Success bool `json:"success"`
+}
+
+// 获取用户角色响应
+type GetUserRolesResp {
+	Roles []RoleInfo `json:"roles"`
+}
+
+// 无需认证的接口
+@server (
+	prefix: /api
+)
+service user-api {
+	@handler Register
+	post /user/register (RegisterReq) returns (RegisterResp)
+
+	@handler Login
+	post /user/login (LoginReq) returns (LoginResp)
+
+	@handler RefreshToken
+	post /auth/refresh (RefreshTokenReq) returns (RefreshTokenResp)
+}
+
+// 需要JWT认证的接口
+@server (
+	prefix: /api
+	jwt:    Auth
+)
+service user-api {
+	// 用户接口
+	@handler GetUserInfo
+	get /user/info returns (GetUserInfoResp)
+
+	@handler UpdateUser
+	put /user/update (UpdateUserReq) returns (UpdateUserResp)
+
+	@handler DeleteUser
+	delete /user/:id (DeleteUserReq) returns (DeleteUserResp)
+
+	@handler ListUser
+	get /user/list (ListUserReq) returns (ListUserResp)
+
+	// 认证接口
+	@handler Logout
+	post /auth/logout returns (LogoutResp)
+
+	// 角色接口
+	@handler CreateRole
+	post /role/create (CreateRoleReq) returns (CreateRoleResp)
+
+	@handler ListRole
+	get /role/list (ListRoleReq) returns (ListRoleResp)
+
+	@handler UpdateRole
+	put /role/:id (UpdateRoleReq) returns (UpdateRoleResp)
+
+	@handler AssignRole
+	post /role/assign (AssignRoleReq) returns (AssignRoleResp)
+
+	@handler GetUserRoles
+	get /role/user returns (GetUserRolesResp)
+}
+

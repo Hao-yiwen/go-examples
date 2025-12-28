@@ -1,0 +1,22 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8888
+
+Auth:
+  AccessSecret: "go-zero-user-access-secret-key"
+  AccessExpire: 7200
+
+UserRpc:
+  Target: 127.0.0.1:9001
+  NonBlock: true
+  Timeout: 5000
+
+AuthRpc:
+  Target: 127.0.0.1:9002
+  NonBlock: true
+  Timeout: 5000
+
+RoleRpc:
+  Target: 127.0.0.1:9003
+  NonBlock: true
+  Timeout: 5000
