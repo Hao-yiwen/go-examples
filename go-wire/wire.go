@@ -19,20 +19,10 @@ import (
 // ProviderSet 是所有 Provider 的集合
 // wire.NewSet 用于将多个 Provider 组合在一起
 var ProviderSet = wire.NewSet(
-	// 配置 Provider
 	config.NewConfig,
-
-	// Repository Provider
-	// NewUserRepository 返回 UserRepository 接口，Wire 会自动处理
-	repository.NewUserRepository,
-
-	// Service Provider
-	// NewUserService 依赖 UserRepository，Wire 会自动注入
-	service.NewUserService,
-
-	// Handler Provider
-	// NewUserHandler 依赖 UserService，Wire 会自动注入
-	handler.NewUserHandler,
+	repository.ProviderSet,
+	service.ProviderSet,
+	handler.ProviderSet,
 )
 
 // InitializeApp 是一个 injector 函数
@@ -50,19 +40,22 @@ func InitializeApp() (*App, error) {
 
 // App 是应用程序的主结构体
 type App struct {
-	Config  *config.Config
-	Engine  *gin.Engine
-	Handler *handler.UserHandler
+	Config         *config.Config
+	Engine         *gin.Engine
+	UserHandler    *handler.UserHandler
+	ProductHandler *handler.ProductHandler
 }
 
 // NewApp 创建应用程序（这也是一个 Provider）
-func NewApp(cfg *config.Config, h *handler.UserHandler) *App {
+func NewApp(cfg *config.Config, uh *handler.UserHandler, ph *handler.ProductHandler) *App {
 	engine := gin.Default()
-	h.RegisterRoutes(engine)
+	uh.RegisterRoutes(engine)
+	ph.RegisterRoutes(engine)
 
 	return &App{
-		Config:  cfg,
-		Engine:  engine,
-		Handler: h,
+		Config:         cfg,
+		Engine:         engine,
+		UserHandler:    uh,
+		ProductHandler: ph,
 	}
 }

@@ -25,7 +25,10 @@ func InitializeApp() (*App, error) {
 	userRepository := repository.NewUserRepository()
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
-	app := NewApp(configConfig, userHandler)
+	productRepository := repository.NewProductRepository()
+	productService := service.NewProductService(productRepository)
+	productHandler := handler.NewProductHandler(productService)
+	app := NewApp(configConfig, userHandler, productHandler)
 	return app, nil
 }
 
@@ -33,23 +36,26 @@ func InitializeApp() (*App, error) {
 
 // ProviderSet 是所有 Provider 的集合
 // wire.NewSet 用于将多个 Provider 组合在一起
-var ProviderSet = wire.NewSet(config.NewConfig, repository.NewUserRepository, service.NewUserService, handler.NewUserHandler)
+var ProviderSet = wire.NewSet(config.NewConfig, repository.ProviderSet, service.ProviderSet, handler.ProviderSet)
 
 // App 是应用程序的主结构体
 type App struct {
-	Config  *config.Config
-	Engine  *gin.Engine
-	Handler *handler.UserHandler
+	Config         *config.Config
+	Engine         *gin.Engine
+	UserHandler    *handler.UserHandler
+	ProductHandler *handler.ProductHandler
 }
 
 // NewApp 创建应用程序（这也是一个 Provider）
-func NewApp(cfg *config.Config, h *handler.UserHandler) *App {
+func NewApp(cfg *config.Config, uh *handler.UserHandler, ph *handler.ProductHandler) *App {
 	engine := gin.Default()
-	h.RegisterRoutes(engine)
+	uh.RegisterRoutes(engine)
+	ph.RegisterRoutes(engine)
 
 	return &App{
-		Config:  cfg,
-		Engine:  engine,
-		Handler: h,
+		Config:         cfg,
+		Engine:         engine,
+		UserHandler:    uh,
+		ProductHandler: ph,
 	}
 }
