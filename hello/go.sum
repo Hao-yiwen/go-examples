@@ -1,4 +1,6 @@
 github.com/Hao-yiwen/go-examples/go-first-published-module v0.0.1 h1:AENjRfodLkcGNdWEoUF4Ajhm2fHC2u130To2QkxxnFQ=
 github.com/Hao-yiwen/go-examples/go-first-published-module v0.0.1/go.mod h1:JwHQQn8K/wB64oxvFAaOcZbvAn0msVlHsYHI07gFdLs=
+github.com/Hao-yiwen/go-examples/go-first-published-module v0.0.3 h1:4e4/frLsDBuf3OIQXYn7cBjwPEjNKg4zS5rXAiiVO3o=
+github.com/Hao-yiwen/go-examples/go-first-published-module v0.0.3/go.mod h1:JwHQQn8K/wB64oxvFAaOcZbvAn0msVlHsYHI07gFdLs=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
