@@ -1,12 +1,12 @@
-module github.com/haoyiwen/go-examples/go-zero/user-api
+module github.com/Hao-yiwen/go-examples/go-zero/user-api
 
 go 1.25.5
 
 require (
 	github.com/zeromicro/go-zero v1.9.4
-	github.com/haoyiwen/go-examples/go-zero/auth-rpc v0.0.0
-	github.com/haoyiwen/go-examples/go-zero/role-rpc v0.0.0
-	github.com/haoyiwen/go-examples/go-zero/user-rpc v0.0.0
+	github.com/Hao-yiwen/go-examples/go-zero/auth-rpc v0.0.0
+	github.com/Hao-yiwen/go-examples/go-zero/role-rpc v0.0.0
+	github.com/Hao-yiwen/go-examples/go-zero/user-rpc v0.0.0
 )
 
 require (

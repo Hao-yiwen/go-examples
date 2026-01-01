@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/logic"
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/logic"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/svc"
 )
 
 func GetUserInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

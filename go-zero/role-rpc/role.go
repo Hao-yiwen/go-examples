@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/haoyiwen/go-examples/go-zero/role-rpc/internal/config"
-	"github.com/haoyiwen/go-examples/go-zero/role-rpc/internal/server"
-	"github.com/haoyiwen/go-examples/go-zero/role-rpc/internal/svc"
-	"github.com/haoyiwen/go-examples/go-zero/role-rpc/pb"
+	"github.com/Hao-yiwen/go-examples/go-zero/role-rpc/internal/config"
+	"github.com/Hao-yiwen/go-examples/go-zero/role-rpc/internal/server"
+	"github.com/Hao-yiwen/go-examples/go-zero/role-rpc/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/role-rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/internal/svc"
-	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/pb"
-	"github.com/haoyiwen/go-examples/go-zero/common/errorx"
-	"github.com/haoyiwen/go-examples/go-zero/common/utils"
+	"github.com/Hao-yiwen/go-examples/go-zero/auth-rpc/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/auth-rpc/pb"
+	"github.com/Hao-yiwen/go-examples/go-zero/common/errorx"
+	"github.com/Hao-yiwen/go-examples/go-zero/common/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

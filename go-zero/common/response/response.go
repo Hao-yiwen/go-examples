@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"github.com/haoyiwen/go-examples/go-zero/common/errorx"
+	"github.com/Hao-yiwen/go-examples/go-zero/common/errorx"
 )
 
 type Body struct {

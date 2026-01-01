@@ -7,9 +7,9 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/config"
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/handler"
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/config"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/handler"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

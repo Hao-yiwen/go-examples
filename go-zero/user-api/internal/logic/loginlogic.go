@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 
-	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/pb"
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/svc"
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/types"
-	userpb "github.com/haoyiwen/go-examples/go-zero/user-rpc/pb"
+	"github.com/Hao-yiwen/go-examples/go-zero/auth-rpc/pb"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/types"
+	userpb "github.com/Hao-yiwen/go-examples/go-zero/user-rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -1,10 +1,10 @@
-module github.com/haoyiwen/go-examples/go-zero/user-rpc
+module github.com/Hao-yiwen/go-examples/go-zero/user-rpc
 
 go 1.25.5
 
 require (
 	github.com/zeromicro/go-zero v1.9.4
-	github.com/haoyiwen/go-examples/go-zero/common v0.0.0
+	github.com/Hao-yiwen/go-examples/go-zero/common v0.0.0
 	google.golang.org/grpc v1.78.0
 	google.golang.org/protobuf v1.36.11
 )

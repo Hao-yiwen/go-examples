@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/internal/logic"
-	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/internal/svc"
-	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/pb"
+	"github.com/Hao-yiwen/go-examples/go-zero/auth-rpc/internal/logic"
+	"github.com/Hao-yiwen/go-examples/go-zero/auth-rpc/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/auth-rpc/pb"
 )
 
 type AuthServer struct {

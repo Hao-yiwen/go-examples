@@ -1,4 +1,4 @@
-module github.com/haoyiwen/go-examples/go-zero/common
+module github.com/Hao-yiwen/go-examples/go-zero/common
 
 go 1.25.5
 

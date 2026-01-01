@@ -6,7 +6,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/user-api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

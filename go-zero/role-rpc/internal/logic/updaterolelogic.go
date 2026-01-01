@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/haoyiwen/go-examples/go-zero/common/errorx"
-	"github.com/haoyiwen/go-examples/go-zero/role-rpc/internal/model"
-	"github.com/haoyiwen/go-examples/go-zero/role-rpc/internal/svc"
-	"github.com/haoyiwen/go-examples/go-zero/role-rpc/pb"
+	"github.com/Hao-yiwen/go-examples/go-zero/common/errorx"
+	"github.com/Hao-yiwen/go-examples/go-zero/role-rpc/internal/model"
+	"github.com/Hao-yiwen/go-examples/go-zero/role-rpc/internal/svc"
+	"github.com/Hao-yiwen/go-examples/go-zero/role-rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
