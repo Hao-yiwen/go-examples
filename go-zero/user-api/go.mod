@@ -94,3 +94,10 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
+
+replace (
+	github.com/Hao-yiwen/go-examples/go-zero/common => ../common
+	github.com/Hao-yiwen/go-examples/go-zero/auth-rpc => ../auth-rpc
+	github.com/Hao-yiwen/go-examples/go-zero/role-rpc => ../role-rpc
+	github.com/Hao-yiwen/go-examples/go-zero/user-rpc => ../user-rpc
+)
