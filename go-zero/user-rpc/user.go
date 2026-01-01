@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"go-zero-user/user-rpc/internal/config"
-	"go-zero-user/user-rpc/internal/server"
-	"go-zero-user/user-rpc/internal/svc"
-	"go-zero-user/user-rpc/pb"
+	"github.com/haoyiwen/go-examples/go-zero/user-rpc/internal/config"
+	"github.com/haoyiwen/go-examples/go-zero/user-rpc/internal/server"
+	"github.com/haoyiwen/go-examples/go-zero/user-rpc/internal/svc"
+	"github.com/haoyiwen/go-examples/go-zero/user-rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

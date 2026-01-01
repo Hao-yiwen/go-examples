@@ -7,7 +7,7 @@ package auth
 import (
 	"context"
 
-	"go-zero-user/auth-rpc/pb"
+	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/pb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

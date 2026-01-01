@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
-	"go-zero-user/auth-rpc/pb"
-	"go-zero-user/user-api/internal/svc"
-	"go-zero-user/user-api/internal/types"
+	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/pb"
+	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/svc"
+	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -1,11 +1,21 @@
 .PHONY: all build run clean tidy docker-up docker-down
 
+# 服务目录
+SERVICES := common user-rpc auth-rpc role-rpc user-api
+
 # 默认目标
 all: tidy build
 
-# 整理依赖
+# 整理所有模块依赖
 tidy:
-	go mod tidy
+	@for dir in $(SERVICES); do \
+		echo "Tidying $$dir..."; \
+		cd $$dir && go mod tidy && cd ..; \
+	done
+
+# 同步 workspace
+sync:
+	go work sync
 
 # 构建所有服务
 build: build-user-rpc build-auth-rpc build-role-rpc build-user-api
@@ -63,7 +73,8 @@ gen-user-api:
 # 帮助信息
 help:
 	@echo "可用命令:"
-	@echo "  make tidy        - 整理Go依赖"
+	@echo "  make tidy        - 整理所有模块Go依赖"
+	@echo "  make sync        - 同步 go.work"
 	@echo "  make build       - 构建所有服务"
 	@echo "  make docker-up   - 启动MySQL和Redis"
 	@echo "  make docker-down - 停止MySQL和Redis"

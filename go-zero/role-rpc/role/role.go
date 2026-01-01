@@ -7,7 +7,7 @@ package role
 import (
 	"context"
 
-	"go-zero-user/role-rpc/pb"
+	"github.com/haoyiwen/go-examples/go-zero/role-rpc/pb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

@@ -1,0 +1,19 @@
+// proto/hello.proto
+syntax = "proto3";
+
+option go_package = "grpc-demo/proto";
+
+package hello;
+
+service Creeter {
+    // 定义一个rpc方法 发送hellorequest 接受 helloresponse
+    rpc SayHello(HelloRequest) returns (HelloResponse);
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message HelloResponse {
+    string message = 1;
+}

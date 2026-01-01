@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"go-zero-user/role-rpc/internal/logic"
-	"go-zero-user/role-rpc/internal/svc"
-	"go-zero-user/role-rpc/pb"
+	"github.com/haoyiwen/go-examples/go-zero/role-rpc/internal/logic"
+	"github.com/haoyiwen/go-examples/go-zero/role-rpc/internal/svc"
+	"github.com/haoyiwen/go-examples/go-zero/role-rpc/pb"
 )
 
 type RoleServer struct {

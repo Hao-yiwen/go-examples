@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 
-	"go-zero-user/user-api/internal/svc"
-	"go-zero-user/user-api/internal/types"
-	"go-zero-user/user-rpc/pb"
+	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/svc"
+	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/types"
+	"github.com/haoyiwen/go-examples/go-zero/user-rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

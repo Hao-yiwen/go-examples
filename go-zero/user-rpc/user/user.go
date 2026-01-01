@@ -7,7 +7,7 @@ package user
 import (
 	"context"
 
-	"go-zero-user/user-rpc/pb"
+	"github.com/haoyiwen/go-examples/go-zero/user-rpc/pb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

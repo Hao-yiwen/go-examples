@@ -2,10 +2,10 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/zrpc"
-	"go-zero-user/auth-rpc/auth"
-	"go-zero-user/role-rpc/role"
-	"go-zero-user/user-api/internal/config"
-	"go-zero-user/user-rpc/user"
+	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/auth"
+	"github.com/haoyiwen/go-examples/go-zero/role-rpc/role"
+	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/config"
+	"github.com/haoyiwen/go-examples/go-zero/user-rpc/user"
 )
 
 type ServiceContext struct {

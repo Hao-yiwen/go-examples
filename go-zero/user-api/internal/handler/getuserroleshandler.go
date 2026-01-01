@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"go-zero-user/user-api/internal/logic"
-	"go-zero-user/user-api/internal/svc"
+	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/logic"
+	"github.com/haoyiwen/go-examples/go-zero/user-api/internal/svc"
 )
 
 func GetUserRolesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

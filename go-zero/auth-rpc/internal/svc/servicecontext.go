@@ -2,7 +2,7 @@ package svc
 
 import (
 	"github.com/zeromicro/go-zero/core/stores/redis"
-	"go-zero-user/auth-rpc/internal/config"
+	"github.com/haoyiwen/go-examples/go-zero/auth-rpc/internal/config"
 )
 
 type ServiceContext struct {
