@@ -1,0 +1,96 @@
+---
+# user-api ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-api-config
+  namespace: go-zero
+  labels:
+    app: user-api
+data:
+  user-api.yaml: |
+    Name: user-api
+    Host: 0.0.0.0
+    Port: 8888
+
+    Auth:
+      AccessSecret: go-zero-user-access-secret-key
+      AccessExpire: 7200
+
+    UserRpc:
+      Target: user-rpc-svc:9001
+      NonBlock: true
+      Timeout: 5000
+
+    AuthRpc:
+      Target: auth-rpc-svc:9002
+      NonBlock: true
+      Timeout: 5000
+
+    RoleRpc:
+      Target: role-rpc-svc:9003
+      NonBlock: true
+      Timeout: 5000
+
+---
+# user-rpc ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-rpc-config
+  namespace: go-zero
+  labels:
+    app: user-rpc
+data:
+  user.yaml: |
+    Name: user.rpc
+    ListenOn: 0.0.0.0:9001
+
+    Mysql:
+      DataSource: root:123456@tcp(mysql-svc:3306)/go_zero_user?charset=utf8mb4&parseTime=True&loc=Local
+
+    CacheRedis:
+      - Host: redis-svc:6379
+        Type: node
+
+---
+# auth-rpc ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-rpc-config
+  namespace: go-zero
+  labels:
+    app: auth-rpc
+data:
+  auth.yaml: |
+    Name: auth.rpc
+    ListenOn: 0.0.0.0:9002
+
+    Jwt:
+      AccessSecret: go-zero-user-access-secret-key
+      AccessExpire: 7200
+      RefreshSecret: go-zero-user-refresh-secret-key
+      RefreshExpire: 604800
+
+    Redis:
+      Host: redis-svc:6379
+      Type: node
+      Pass: ""
+
+---
+# role-rpc ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: role-rpc-config
+  namespace: go-zero
+  labels:
+    app: role-rpc
+data:
+  role.yaml: |
+    Name: role.rpc
+    ListenOn: 0.0.0.0:9003
+
+    Mysql:
+      DataSource: root:123456@tcp(mysql-svc:3306)/go_zero_user?charset=utf8mb4&parseTime=True&loc=Local

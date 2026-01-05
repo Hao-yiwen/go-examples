@@ -1,0 +1,44 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: go-zero
+
+resources:
+  # Namespace
+  - namespace.yaml
+  
+  # Secrets and ConfigMaps
+  - secret.yaml
+  - configmap.yaml
+  
+  # Infrastructure
+  - mysql.yaml
+  - redis.yaml
+  
+  # RPC Services
+  - user-rpc.yaml
+  - auth-rpc.yaml
+  - role-rpc.yaml
+  
+  # API Gateway
+  - user-api.yaml
+  
+  # Ingress
+  - ingress.yaml
+
+# 使用 labels 替代废弃的 commonLabels
+labels:
+  - pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: go-zero-user-management
+
+# Image configuration - override in overlays
+images:
+  - name: go-zero/user-api
+    newTag: latest
+  - name: go-zero/user-rpc
+    newTag: latest
+  - name: go-zero/auth-rpc
+    newTag: latest
+  - name: go-zero/role-rpc
+    newTag: latest

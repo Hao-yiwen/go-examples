@@ -1,0 +1,90 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: go-zero
+
+resources:
+  - ../../
+
+# Production image tags
+images:
+  - name: go-zero/user-api
+    newName: your-registry.com/go-zero/user-api
+    newTag: v1.0.0
+  - name: go-zero/user-rpc
+    newName: your-registry.com/go-zero/user-rpc
+    newTag: v1.0.0
+  - name: go-zero/auth-rpc
+    newName: your-registry.com/go-zero/auth-rpc
+    newTag: v1.0.0
+  - name: go-zero/role-rpc
+    newName: your-registry.com/go-zero/role-rpc
+    newTag: v1.0.0
+
+# Production replicas
+replicas:
+  - name: user-api
+    count: 3
+  - name: user-rpc
+    count: 3
+  - name: auth-rpc
+    count: 3
+  - name: role-rpc
+    count: 3
+
+# Production-specific patches
+patches:
+  # Increase resource limits for production
+  - target:
+      kind: Deployment
+      name: user-api
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+  - target:
+      kind: Deployment
+      name: user-rpc
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+  - target:
+      kind: Deployment
+      name: auth-rpc
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+  - target:
+      kind: Deployment
+      name: role-rpc
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+

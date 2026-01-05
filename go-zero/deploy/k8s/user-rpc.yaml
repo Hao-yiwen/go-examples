@@ -1,0 +1,75 @@
+---
+# user-rpc Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-rpc
+  namespace: go-zero
+  labels:
+    app: user-rpc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-rpc
+  template:
+    metadata:
+      labels:
+        app: user-rpc
+    spec:
+      containers:
+        - name: user-rpc
+          image: go-zero/user-rpc:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9001
+              name: grpc
+          envFrom:
+            - secretRef:
+                name: go-zero-secrets
+          volumeMounts:
+            - name: config
+              mountPath: /app/etc
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            tcpSocket:
+              port: 9001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: user-rpc-config
+            items:
+              - key: user.yaml
+                path: user.yaml
+
+---
+# user-rpc Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-rpc-svc
+  namespace: go-zero
+  labels:
+    app: user-rpc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9001
+      targetPort: 9001
+      name: grpc
+  selector:
+    app: user-rpc
+

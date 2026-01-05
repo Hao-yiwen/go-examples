@@ -1,0 +1,75 @@
+---
+# role-rpc Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: role-rpc
+  namespace: go-zero
+  labels:
+    app: role-rpc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: role-rpc
+  template:
+    metadata:
+      labels:
+        app: role-rpc
+    spec:
+      containers:
+        - name: role-rpc
+          image: go-zero/role-rpc:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9003
+              name: grpc
+          envFrom:
+            - secretRef:
+                name: go-zero-secrets
+          volumeMounts:
+            - name: config
+              mountPath: /app/etc
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            tcpSocket:
+              port: 9003
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9003
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: role-rpc-config
+            items:
+              - key: role.yaml
+                path: role.yaml
+
+---
+# role-rpc Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: role-rpc-svc
+  namespace: go-zero
+  labels:
+    app: role-rpc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9003
+      targetPort: 9003
+      name: grpc
+  selector:
+    app: role-rpc
+

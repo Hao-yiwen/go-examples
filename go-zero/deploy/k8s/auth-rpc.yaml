@@ -1,0 +1,75 @@
+---
+# auth-rpc Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-rpc
+  namespace: go-zero
+  labels:
+    app: auth-rpc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-rpc
+  template:
+    metadata:
+      labels:
+        app: auth-rpc
+    spec:
+      containers:
+        - name: auth-rpc
+          image: go-zero/auth-rpc:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9002
+              name: grpc
+          envFrom:
+            - secretRef:
+                name: go-zero-secrets
+          volumeMounts:
+            - name: config
+              mountPath: /app/etc
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            tcpSocket:
+              port: 9002
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9002
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: auth-rpc-config
+            items:
+              - key: auth.yaml
+                path: auth.yaml
+
+---
+# auth-rpc Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-rpc-svc
+  namespace: go-zero
+  labels:
+    app: auth-rpc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9002
+      targetPort: 9002
+      name: grpc
+  selector:
+    app: auth-rpc
+

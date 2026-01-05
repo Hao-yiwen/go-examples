@@ -1,0 +1,77 @@
+---
+# user-api Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-api
+  namespace: go-zero
+  labels:
+    app: user-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-api
+  template:
+    metadata:
+      labels:
+        app: user-api
+    spec:
+      containers:
+        - name: user-api
+          image: go-zero/user-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8888
+              name: http
+          envFrom:
+            - secretRef:
+                name: go-zero-secrets
+          volumeMounts:
+            - name: config
+              mountPath: /app/etc
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /api/user/list
+              port: 8888
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8888
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: user-api-config
+            items:
+              - key: user-api.yaml
+                path: user-api.yaml
+
+---
+# user-api Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-api-svc
+  namespace: go-zero
+  labels:
+    app: user-api
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8888
+      targetPort: 8888
+      name: http
+  selector:
+    app: user-api
+

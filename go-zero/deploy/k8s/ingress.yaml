@@ -1,0 +1,66 @@
+---
+# Ingress for user-api (HTTP Gateway)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: user-api-ingress
+  namespace: go-zero
+  labels:
+    app: user-api
+  annotations:
+    # Nginx Ingress Controller annotations
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    # Enable CORS
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, PATCH, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.go-zero.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: user-api-svc
+                port:
+                  number: 8888
+
+---
+# Optional: Ingress with TLS support
+# Uncomment and configure for HTTPS
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: user-api-ingress-tls
+#   namespace: go-zero
+#   labels:
+#     app: user-api
+#   annotations:
+#     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+# spec:
+#   ingressClassName: nginx
+#   tls:
+#     - hosts:
+#         - api.go-zero.example.com
+#       secretName: go-zero-api-tls
+#   rules:
+#     - host: api.go-zero.example.com
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: user-api-svc
+#                 port:
+#                   number: 8888
+
