@@ -12,7 +12,7 @@ type Config struct {
 		RefreshSecret  string
 		RefreshExpire  int64
 	}
-	Redis struct {
+	AuthRedis struct {
 		Host string
 		Type string
 		Pass string

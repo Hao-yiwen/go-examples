@@ -20,7 +20,7 @@ spec:
       containers:
         - name: user-api
           image: go-zero/user-api:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           ports:
             - containerPort: 8888
               name: http

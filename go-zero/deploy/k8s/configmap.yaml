@@ -73,7 +73,7 @@ data:
       RefreshSecret: go-zero-user-refresh-secret-key
       RefreshExpire: 604800
 
-    Redis:
+    AuthRedis:
       Host: redis-svc:6379
       Type: node
       Pass: ""
