@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
+	"github.com/Hao-yiwen/go-examples/go-zero/user-rpc/pb"
 	"github.com/Hao-yiwen/go-examples/go-zero/user-rpc/internal/logic"
 	"github.com/Hao-yiwen/go-examples/go-zero/user-rpc/internal/svc"
-	"github.com/Hao-yiwen/go-examples/go-zero/user-rpc/pb"
 )
 
 type UserServer struct {

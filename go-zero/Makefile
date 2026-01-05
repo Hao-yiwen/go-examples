@@ -63,13 +63,13 @@ clean:
 
 # 生成 proto 代码
 gen-user-rpc:
-	cd user-rpc && goctl rpc protoc user.proto --go_out=. --go-grpc_out=. --zrpc_out=.
+	cd user-rpc && protoc --go_out=. --go_opt=module=github.com/Hao-yiwen/go-examples/go-zero/user-rpc --go-grpc_out=. --go-grpc_opt=module=github.com/Hao-yiwen/go-examples/go-zero/user-rpc proto/user.proto
 
 gen-auth-rpc:
-	cd auth-rpc && goctl rpc protoc auth.proto --go_out=. --go-grpc_out=. --zrpc_out=.
+	cd auth-rpc && protoc --go_out=. --go_opt=module=github.com/Hao-yiwen/go-examples/go-zero/auth-rpc --go-grpc_out=. --go-grpc_opt=module=github.com/Hao-yiwen/go-examples/go-zero/auth-rpc proto/auth.proto
 
 gen-role-rpc:
-	cd role-rpc && goctl rpc protoc role.proto --go_out=. --go-grpc_out=. --zrpc_out=.
+	cd role-rpc && protoc --go_out=. --go_opt=module=github.com/Hao-yiwen/go-examples/go-zero/role-rpc --go-grpc_out=. --go-grpc_opt=module=github.com/Hao-yiwen/go-examples/go-zero/role-rpc proto/role.proto
 
 gen-user-api:
 	cd user-api && goctl api go -api user.api -dir .
