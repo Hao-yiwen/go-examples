@@ -12,9 +12,9 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	rds := redis.MustNewRedis(redis.RedisConf{
-		Host: c.Redis.Host,
-		Type: c.Redis.Type,
-		Pass: c.Redis.Pass,
+		Host: c.AuthRedis.Host,
+		Type: c.AuthRedis.Type,
+		Pass: c.AuthRedis.Pass,
 	})
 
 	return &ServiceContext{

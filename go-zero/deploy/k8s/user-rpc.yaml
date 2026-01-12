@@ -20,7 +20,7 @@ spec:
       containers:
         - name: user-rpc
           image: go-zero/user-rpc:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           ports:
             - containerPort: 9001
               name: grpc

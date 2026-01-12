@@ -20,7 +20,7 @@ spec:
       containers:
         - name: role-rpc
           image: go-zero/role-rpc:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           ports:
             - containerPort: 9003
               name: grpc
