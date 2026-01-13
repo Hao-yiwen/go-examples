@@ -132,7 +132,7 @@ func InsertSortTest(arr []int) {
 	}
 }
 
-func main() {
+func test() {
 	arr := []int{1, 5, 4, 2, 6, 8, 2}
 	InsertSortTest(arr)
 	fmt.Println(arr)
