@@ -15,7 +15,7 @@ func InsertSort(arr []int) {
 	}
 }
 
-func main() {
+func main6() {
 	arr := []int{1, 4, 5, 2, 3}
 	InsertSort(arr)
 	fmt.Println(arr)
