@@ -31,7 +31,7 @@ func merge(left, right []int) []int {
 	return result
 }
 
-func main() {
+func main2() {
 	arr := []int{1, 5, 4, 2, 6, 7}
 	arr = MergeSort(arr)
 	fmt.Println(arr)
